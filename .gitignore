@@ -1,0 +1,6 @@
+/.env
+/config.json
+/runtime.log
+/sites.txt
+/user_agents.json
+/__pycache__
