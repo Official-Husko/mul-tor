@@ -12,6 +12,7 @@ from modules import *
 version = "1.0.0"
 available = []
 target_files = []
+
 logo = f"""{colored(f'''
 .88b  d88. db    db db             d888888b  .d88b.  d8888b. 
 88'YbdP`88 88    88 88             `~~88~~' .8P  Y8. 88  `8D 
@@ -44,14 +45,6 @@ class Main:
         else:
             with open("config.json") as cf:
                 pass
-        exit(0)
-    
-    def availability_checker():
-        #TODO: ping all servers
-        #TODO: Check all configured API's in config.json
-        pass
-        
-        
         
     def selection():
         amount_question = [
