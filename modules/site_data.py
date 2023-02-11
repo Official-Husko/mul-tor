@@ -1,8 +1,11 @@
 sites_data_dict = {
     "pixeldrain": {
         "apiKey": False,
-        "url": "https://pixeldrain.com/api/file/{name}",
-        "size_limit": 20,
+        "url": "https://pixeldrain.com/api/file/",
+        "api_url": "https://pixeldrain.com/api/",
+        "download_url_base": "https://pixeldrain.com/u/",
+        "size_limit_human": 20,
+        "size_limit_bytes": 21474836480,
         "size_unit": "GB"
     }
 }
@@ -11,8 +14,7 @@ class Site_Data_CLSS:
     
     def size_unit_calc(site_name, file_size):
         site_name = site_name.lower()
-        size_unit = sites_data_dict[site_name.lower()]["size_unit"]
-        size_limit = sites_data_dict[site_name.lower()]["size_limit"]
+        size_limit = sites_data_dict[site_name.lower()]["size_limit_bytes"]
         
         step_to_greater_unit = 1024.
         number_of_bytes = float(file_size)
@@ -33,7 +35,7 @@ class Site_Data_CLSS:
         number_of_bytes = round(number_of_bytes, precision)
         calculated_size = str(number_of_bytes) + ' ' + unit
         
-        if calculated_size > size_limit:
+        if file_size > size_limit:
             return "SIZE_ERROR"
         else:
             return "OK"

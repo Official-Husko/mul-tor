@@ -3,15 +3,26 @@
 
 #### Like mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
 
-## <span style="color:red">***Does not work yet! Uploaded for code management.***</span>
-
 <br />
 
 ### Preview
 
 ![preview](https://media.tenor.com/OZQVcrloOEYAAAAC/huh-what.gif)  
-(Placeholder Gif)
+(I haven't done the preview yet so have a cute german shepherd puppy instead)
 
+<br />
+
+### Features:
+Feature | Status
+--- | ---
+Proxy Scraper | Finished
+User Agent Scraper | Finished
+Check Website Availability | Finished
+*Auto Compress to Max Size* | *Planned*
+*Auto Updater* | *Planned*
+*Webhook Sender* | *Planned*
+
+<br />
 
 ### Currently supported sites:
 Site | API | Account Required | Max File Size
@@ -34,7 +45,7 @@ Site | API | Account Required | Max File Size
 ### Out-of-Scope Sites:
 Site | Reason
 --- | --- 
-[Example][1] | No API and uses Captchas
+[Example](https://www.example.com) | No API and uses Captchas
 
 [comment]: # (Below are all links to the sites)
 [1]: https://pixeldrain.com/

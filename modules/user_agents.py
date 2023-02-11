@@ -5,6 +5,7 @@ from termcolor import colored
 from .pretty_print import *
 from .logger import *
 import os
+from time import sleep
 
 user_agents_list = []
 
@@ -46,7 +47,8 @@ class UserAgentManager:
             
             # Construct and print the error
             error_str = f"An error occured during the Fetching of user_agents! Please report this. Exception: {e}"
-            print(colored(f"{error} {error_str}"))
+            print(colored(f"{warning} {error_str}"))
+            print(colored(f"{warning} Defaulting back to backup user-agents"))
             Logger.log_event(error_str, req)
             
             # Delete the corrupted json file
@@ -60,6 +62,8 @@ class UserAgentManager:
                     "user_agents": backup_list
                 }
                 json.dump(template, writer, indent = 6)
+            
+            sleep(5)
             
     def Verify(fldate):
         file_date = datetime.strptime(fldate, "%Y-%m-%d")
