@@ -8,7 +8,8 @@ import json
 from modules import *
 
 version = "1.0.0"
-files_list = []
+owd = os.getcwd()
+
 
 logo = f"""{colored(f'''
 .88b  d88. db    db db             d888888b  .d88b.  d8888b. 
@@ -40,15 +41,21 @@ class Main:
         else:
             proxy_list = []
         
-        if os.path.exists("user_agents.json"):
-            with open("user_agents.json", "r") as ua:
-                ua_list = json.load(ua)
-                status = UserAgentManager.Verify(ua_list["creation_date"])
-                ua.close()
-                if status == "OUTDATED":
-                    UserAgentManager.Scraper()
+        if config["randomUserAgent"] == True:
+            if os.path.exists("user_agents.json"):
+                with open("user_agents.json", "r") as ua:
+                    ua_list = json.load(ua)
+                    status = UserAgentManager.Verify(ua_list["creation_date"])
+                    ua.close()
+                    if status == "OUTDATED":
+                        UserAgentManager.Scraper()
+            else:
+                UserAgentManager.Scraper()
         else:
-            UserAgentManager.Scraper()
+            ua = {
+                "creation_date": f"1970-01-01",
+                "user_agents": [f"mul-tor/{version} (by Official Husko on GitHub)"]
+            }
             
         available = Availability_Checker.Evaluate(config)
         
@@ -69,11 +76,13 @@ class Main:
         if amount_answers.get("selection") == "Single":
             files_list = plyer.filechooser.open_file()
         elif amount_answers.get("selection") == "Multiple":
+            files_list = []
             fn = plyer.filechooser.choose_dir()
             fn = fn[0]
             files_in_folder = os.listdir(fn)
             for found_file in files_in_folder:
-                files_list.append(f"{fn}\\{found_file}")
+                if os.path.isdir(f"{fn}\\{found_file}") != True:
+                    files_list.append(f"{fn}\\{found_file}")
         else:
             print(colored("Something fucked up! Please report this on github. Selecton_Error", "red"))
             sleep(5)
@@ -89,10 +98,44 @@ class Main:
 
         sites = answers.get("selections")
         
-        for site in sites:
-            if site == "pixeldrain":
-                PixelDrain.Uploader(files_list, proxy_list, user_agents_list)
-    
+        for file in files_list:
+            for site in sites:
+                if site == "PixelDrain":
+                    output = PixelDrain.Uploader(file, proxy_list, user_agents_list)
+                if site == "GoFile":
+                    output = GoFile.Uploader(file, proxy_list, user_agents_list)
+                
+                status = output.get("status", "")
+                file_site = output.get("site", "")
+                file_name = output.get("file_name", "")
+                file_url = output.get("file_url", "")
+                exception_str = output.get("exception", "")
+                size_limit = output.get("size_limit", "")
+                extra = output.get("extra", "")
+                
+                os.chdir(owd)
+                if status == "ok":
+                    print(f"{ok} {colored(file_name, 'light_blue')} successfully uploaded! URL: {colored(file_url, 'green')}")
+                    with open("file_links.txt", "a") as file_links:
+                        file_links.writelines(f"{site} | {file_name} - {file_url}\n")
+                    file_links.close()
+                
+                elif status == "error":
+                    print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                    error_str = f"An error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                    Logger.log_event(error_str, extra)
+                    
+                elif status == "size_error":
+                    print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(file_site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
+                    error_str = f"File size of {file_name} to big for {file_site}! Compress it to fit the max size of {size_limit}"
+                    Logger.log_event(error_str, extra)    
+                
+                else:
+                    print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                    error_str = f"An unknown error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                    Logger.log_event(error_str, extra)
+                
+        os.chdir(owd) # reset to default working dir
 if __name__ == '__main__':
     try:
         startup = Main.startup()
@@ -106,7 +149,6 @@ if __name__ == '__main__':
 If you are reading this then beware of wild notes and a rubber duck i let running loose in these lines.
 
 # TODO: Add the PixelDrain List feature
-# TODO: Fix runtime.log file being generated in the target files folder alongside file_links.txt
-# TODO: Multiply the time and space division by 12 for accurate quantum physics inside of VS Code
+# TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Code
  
 """

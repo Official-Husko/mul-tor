@@ -1,20 +1,31 @@
 sites_data_dict = {
-    "pixeldrain": {
+    "PixelDrain": {
         "apiKey": False,
         "url": "https://pixeldrain.com/api/file/",
         "api_url": "https://pixeldrain.com/api/",
         "download_url_base": "https://pixeldrain.com/u/",
+        "ping_url": "https://pixeldrain.com/api/",
         "size_limit_human": 20,
         "size_limit_bytes": 21474836480,
         "size_unit": "GB"
+    },
+    "GoFile": {
+        "apiKey": False,
+        "url": "https://{server}.gofile.io/uploadFile",
+        "api_url": "https://gofile.io/api/",
+        "download_url_base": "https://gofile.io/d/",
+        "server_url": "https://api.gofile.io/getServer",
+        "size_limit_human": "",
+        "size_limit_bytes": "",
+        "size_unit": ""
     }
 }
 
 class Site_Data_CLSS:
     
     def size_unit_calc(site_name, file_size):
-        site_name = site_name.lower()
-        size_limit = sites_data_dict[site_name.lower()]["size_limit_bytes"]
+        site_name = site_name
+        size_limit = sites_data_dict[site_name]["size_limit_bytes"]
         
         step_to_greater_unit = 1024.
         number_of_bytes = float(file_size)

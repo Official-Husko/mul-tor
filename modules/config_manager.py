@@ -19,6 +19,7 @@ class Config_Manager:
                 "useProxies": True,
                 "useWebhook": False,
                 "saveLinksToFile": True,
+                "randomUserAgent": True,
                 "api_keys": {
                     "example": {
                         "apiKey": ""
