@@ -4,11 +4,18 @@ from time import sleep
 import plyer
 import os
 import json
+from alive_progress import alive_bar
+import sys
+from datetime import datetime
 
 from modules import *
 
 version = "1.0.0"
 owd = os.getcwd()
+platform = sys.platform
+
+if platform == "win32":
+    from ctypes import windll
 
 
 logo = f"""{colored(f'''
@@ -23,6 +30,9 @@ YP  YP  YP ~Y8888P' Y88888P           YP     `Y88P'  88   YD
 class Main:
     
     def startup():
+        if platform == "win32":
+            os.system("cls")
+            windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version}")
         print(logo)
 
         # Check if a config exists else create it
@@ -43,21 +53,16 @@ class Main:
         
         if config["randomUserAgent"] == True:
             if os.path.exists("user_agents.json"):
-                with open("user_agents.json", "r") as ua:
-                    ua_list = json.load(ua)
-                    status = UserAgentManager.Verify(ua_list["creation_date"])
-                    ua.close()
-                    if status == "OUTDATED":
-                        UserAgentManager.Scraper()
+                ua_list = UserAgentManager.Reader()
             else:
-                UserAgentManager.Scraper()
+                ua_list = UserAgentManager.Scraper()
         else:
-            ua = {
-                "creation_date": f"1970-01-01",
-                "user_agents": [f"mul-tor/{version} (by Official Husko on GitHub)"]
-            }
+            ua_list = [f"mul-tor/{version} (by Official Husko on GitHub)"]
             
-        available = Availability_Checker.Evaluate(config)
+        available = Availability_Checker.Evaluate(config, proxy_list, ua_list)
+        
+        if config["checkForUpdates"] == True:
+            AutoUpdate.Checker(proxy_list, ua_list)
         
         return config, available, proxy_list, ua_list
         
@@ -72,20 +77,21 @@ class Main:
         print("")
         sites = amount_answers.get("selection")
 
-        
-        if amount_answers.get("selection") == "Single":
-            files_list = plyer.filechooser.open_file()
-        elif amount_answers.get("selection") == "Multiple":
-            files_list = []
-            fn = plyer.filechooser.choose_dir()
-            fn = fn[0]
-            files_in_folder = os.listdir(fn)
-            for found_file in files_in_folder:
-                if os.path.isdir(f"{fn}\\{found_file}") != True:
-                    files_list.append(f"{fn}\\{found_file}")
-        else:
-            print(colored("Something fucked up! Please report this on github. Selecton_Error", "red"))
-            sleep(5)
+        files_list = []
+        while len(files_list) == 0 or files_list == [[]]:
+            files_list = [] # Reset it
+            if amount_answers.get("selection") == "Single":
+                files_list = plyer.filechooser.open_file()
+            elif amount_answers.get("selection") == "Multiple":
+                fn = plyer.filechooser.choose_dir()
+                fn = fn[0]
+                files_in_folder = os.listdir(fn)
+                for found_file in files_in_folder:
+                    if os.path.isdir(f"{fn}\\{found_file}") != True:
+                        files_list.append(f"{fn}\\{found_file}")
+            else:
+                print(colored("Something fucked up! Please report this on github. Selecton_Error", "red"))
+                sleep(5)
         
         questions = [
         inquirer.Checkbox('selections',
@@ -98,48 +104,57 @@ class Main:
 
         sites = answers.get("selections")
         
-        for file in files_list:
-            for site in sites:
-                if site == "PixelDrain":
-                    output = PixelDrain.Uploader(file, proxy_list, user_agents_list)
-                if site == "GoFile":
-                    output = GoFile.Uploader(file, proxy_list, user_agents_list)
-                
-                status = output.get("status", "")
-                file_site = output.get("site", "")
-                file_name = output.get("file_name", "")
-                file_url = output.get("file_url", "")
-                exception_str = output.get("exception", "")
-                size_limit = output.get("size_limit", "")
-                extra = output.get("extra", "")
-                
-                os.chdir(owd)
-                if status == "ok":
-                    print(f"{ok} {colored(file_name, 'light_blue')} successfully uploaded! URL: {colored(file_url, 'green')}")
-                    with open("file_links.txt", "a") as file_links:
-                        file_links.writelines(f"{site} | {file_name} - {file_url}\n")
-                    file_links.close()
-                
-                elif status == "error":
-                    print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                    error_str = f"An error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
-                    Logger.log_event(error_str, extra)
+        with alive_bar(len(files_list), calibrate=1, dual_line=True, title='Uploading', enrich_print=False, stats=False, receipt=False, receipt_text=False) as list_bar:
+            for file in files_list:
+                for site in sites:
+                    bar_file_name = file.rsplit("\\")
+                    list_bar.title = f'-> Uploading {colored(bar_file_name[-1], "light_blue")} to {colored(site, "yellow")}, please wait...'
+                    if site == "PixelDrain":
+                        output = PixelDrain.Uploader(file, proxy_list, user_agents_list)
+                    if site == "GoFile":
+                        output = GoFile.Uploader(file, proxy_list, user_agents_list)
+                    if site == "AnonFiles":
+                        output = AnonFiles.Uploader(file, proxy_list, user_agents_list)
+                        
+                    status = output.get("status", "")
+                    file_site = output.get("site", "")
+                    file_name = output.get("file_name", "")
+                    file_url = output.get("file_url", "")
+                    exception_str = output.get("exception", "Fuck me there was no exception.")
+                    size_limit = output.get("size_limit", "")
+                    extra = output.get("extra", "")
                     
-                elif status == "size_error":
-                    print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(file_site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
-                    error_str = f"File size of {file_name} to big for {file_site}! Compress it to fit the max size of {size_limit}"
-                    Logger.log_event(error_str, extra)    
-                
-                else:
-                    print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                    error_str = f"An unknown error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
-                    Logger.log_event(error_str, extra)
-                
-        os.chdir(owd) # reset to default working dir
+                    os.chdir(owd)
+                    if status == "ok":
+                        print(f"{ok} {colored(file_name, 'light_blue')} successfully uploaded! URL: {colored(file_url, 'green')}")
+                        with open("file_links.txt", "a") as file_links:
+                            file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
+                        file_links.close()
+                    
+                    elif status == "error":
+                        print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                        error_str = f"An error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                        Logger.log_event(error_str, extra)
+                        
+                    elif status == "size_error":
+                        print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(file_site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
+                        error_str = f"File size of {file_name} to big for {file_site}! Compress it to fit the max size of {size_limit}"
+                        Logger.log_event(error_str, extra)    
+                    
+                    else:
+                        print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                        error_str = f"An unknown error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                        Logger.log_event(error_str, extra)
+                list_bar()      
+            os.chdir(owd) # reset to default working dir
+
 if __name__ == '__main__':
     try:
         startup = Main.startup()
-        Main.selection(config=startup[0], available=startup[1], user_agents_list=startup[3]["user_agents"], proxy_list=startup[2])
+        while True:
+            Main.selection(config=startup[0], available=startup[1], user_agents_list=startup[3], proxy_list=startup[2])
+            print("")
+            print("")
     except KeyboardInterrupt:
         print("User Cancelled")
         sleep(3)
@@ -150,5 +165,15 @@ If you are reading this then beware of wild notes and a rubber duck i let runnin
 
 # TODO: Add the PixelDrain List feature
 # TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Code
+# TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
+# TODO: Find a way to change the colors for the selection windows
  
+"""
+
+"""
+Here you can also find some buried credits.
+
+Arrow Icon from Kirill Kazachek on https://www.flaticon.com/authors/kirill-kazachek
+Wolf Icon from Iconriver on https://www.flaticon.com/authors/iconriver
+
 """

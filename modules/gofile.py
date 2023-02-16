@@ -1,11 +1,9 @@
 import requests
-from time import sleep
 import random
 import os
 
 from .site_data import sites_data_dict
 from .pretty_print import *
-from .logger import Logger
 
 site = "GoFile"
 
@@ -13,8 +11,8 @@ class GoFile:
     
     def Uploader(file, proxy_list, user_agents):
         try:
-            server_url = sites_data_dict[site]["server_url"]
             ua = random.choice(user_agents)
+            server_url = sites_data_dict[site]["server_url"]
             
             if proxy_list == []:
                 server_res = requests.get(url=server_url, headers={"User-Agent": ua}).json()

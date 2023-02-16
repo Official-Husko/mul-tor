@@ -12,16 +12,20 @@
 
 <br />
 
+[**Download it here**](https://github.com/Official-Husko/mul-tor/releases/latest)
+
+<br />
+
 ### Features:
 Feature | Importance | Status
 --- | --- | ---
 Proxies | Medium | Finished
 Random User Agent | Low | Finished
 Check Website Availability | High | Finished
+Progress Bar | High | Finished*¹
+Auto Updater | High | Finished*³
 *Auto Compress to Max Size* | *Low* | *Planned*
-*Auto Updater* | *High* | *Planned*
 *Webhook Sender* | *Medium* | *Planned*
-*Progress Bar* | *High* | *Planned* |
 
 <br />
 
@@ -30,13 +34,13 @@ Site | API | Account Required | Max File Size
 --- | --- | --- | ---
 [PixelDrain][1] | [Yes][2] | No | 20 GB
 [GoFile][7] | [Yes][8] | No | ∞
+[Anonfiles][3] | [Yes][4] | No | 20 GB
 
 <br />
 
 ### Planned Sites:
 Site | API | Account Required | Max File Size
 --- | --- | --- | ---
-[Anonfiles][3] | [Yes][4] | No | 20 GB
 [Bayfiles][5] | [Yes][6] | No | 20 GB
 [Oshi][9] | No | No | 5 GB
 [LetsUpload][15] | [Yes][16] | No | 20 GB
@@ -47,7 +51,8 @@ Site | API | Account Required | Max File Size
 [Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
 [Uptobox][33] | [Yes][34] | [Yes][35] | 200 GB
 [Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
-[Filemail][42] | [Yes][43] | [No/Yes*][44] | 5 GB
+[Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB
+[FileChan][47] | [Yes][48] | No | 20 GB
 
 <br />
 
@@ -57,6 +62,25 @@ Site | API | Account Required | Reason
 [1Fichier][31] | [Yes][32] | Yes | No Free API Access
 [TransferNow][39] | [Yes][40] | [Yes][41] | No Free API Access
 [Files.fm][45] | [Yes][46] | Yes | No Free API Access
+
+<br />
+
+<details>
+  <summary>Click to Open Further Elaboration on Fields with *ⁿ</summary>
+  
+    *1: The progress bar is currently not what i want but its still better than nothing. 
+    In the future i can hopefully find a way to show the upload progress.
+
+    *2: FileMail does not need an account but an api key which you can get for simply 
+    entering your email or a temp mail (which i suggesst) and localhost as domain and
+    then you can use that api key.
+
+    *3: Currently it only checks for updates but in a later release i plan to add an 
+    actual auto updater for the zip/folder version. 
+    The portable edition probably won't have that feature anytime soon due to me not 
+    knowing how to pull it off.
+
+</details>
 
 [comment]: # (Below are all links to the sites)
 [0]: #
@@ -106,12 +130,13 @@ Site | API | Account Required | Reason
 [44]: https://www.filemail.com/apidoc/ApiKey.aspx
 [45]: https://files.fm/
 [46]: https://files.fm/api.php
+[47]: https://filechan.org/
+[48]: https://filechan.org/docs/api
 
 <br />
 
 #### Disclaimer
-*I am not in any way affiliated with or working with these sites. This is an unofficial project.*
-
+*I am not in any way affiliated with or working with these sites. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*
 
 [//]: # (Ingore These Lines Below)
 [//]: # ([MultiUp][10] | [Yes][11] | No | ∞)

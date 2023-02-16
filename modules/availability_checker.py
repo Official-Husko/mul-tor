@@ -1,6 +1,7 @@
 import requests
 from termcolor import colored
 from time import sleep
+import random
 
 from .site_data import sites_data_dict
 from .logger import Logger
@@ -12,7 +13,7 @@ ping_sites = []
 
 class Availability_Checker:
     
-    def Evaluate(config):
+    def Evaluate(config, proxy_list, ua_list):
         for site in sites_data_dict:
             if sites_data_dict[site]["apiKey"] == False and not site in config["blacklist"]:
                 ping_sites.append(site)
@@ -23,8 +24,15 @@ class Availability_Checker:
         
         for site in ping_sites:
             try:
+                ua = random.choice(ua_list)
                 url = sites_data_dict[site]["api_url"]
-                ping = requests.get(url)
+                
+                if proxy_list == []:
+                    ping = requests.get(url, headers={"User-Agent": ua})
+                else:
+                    proxy = random.choice(proxy_list)
+                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxy)
+                
                 
                 if ping.status_code == 200:
                     available_sites.append(site)

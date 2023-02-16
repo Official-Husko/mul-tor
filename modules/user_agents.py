@@ -43,6 +43,7 @@ class UserAgentManager:
                     "user_agents": user_agents_list
                 }
                 json.dump(template, writer, indent = 6)
+            return user_agents_list
         except Exception as e:
             
             # Construct and print the error
@@ -64,6 +65,17 @@ class UserAgentManager:
                 json.dump(template, writer, indent = 6)
             
             sleep(5)
+            return user_agents_list
+            
+    def Reader():
+        with open("user_agents.json", "r") as ua:
+            ua_list = json.load(ua)
+            status = UserAgentManager.Verify(ua_list["creation_date"])
+            ua.close()
+            if status == "OUTDATED":
+                UserAgentManager.Scraper()
+            else:
+                return ua_list["user_agents"]
             
     def Verify(fldate):
         file_date = datetime.strptime(fldate, "%Y-%m-%d")
@@ -74,3 +86,4 @@ class UserAgentManager:
             return "OUTDATED"
         else:
             return "OK"
+        

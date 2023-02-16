@@ -15,8 +15,9 @@ class Config_Manager:
     def Writer():
         try:
             template = {
+                "READ_THIS_LINE": "If you are unsure on what to do here visit the wiki for further explanation for each setting. https://github.com/Official-Husko/mul-tor/wiki",
                 "checkForUpdates": True,
-                "useProxies": True,
+                "useProxies": False,
                 "useWebhook": False,
                 "saveLinksToFile": True,
                 "randomUserAgent": True,
@@ -27,7 +28,7 @@ class Config_Manager:
                 },
                 "webhook_data": {
                     "webhook_url": "",
-                    "webhook_body": ""
+                    "webhook_body": {}
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
             }

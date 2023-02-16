@@ -4,7 +4,6 @@ sites_data_dict = {
         "url": "https://pixeldrain.com/api/file/",
         "api_url": "https://pixeldrain.com/api/",
         "download_url_base": "https://pixeldrain.com/u/",
-        "ping_url": "https://pixeldrain.com/api/",
         "size_limit_human": 20,
         "size_limit_bytes": 21474836480,
         "size_unit": "GB"
@@ -14,10 +13,16 @@ sites_data_dict = {
         "url": "https://{server}.gofile.io/uploadFile",
         "api_url": "https://gofile.io/api/",
         "download_url_base": "https://gofile.io/d/",
-        "server_url": "https://api.gofile.io/getServer",
-        "size_limit_human": "",
-        "size_limit_bytes": "",
-        "size_unit": ""
+        "server_url": "https://api.gofile.io/getServer"
+    },
+    "AnonFiles": {
+        "apiKey": False,
+        "url": "https://api.anonfiles.com/upload",
+        "api_url": "https://api.anonfiles.com",
+        "download_url_base": "https://anonfiles.com/",
+        "size_limit_human": 20,
+        "size_limit_bytes": 21474836480,
+        "size_unit": "GB"
     }
 }
 
