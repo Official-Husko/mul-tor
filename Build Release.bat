@@ -1,1 +1,0 @@
-".\.env\Scripts\activate" && pyinstaller --onefile --icon "icon.ico" --console --name "Mul-Tor" --upx-dir "Z:\Projects\Python\### UPX ###" --hidden-import "plyer.platforms.win.filechooser" main.py && rmdir /s /q .\build && rmdir /s /q .\__pycache__ && del ".\Mul-Tor.spec"

@@ -10,9 +10,9 @@ class Logger:
 
     def log_event(message, extra=""):
         with open("runtime.log", "a") as log_dumper:
-            base_line = f"{datetime.now()} | v{version} | Error: {message}\n"
+            base_line = f"{datetime.now()} | v{version} | Error: {message}"
             if extra == "":
-                log_dumper.writelines(base_line)
+                log_dumper.writelines(base_line + "\n")
             else:
                 log_dumper.writelines(f"{base_line} | Additional Info: {extra}\n")
             

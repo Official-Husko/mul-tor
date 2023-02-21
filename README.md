@@ -24,44 +24,42 @@ Random User Agent | Low | Finished
 Check Website Availability | High | Finished
 Progress Bar | High | Finished*¹
 Auto Updater | High | Finished*³
-*Auto Compress to Max Size* | *Low* | *Planned*
-*Webhook Sender* | *Medium* | *Planned*
 
 <br />
 
 ### Currently supported sites:
 Site | API | Account Required | Max File Size
 --- | --- | --- | ---
-[PixelDrain][1] | [Yes][2] | No | 20 GB
 [GoFile][7] | [Yes][8] | No | ∞
+[PixelDrain][1] | [Yes][2] | No | 20 GB
 [Anonfiles][3] | [Yes][4] | No | 20 GB
+[Bayfiles][5] | [Yes][6] | No | 20 GB
+[OpenLoad][49] | [Yes][50] | No | 20 GB
+[HotFile][51] | [Yes][52] | No | 20 GB
+[LolaBits][53] | [Yes][54] | No | 20 GB
+[RapidShare][55] | [Yes][56] | No | 20 GB
+[UpVid][57] | [Yes][58] | No | 20 GB
+[vShare][59] | [Yes][60] | No | 20 GB
+[LetsUpload][15] | [Yes][16] | No | 20 GB
+[ShareOnline][61] | [Yes][62] | No | 20 GB
+[MegaUpload][63] | [Yes][64] | No | 20 GB
+[MyFile][65] | [Yes][66] | No | 20 GB
+[FileChan][47] | [Yes][48] | No | 20 GB
+[Oshi][9] | No | No | 5 GB
+[HexUpload][23] | [Yes][24] | [Yes][25] | 2 GB
 
 <br />
 
 ### Planned Sites:
 Site | API | Account Required | Max File Size
 --- | --- | --- | ---
-[Bayfiles][5] | [Yes][6] | No | 20 GB
-[Oshi][9] | No | No | 5 GB
-[LetsUpload][15] | [Yes][16] | No | 20 GB
 [BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
 [1CloudFile][20] | [Yes][21] | [Yes][22] | 5 GB
-[HexUpload][23] | [Yes][24] | [Yes][25] | 2 GB
 [SendSpace][26] | [Yes][27] | [Yes][28] | 300 MB
-[Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
 [Uptobox][33] | [Yes][34] | [Yes][35] | 200 GB
 [Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
 [Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB
-[FileChan][47] | [Yes][48] | No | 20 GB
-
-<br />
-
-### Issue Sites:
-Site | API | Account Required | Reason
---- | --- | --- | ---
-[1Fichier][31] | [Yes][32] | Yes | No Free API Access
-[TransferNow][39] | [Yes][40] | [Yes][41] | No Free API Access
-[Files.fm][45] | [Yes][46] | Yes | No Free API Access
+[Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
 
 <br />
 
@@ -132,6 +130,24 @@ Site | API | Account Required | Reason
 [46]: https://files.fm/api.php
 [47]: https://filechan.org/
 [48]: https://filechan.org/docs/api
+[49]: https://openload.cc/
+[50]: https://openload.cc/docs/api
+[51]: https://hotfile.io/
+[52]: https://hotfile.io/docs/api
+[53]: https://lolabits.se/
+[54]: https://lolabits.se/docs/api
+[55]: https://rapidshare.nu/
+[56]: https://rapidshare.nu/docs/api
+[57]: https://upvid.cc/
+[58]: https://upvid.cc/docs/api
+[59]: https://vshare.is/
+[60]: https://vshare.is/docs/api
+[61]: https://share-online.is/
+[62]: https://share-online.is/docs/api
+[63]: https://megaupload.nz/
+[64]: https://megaupload.nz/docs/api
+[65]: https://myfile.is/
+[66]: https://myfile.is/docs/api
 
 <br />
 

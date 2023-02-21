@@ -10,7 +10,7 @@ from datetime import datetime
 
 from modules import *
 
-version = "1.0.0"
+version = "1.1.0"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -42,8 +42,12 @@ class Main:
             Config_Manager.Writer()
             config = Config_Manager.Reader()
         
+        proxies_enabled = config.get("useProxies", False)
+        random_ua_enabled = config.get("randomUserAgent", False)
+        check_for_updates_enabled = config.get("checkForUpdates", False)
+        
         # Check if the user wants to use proxies and get them
-        if config["useProxies"] == True:
+        if proxies_enabled == True:
             print(colored("Fetching Fresh Proxies...", "yellow"), end='\r')
             proxy_list = ProxyScraper.Scraper()
             print(colored(f"Fetched {len(proxy_list)} Proxies.        ", "green"))
@@ -51,7 +55,7 @@ class Main:
         else:
             proxy_list = []
         
-        if config["randomUserAgent"] == True:
+        if random_ua_enabled == True:
             if os.path.exists("user_agents.json"):
                 ua_list = UserAgentManager.Reader()
             else:
@@ -61,7 +65,7 @@ class Main:
             
         available = Availability_Checker.Evaluate(config, proxy_list, ua_list)
         
-        if config["checkForUpdates"] == True:
+        if check_for_updates_enabled == True:
             AutoUpdate.Checker(proxy_list, ua_list)
         
         return config, available, proxy_list, ua_list
@@ -115,6 +119,35 @@ class Main:
                         output = GoFile.Uploader(file, proxy_list, user_agents_list)
                     if site == "AnonFiles":
                         output = AnonFiles.Uploader(file, proxy_list, user_agents_list)
+                    if site == "BayFiles":
+                        output = BayFiles.Uploader(file, proxy_list, user_agents_list)
+                    if site == "OpenLoad":
+                        output = OpenLoad.Uploader(file, proxy_list, user_agents_list)
+                    if site == "HotFile":
+                        output = HotFile.Uploader(file, proxy_list, user_agents_list)
+                    if site == "LolaBits":
+                        output = LolaBits.Uploader(file, proxy_list, user_agents_list)
+                    if site == "RapidShare":
+                        output = RapidShare.Uploader(file, proxy_list, user_agents_list)
+                    if site == "UpVid":
+                        output = UpVid.Uploader(file, proxy_list, user_agents_list)
+                    if site == "vShare":
+                        output = vShare.Uploader(file, proxy_list, user_agents_list)
+                    if site == "LetsUpload":
+                        output = LetsUpload.Uploader(file, proxy_list, user_agents_list)
+                    if site == "ShareOnline":
+                        output = ShareOnline.Uploader(file, proxy_list, user_agents_list)
+                    if site == "MegaUpload":
+                        output = MegaUpload.Uploader(file, proxy_list, user_agents_list)
+                    if site == "MyFile":
+                        output = MyFile.Uploader(file, proxy_list, user_agents_list)
+                    if site == "FileChan":
+                        output = FileChan.Uploader(file, proxy_list, user_agents_list)
+                    if site == "Oshi":
+                        output = Oshi.Uploader(file, proxy_list, user_agents_list)
+                        
+                    if site == "MixDrop":
+                        output = MixDrop.Uploader(file, proxy_list, user_agents_list, config)
                         
                     status = output.get("status", "")
                     file_site = output.get("site", "")
@@ -167,6 +200,7 @@ If you are reading this then beware of wild notes and a rubber duck i let runnin
 # TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Code
 # TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
 # TODO: Find a way to change the colors for the selection windows
+# TODO: Finish this so i can start learning Rust
  
 """
 
