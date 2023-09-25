@@ -3,6 +3,8 @@
 
 #### Like mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
 
+### ***Recently Anonfiles thought it would be funny to reenact the soviet union in 1991 so 12 of the 16 sites went down.***
+
 <br />
 
 ### Preview
