@@ -3,8 +3,6 @@
 
 #### Like mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
 
-### ***Recently Anonfiles thought it would be funny to reenact the soviet union in 1991 so 12 of the 16 sites went down.***
-
 <br />
 
 ### Preview
@@ -95,7 +93,7 @@ Site | API | Api Key Required | Max File Size
   Q: How do I get the API key?\
   A: Click on the blue yes in the Api Key Required row for the site you wish to get a key for.
 
-  Q: I want to request a site.
+  Q: I want to request a site.\
   A: Check the rejected sites and issues page if it hasn't already been mentioned. If it hasn't feel free to open a new issue.
 
   Q: What about rejected sites?\
