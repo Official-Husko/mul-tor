@@ -1,13 +1,4 @@
 sites_data_dict = {
-    "PixelDrain": {
-        "apiKey": False,
-        "url": "https://pixeldrain.com/api/file/",
-        "api_url": "https://pixeldrain.com/api/",
-        "download_url_base": "https://pixeldrain.com/u/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
-        "size_unit": "GB"
-    },
     "GoFile": {
         "apiKey": False,
         "url": "https://{server}.gofile.io/uploadFile",
@@ -15,166 +6,147 @@ sites_data_dict = {
         "download_url_base": "https://gofile.io/d/",
         "server_url": "https://api.gofile.io/getServer"
     },
-    "AnonFiles": {
+    "PixelDrain": {
         "apiKey": False,
-        "url": "https://api.anonfiles.com/upload",
-        "api_url": "https://api.anonfiles.com/",
-        "download_url_base": "https://anonfiles.com/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://pixeldrain.com/api/file/",
+        "api_url": "https://pixeldrain.com/api/",
+        "download_url_base": "https://pixeldrain.com/u/",
+        "size_limit": 20,
         "size_unit": "GB"
     },
-    "BayFiles": {
+    "FileBin": {
         "apiKey": False,
-        "url": "https://api.bayfiles.com/upload",
-        "api_url": "https://api.bayfiles.com/",
-        "download_url_base": "https://bayfiles.com/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://filebin.net/",
+        "api_url": "https://filebin.net/",
+        "download_url_base": "https://filebin.net/"
+    },
+    "Delafil": {
+        "apiKey": False,
+        "url": "https://delafil.se/core/page/ajax/file_upload_handler.ajax.php",
+        "api_url": "https://delafil.se/",
+        "download_url_base": "https://delafil.se/",
+        "size_limit": 6,
         "size_unit": "GB"
     },
-    "OpenLoad": {
+    "Files.dp.ua": {
         "apiKey": False,
-        "url": "https://api.openload.cc/upload",
-        "api_url": "https://api.openload.cc/",
-        "download_url_base": "https://openload.cc/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://files2.dp.ua/upload.php",
+        "api_url": "https://files2.dp.ua/upload.php",
+        "download_url_base": "https://files.dp.ua/en/",
+        "size_limit": 100,
         "size_unit": "GB"
     },
-    "LolaBits": {
+    "FilesFM": {
         "apiKey": False,
-        "url": "https://api.lolabits.se/upload",
-        "api_url": "https://api.lolabits.se/",
-        "download_url_base": "https://lolabits.se/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://free.files.fm/save_file.php?up_id={upload_id}&ignore_user_abort=1&skip_update=1&key={upload_key}",
+        "api_url": "https://free.files.fm/save_file.php",
+        "download_url_base": "https://files.fm/u/{upload_id}",
+        "initialize_url": "https://files.fm/server_scripts/get_upload_id.php?show_add_key=1",
+        "finalize_url": "https://free.files.fm/finish_upload.php?upload_hash={upload_id}",
+        "size_limit": 5,
         "size_unit": "GB"
     },
-    "vShare": {
+    "Krakenfiles": {
         "apiKey": False,
-        "url": "https://api.vshare.is/upload",
-        "api_url": "https://api.vshare.is/",
-        "download_url_base": "https://vshare.is/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://{server}.krakenfiles.com/api/file",
+        "api_url": "https://krakenfiles.com/",
+        "download_url_base": "https://krakenfiles.com",
+        "server_url": "https://krakenfiles.com/api/server/available",
+        "site_upload_url": "https://uploads{number}.krakenfiles.com/_uploader/gallery/upload",
+        "size_limit": 1,
         "size_unit": "GB"
     },
-    "HotFile": {
+    "Transfer": {
         "apiKey": False,
-        "url": "https://api.hotfile.io/upload",
-        "api_url": "https://api.hotfile.io/",
-        "download_url_base": "https://hotfile.io/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://transfer.sh/{file_name}",
+        "api_url": "https://transfer.sh/",
+        "download_url_base": "https://transfer.sh/",
+        "size_limit": 10,
         "size_unit": "GB"
     },
-    "RapidShare": {
+    "TmpFiles": {
         "apiKey": False,
-        "url": "https://api.rapidshare.nu/upload",
-        "api_url": "https://api.rapidshare.nu/",
-        "download_url_base": "https://rapidshare.nu/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://tmpfiles.org/api/v1/upload",
+        "api_url": "https://tmpfiles.org/api",
+        "download_url_base": "https://tmpfiles.org/",
+        "size_limit": 100,
+        "size_unit": "MB"
+    },
+    "Mixdrop": {
+        "apiKey": False,
+        "url": "https://ul.mixdrop.co/up",
+        "api_url": "https://ul.mixdrop.co/up",
+        "download_url_base": "https://mixdrop.co/f/",
+        "size_limit": 10,
         "size_unit": "GB"
     },
-    "UpVid": {
+    "1Fichier": {
         "apiKey": False,
-        "url": "https://api.upvid.cc/upload",
-        "api_url": "https://api.upvid.cc/",
-        "download_url_base": "https://upvid.cc/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://{server}/upload.cgi?id={upload_id}",
+        "api_url": "https://api.1fichier.com/v1/upload/",
+        "download_url_base": "https://1fichier.com/?",
+        "initialize_url": "https://api.1fichier.com/v1/upload/get_upload_server.cgi",
+        "finalize_url": "https://{server}/end.pl?xid={upload_id}",
+        "size_limit": 300,
         "size_unit": "GB"
     },
-    "LetsUpload": {
+    "YourFileStore": {
         "apiKey": False,
-        "url": "https://api.letsupload.cc/upload",
-        "api_url": "https://api.letsupload.cc/",
-        "download_url_base": "https://letsupload.cc/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://yourfilestore.com/upload",
+        "api_url": "https://yourfilestore.com/upload",
+        "download_url_base": "https://yourfilestore.com/download/",
+        "size_limit": 500,
+        "size_unit": "MB"
+    },
+    "Fileio": {
+        "apiKey": False,
+        "url": "https://file.io/?title={file_name}",
+        "api_url": "https://file.io/",
+        "download_url_base": "https://file.io/",
+        "patch_url": "https://file.io/{file_id}",
+        "size_limit": 2,
         "size_unit": "GB"
     },
-    "ShareOnline": {
+    "EasyUpload": {
         "apiKey": False,
-        "url": "https://api.share-online.is/upload",
-        "api_url": "https://api.share-online.is/",
-        "download_url_base": "https://share-online.is/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
-        "size_unit": "GB"
-    },
-    "MegaUpload": {
-        "apiKey": False,
-        "url": "https://api.megaupload.nz/upload",
-        "api_url": "https://api.megaupload.nz/",
-        "download_url_base": "https://megaupload.nz/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
-        "size_unit": "GB"
-    },
-    "MyFile": {
-        "apiKey": False,
-        "url": "https://api.myfile.is/upload",
-        "api_url": "https://api.myfile.is/",
-        "download_url_base": "https://myfile.is/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
-        "size_unit": "GB"
-    },
-    "FileChan": {
-        "apiKey": False,
-        "url": "https://api.filechan.org/upload",
-        "api_url": "https://api.filechan.org/",
-        "download_url_base": "https://filechan.org/",
-        "size_limit_human": 20,
-        "size_limit_bytes": 21474836480,
+        "url": "https://upload{number}.easyupload.io/action.php",
+        "api_url": "https://easyupload.io/",
+        "download_url_base": "https://easyupload.io/",
+        "initialize_url": "https://easyupload.io/action.php",
+        "size_limit": 10,
         "size_unit": "GB"
     },
     "Oshi": {
+        "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
         "url": "https://oshi.at/?shorturl=1",
         "api_url": "https://oshi.at/cmd",
         "download_url_base": "https://oshi.at/",
-        "size_limit_human": 5,
-        "size_limit_bytes": 5368709120,
+        "size_limit": 5,
         "size_unit": "GB"
-    },
-    "MixDrop": {
-        "apiKey": True,
-        "url": "https://ul.mixdrop.co/api",
-        "api_url": "https://mixdrop.co/api",
-        "download_url_base": "https://mixdrop.co/f/"
     },
 }
 
+UNITS = {
+    'B': 1,
+    'KB': 1024,
+    'MB': 1024 * 1024,
+    'GB': 1024 * 1024 * 1024,
+    'TB': 1024 * 1024 * 1024 * 1024,
+    'PB': 1024 * 1024 * 1024 * 1024 * 1024,
+}
+
 class Site_Data_CLSS:
-    
     def size_unit_calc(site_name, file_size):
-        site_name = site_name
-        size_limit = sites_data_dict[site_name]["size_limit_bytes"]
+        site_data = sites_data_dict.get(site_name)
+        if site_data is None:
+            raise ValueError(f"Site '{site_name}' not found in the data dictionary.")
+
+        size_limit = site_data.get("size_limit", 0)
+        size_unit = site_data.get("size_unit", "B")
         
-        step_to_greater_unit = 1024.
-        number_of_bytes = float(file_size)
-        unit = 'bytes'
-        if (number_of_bytes / step_to_greater_unit) >= 1:
-            number_of_bytes /= step_to_greater_unit
-            unit = 'KB'
-        if (number_of_bytes / step_to_greater_unit) >= 1:
-            number_of_bytes /= step_to_greater_unit
-            unit = 'MB'
-        if (number_of_bytes / step_to_greater_unit) >= 1:
-            number_of_bytes /= step_to_greater_unit
-            unit = 'GB'
-        if (number_of_bytes / step_to_greater_unit) >= 1:
-            number_of_bytes /= step_to_greater_unit
-            unit = 'TB'
-        precision = 1
-        number_of_bytes = round(number_of_bytes, precision)
-        calculated_size = str(number_of_bytes) + ' ' + unit
-        
-        if file_size > size_limit:
+        size_limit_bytes = size_limit * UNITS.get(size_unit.upper(), 1)
+
+        if file_size > size_limit_bytes:
             return "SIZE_ERROR"
-        else:
-            return "OK"
+        return "OK"

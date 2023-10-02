@@ -7,16 +7,17 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "Mixdrop"
+site = "Krakenfiles"
 
-class Mixdrop:
+# This version is currently not in use because the API docs are outdated. Following the API rules results in a 500 error.
+
+class Krakenfiles:
     
     def Uploader(file, proxy_list, user_agents):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
-            upload_url = sites_data_dict[site]["url"]
-            download_url_base = sites_data_dict[site]["download_url_base"]
+            server_url = sites_data_dict[site]["server_url"]
             size_limit = f'{sites_data_dict[site]["size_limit"]} {sites_data_dict[site]["size_unit"]}'
             
             
@@ -25,22 +26,35 @@ class Mixdrop:
             file_name = (file_name[:240] + '..') if len(file_name) > 240 else file_name # Changed from 255 to 240 as an additional safety net.
             
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
+            
+            characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
+            file_id = ''.join(random.choice(characters) for i in range(10))
+            access_code = ''.join(random.choice(characters) for i in range(7))
 
-            headers = {"User-Agent": ua}
-            proxies = random.choice(proxy_list) if proxy_list else None
+            if proxy_list == []:
+                server_req = requests.get(url=server_url, headers={"User-Agent": ua})
+            else:
+                server_req = requests.get(url=server_url, headers={"User-Agent": ua}, proxies=random.choice(proxy_list))
+
+            server_response = server_req.json()
+            print(server_response)
+            upload_url = server_response.get("data", {}).get("url", "")
+            print(upload_url)
+            token = server_response.get("data", {}).get("serverAccessToken", "")
+            print(token)
 
             if calc_size == "OK":
                 data = {
-                    "upload": 1
+                    "serverAccessToken": token
                 }
                 form_data = {
-                    'files': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                    'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies)
-
-                response = raw_req.json()
-                file_id = response.get("file", {}).get("ref", "")
+                if proxy_list == []:
+                    raw_req = requests.post(url=upload_url, data=data, files=form_data, headers={"User-Agent": ua})
+                else:
+                    raw_req = requests.post(url=upload_url, files=form_data, headers={"User-Agent": ua}, proxies=random.choice(proxy_list))
 
                 if raw_req.status_code == 200:
                     return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_id, "site": site}

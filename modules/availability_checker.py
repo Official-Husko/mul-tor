@@ -6,9 +6,9 @@ import random
 from .site_data import sites_data_dict
 from .logger import Logger
 from .pretty_print import *
+from main import DEBUG
 
 available_sites = []
-
 ping_sites = []
 
 class Availability_Checker:
@@ -18,6 +18,8 @@ class Availability_Checker:
         for blacklisted_site in config["blacklist"]:
             blacklist.append(blacklisted_site.lower())
         for site in sites_data_dict:
+            if DEBUG == True:
+                print(f"{colored('Checking:', 'green')} {site}")
             # TODO: does not get api keys so fix shit shit cunt
             if sites_data_dict[site]["apiKey"] == False and not site.lower() in blacklist:
                 ping_sites.append(site)
@@ -25,7 +27,7 @@ class Availability_Checker:
                 ping_sites.append(site)
             else:
                 pass
-        print(colored("Checking available sites...", "green"), end='\r')
+        print(f"{colored('Checking', 'green')} {colored(len(ping_sites), 'yellow')} {colored('supported sites...', 'green')}", end='\r')
         
         for site in ping_sites:
             try:
@@ -51,7 +53,7 @@ class Availability_Checker:
                 sleep(5)
             except Exception as e:
                 # Construct and print the error
-                error_str = f"An error occured while checking the {site}! Please report this. Exception: {e}"
+                error_str = f"An error occured while checking {site}! Please report this. Exception: {e}"
                 print(colored(f"{error} {error_str}"))
                 Logger.log_event(error_str, extra=str(ping))
                 sleep(5)
@@ -63,7 +65,7 @@ class Availability_Checker:
                 Logger.log_event(error_str)
                 sleep(5)
         
-        print(f"{colored(len(available_sites), 'yellow')} {colored('Available Sites          ', 'green')}")
+        print(f"{colored(len(available_sites), 'yellow')} {colored('Available Sites                ', 'green')}")
         
         print("")
         

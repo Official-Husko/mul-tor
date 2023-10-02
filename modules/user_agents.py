@@ -33,7 +33,7 @@ class UserAgentManager:
         if os.path.exists("user_agents.json"):
             os.remove("user_agents.json")
         try:
-            req = requests.get("https://www.useragents.me/api").json()
+            req = requests.get("https://useragents.me/api").json()
             user_agents_list = []
             for ua in req["data"]:
                 user_agents_list.append(ua["ua"])

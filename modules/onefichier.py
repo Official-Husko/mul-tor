@@ -1,22 +1,20 @@
 import requests
 import os
 import random
-import string
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "Mixdrop"
+site = "1Fichier"
 
-class Mixdrop:
+class OneFichier:
     
     def Uploader(file, proxy_list, user_agents):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
-            upload_url = sites_data_dict[site]["url"]
-            download_url_base = sites_data_dict[site]["download_url_base"]
+            initialize_url = sites_data_dict[site]["initialize_url"]
             size_limit = f'{sites_data_dict[site]["size_limit"]} {sites_data_dict[site]["size_unit"]}'
             
             
@@ -25,27 +23,34 @@ class Mixdrop:
             file_name = (file_name[:240] + '..') if len(file_name) > 240 else file_name # Changed from 255 to 240 as an additional safety net.
             
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
-
+            
             headers = {"User-Agent": ua}
             proxies = random.choice(proxy_list) if proxy_list else None
 
             if calc_size == "OK":
-                data = {
-                    "upload": 1
-                }
+
+                raw_server = requests.get(url=initialize_url, headers={"User-Agent": ua, "Content-Type": "application/json"}, proxies=proxies)
+
+                server_response = raw_server.json()
+                server_url = server_response.get("url", "")
+                file_id = server_response.get("id", "")
+
+                upload_url = sites_data_dict[site]["url"].format(server=server_url, upload_id=file_id)
+
                 form_data = {
-                    'files': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                    'file[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                
+                finalize_url = sites_data_dict[site]["finalize_url"].format(server=server_url, upload_id=file_id)
 
-                response = raw_req.json()
-                file_id = response.get("file", {}).get("ref", "")
+                raw_req = requests.get(url=finalize_url, headers={"User-Agent": ua, "JSON": "1"}, proxies=proxies)
 
-                if raw_req.status_code == 200:
-                    return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_id, "site": site}
-                else:
-                    raise Exception(f"Status code: {raw_req.status_code}")
+                req = raw_req.json()
+                download_url = req.get("links", [])[0].get("download", "")
+
+                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
             else:
                 return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 

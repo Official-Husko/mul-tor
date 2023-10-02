@@ -1,0 +1,114 @@
+qiwi.gg
+anontransfer.com
+file.artaxnetwork.com
+cyberfile.me
+send.zcyph.cc
+sendspace.com
+anonfiles.me
+anonymfile.com
+anonymshare.com
+anyfile.co
+bayfiles.io
+beefiles.io
+file.si
+gofile.cc
+nitrofile.cc
+swisstransfer.com
+
+-------------------- API Key
+
+LetsUpload
+Bowfile
+1CloudFile
+HexUpload
+SendSpace
+Mixdrop
+Userscloud
+uptobox.com
+Archive
+Doodrive
+Yandex.Disk
+transfernow.net
+
+-------------------- No API
+
+Clicknupload
+UploadBuzz
+SendGB
+Terminal
+Uploadhaven
+WeTransfer
+WorkUpload
+
+
+
+[17]: bowfile.com/
+[18]: bowfile.com/api
+[19]: bowfile.com/account/edit#api
+[20]: 1cloudfile.com/
+[21]: 1cloudfile.com/api
+[22]: 1cloudfile.com/account/edit#api
+[23]: hexupload.net/
+[24]: hexupload.docs.apiary.io/#
+[25]: hexupload.net/?op=my_account
+[26]: sendspace.com/
+[27]: sendspace.com/dev_method.html
+[28]: sendspace.com/dev_apikeys.html
+[29]: mixdrop.co/
+[30]: mixdrop.co/api/
+[33]: uptobox.com/
+[34]: docs.uptobox.com/
+[35]: uptobox.com/my_account
+[36]: doodrive.com/
+[37]: doodrive.com/dashboard/api
+[38]: doodrive.com/dashboard/settings#settings_api
+[39]: transfernow.net/
+[40]: developers.transfernow.net/
+[41]: transfernow.net/dashboard/admin/api
+[42]: filemail.com/
+[43]: filemail.com/apidoc
+[44]: filemail.com/apidoc/ApiKey.aspx
+[67]: fastupload.io/
+[68]: ufile.io/
+[69]: ufile.io/blog/?filter=api
+[73]: filepost.io/
+[74]: file-upload.net/
+[75]: transferxl.com/
+[76]: filetransfer.io/
+[77]: transfernow.net/
+[78]: quicklyupload.com/
+[80]: send.vis.ee/
+[81]: wormhole.app/
+[82]: swisstransfer.com/en-us
+[83]: 4shared.com/
+[84]: instant.io/
+[85]: send.tresorit.com/
+[86]: sharrr.com/
+[87]: blackhole.run/
+[88]: filedropper.com/
+[89]: myairbridge.com/en/#!/settings
+[90]: sendgb.com/
+[91]: ulozto.net/
+[93]: send.cm/
+[94]: filewhopper.com/
+[95]: transferfile.io/#/
+[96]: hotdropp.com/#/
+[97]: cyberdrop.me/
+[98]: transfer.sh/
+[99]: k2s.cc/
+[100]: rapidgator.net/
+[102]: download.gg/
+[103]: torrentfreak.com/file-hosting-icon-anonfiles-throws-in-the-towel-domain-for-sale-230817/
+[106]: dropmefiles.com/
+[111]: google.com/drive/
+[112]: developers.google.com/drive/api/guides/about-sdk
+[113]: mediafire.com/
+[114]: mediafire.com/developers/core_api/1.5/getting_started/
+[115]: uploadhaven.com/
+[116]: terminal.lc/
+[119]: sendgb.com/
+[120]: up2sha.re/
+[121]: wetransfer.com/
+[122]: workupload.com/
+
+duckduckgo.com/?q=quick+file+upload&t=newext&atb=v378-1

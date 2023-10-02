@@ -7,16 +7,17 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "Mixdrop"
+site = "Krakenfiles"
 
-class Mixdrop:
+class Krakenfiles:
     
     def Uploader(file, proxy_list, user_agents):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
-            upload_url = sites_data_dict[site]["url"]
+            upload_url = sites_data_dict[site]["site_upload_url"].format(number=random.randint(1, 10))
             download_url_base = sites_data_dict[site]["download_url_base"]
+            server_url = sites_data_dict[site]["server_url"]
             size_limit = f'{sites_data_dict[site]["size_limit"]} {sites_data_dict[site]["size_unit"]}'
             
             
@@ -30,20 +31,17 @@ class Mixdrop:
             proxies = random.choice(proxy_list) if proxy_list else None
 
             if calc_size == "OK":
-                data = {
-                    "upload": 1
-                }
                 form_data = {
-                    'files': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                    'files[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
 
                 response = raw_req.json()
-                file_id = response.get("file", {}).get("ref", "")
 
                 if raw_req.status_code == 200:
-                    return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_id, "site": site}
+                    url = response.get("files", [{}])[0].get("url")
+                    return {"status": "ok", "file_name": file_name, "file_url": download_url_base + url, "site": site}
                 else:
                     raise Exception(f"Status code: {raw_req.status_code}")
             else:

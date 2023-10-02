@@ -5,8 +5,27 @@ from time import sleep
 from .pretty_print import *
 from .logger import Logger
 
+current_config_version = "1.2.0"
+
 class Config_Manager:
     
+    def Checker():
+        if os.path.exists("config.json"):
+            config = Config_Manager.Reader()
+
+            config_version = config.get("version", "0.0.0")
+
+            if config_version < current_config_version:
+                try:
+                    os.remove("config_old.json")
+                except:
+                    pass
+                os.rename("config.json", "config_old.json")
+                Config_Manager.Writer()
+            sleep(5)
+        else:
+            Config_Manager.Writer()
+
     def Reader():
         with open("config.json", "r") as cfg_file:
             config = json.load(cfg_file)
@@ -15,10 +34,12 @@ class Config_Manager:
     def Writer():
         try:
             template = {
+                "version": current_config_version,
                 "checkForUpdates": True,
                 "useProxies": False,
                 "saveLinksToFile": True,
-                "randomUserAgent": True,
+                "randomUserAgent": False,
+                "autoLoadPreset": None,
                 "api_keys": {
                     "example": {
                         "apiKey": "",
@@ -29,18 +50,13 @@ class Config_Manager:
             }
             with open("config.json", "w") as cfg_file:
                 json.dump(template, cfg_file, indent=6)
-            cfg_file.close()
-            print(colored(f"{info} New config file generated! Configure it and restart the program. The program will continue with the default values"))
+            print(colored(f"{info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values"))
             print("")
-            sleep(3)
+            sleep(5)
+            return template
         except Exception as e:
             # Construct and print the error
             error_str = f"An error occured during the writing of the config file! Please report this. Exception: {e}"
             print(colored(f"{error} {error_str}"))
             Logger.log_event(error_str)
             sleep(5)
-        
-    
-    def Validate():
-        # TODO: Validate Config
-        pass

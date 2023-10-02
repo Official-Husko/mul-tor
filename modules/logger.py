@@ -5,8 +5,10 @@ from main import version
 class Logger:
     
     def startup():
-        if os.path.exists("runtime.log"):
+        try:
             os.remove("runtime.log")
+        except Exception:
+            pass
 
     def log_event(message, extra=""):
         with open("runtime.log", "a") as log_dumper:

@@ -5,49 +5,32 @@ from termcolor import colored
 import inquirer
 import webbrowser
 import os
+from time import sleep
+from alive_progress import alive_bar
 
 from main import version
 from .logger import Logger
-from .pretty_print import error
-
-public_tokens = [
-    "Z2hwX2l3bzZPcDV1dUxSQXNTTm92WHdETDROaWJXOW91cDNCYW1sWg==",
-]
+from .pretty_print import error, ok
 
 class AutoUpdate:
     
-    def Checker(proxy_list, ua_list):
+    def Checker():
+        req = "which one of you maggots ate the fucking request huh?"
         try:
-            apiKey = base64.b64decode(random.choice(public_tokens)).decode('utf-8')
-            ua = random.choice(ua_list)
             url = "https://api.github.com/repos/Official-Husko/mul-tor/releases/latest"
             
             headers = {
-                "User-Agent": ua,
+                "User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)", 
                 "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-                "Authorization": f"Bearer {apiKey}"
+                "X-GitHub-Api-Version": "2022-11-28"
             }
             
-            if proxy_list == []:
-                req = requests.get(url, headers=headers).json()
-            else:
-                proxy = random.choice(proxy_list)
-                req = requests.get(url, headers=headers, proxies=proxy).json()
-                
-                
-            repo_version = req.get("tag_name").split("-")
-            repo_version_n = repo_version[0].replace("v", "")
-            try:
-                repo_version_type = repo_version[1]
-            except:
-                pass
+            req = requests.get(url, headers=headers).json()
+            repo_version = req.get("tag_name").replace("v", "")
+            download_link = req["assets"][0]["browser_download_url"]
             
-            if ("pre", "dev", "exp", "de") in repo_version:
-                return
-            
-            if str(version) <= repo_version_n:
-                print(colored("UPDATE AVAILABLE!", "red", attrs=["blink"]))
+            if str(version) < repo_version:
+                print(colored("UPDATE AVAILABLE!      ", "red", attrs=["blink"]))
                 
                 body = req.get("body")
                 name = req.get("name")
@@ -68,11 +51,38 @@ class AutoUpdate:
                 print("")
                 decision = amount_answers.get("selection")
                 if decision == "Yes":
-                    webbrowser.open("https://github.com/Official-Husko/mul-tor/releases/latest", new=2)
-                    os.exit(0)
+                    r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"}, timeout=5, stream=True)
+                    with alive_bar(int(int(r.headers.get('content-length')) / 1024 + 1)) as bar:
+                        bar.text = f'-> Downloading Update {repo_version}, please wait...'
+                        file = open(f"mul-tor-{repo_version}.exe", 'wb')
+                        for chunk in r.iter_content(chunk_size=1024):
+                            if chunk:
+                                file.write(chunk)
+                                file.flush()
+                                bar()
+                    print(f"{ok} Update successfully downloaded! The program will now close and delete the old exe.")
+                    if os.path.exists("delete-exe.bat"):
+                        os.remove("delete-exe.bat")
+                    with open("delete-exe.bat", "a") as bat_creator:
+                        bat_content = f'TASKKILL -F /IM Mul-Tor.exe\ntimeout 3\nDEL .\\Mul-Tor.exe\nren .\\mul-tor-{repo_version}.exe Mul-Tor.exe.exe\nDEL .\\delete-exe.bat'
+                        bat_creator.write(bat_content)
+                        bat_creator.close()
+                    os.startfile(r".\\delete-exe.bat")
+                    sleep(5)
+                    exit(0)
+                elif decision == "No":
+                    if not os.path.exists("outdated"):
+                        with open("outdated", "a") as mark_outdated:
+                            mark_outdated.close()
+            elif str(version) >= repo_version:
+                try:
+                    os.remove("outdated")
+                except Exception:
+                    pass
         
         except Exception as e:
             # Construct and print the error
             error_str = f"An error occured while checking for updates! Please report this. Exception: {e}"
             print(f"{error} {error_str}")
             Logger.log_event(error_str, req)
+            sleep(7)
