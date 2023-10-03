@@ -40,7 +40,7 @@ Site | API | Api Key Required | Max File Size
 [/tmp/files][117] | [Yes][118] | No | 100 MB
 [Mixdrop][29] | No | No | ∞
 [1Fichier][31] | [Yes][32] | No | 300 GB
-[YourFileStore][123] | No | No | 300 MB
+[YourFileStore][123] | No | No | 500 MB
 [Oshi][9] | No | No | 5 GB
 [File.io][70] | No | No | 2 GB
 [EasyUpload][72] | No | No | 10 GB
@@ -77,7 +77,10 @@ Site | API | Api Key Required | Max File Size
   [SendGB][119] | No | No | 5 GB | Links are funky and garbage upload system
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
   [RocketFile][125] | No | No | ? | I don't know what the fuck this is but no
-  
+  [Qiwi.gg][126] | No | No | ? | Really Complicated system
+  [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
+  [send.zcyph.cc][129] | No | No | ? | I have never seen or heard of an upload system like this
+  [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
 
 </details>
 
@@ -86,15 +89,15 @@ Site | API | Api Key Required | Max File Size
 ### Q&A
 <details>
   <summary>Open Q&A</summary>
-  Q: Where did the sites like Anonfiles go?
+  Q: Where did the sites like Anonfiles.com go?
 
-  A: Anonfiles threw in the towel. With that the mirrors are also gone.
+  A: Anonfiles.com threw in the towel. With that the mirrors are also gone.
 
   Q: How do I get the API key?\
   A: Click on the blue yes in the Api Key Required row for the site you wish to get a key for.
 
   Q: I want to request a site.\
-  A: Check the rejected sites and issues page if it hasn't already been mentioned. If it hasn't feel free to open a new issue.
+  A: Please first check the [rejected sites][3] and [issues page][4] to ensure it hasn't been previously mentioned. If not, feel free to open a new issue.
 
   Q: What about rejected sites?\
   A: I will check the sites every once in a while to see if the issues i mentioned have been resolved. If you know the issue has been resolved or why i encountered an issue feel free to open a new issue.
@@ -113,6 +116,8 @@ Site | API | Api Key Required | Max File Size
 [0]: #
 [1]: https://pixeldrain.com/
 [2]: https://pixeldrain.com/api
+[3]: https://github.com/Official-Husko/mul-tor#rejected-sites
+[4]: https://github.com/Official-Husko/mul-tor/issues
 [7]: https://gofile.io/
 [8]: https://gofile.io/api
 [9]: https://oshi.at/
@@ -204,6 +209,13 @@ Site | API | Api Key Required | Max File Size
 [123]: http://yourfilestore.com/
 [124]: https://krakenfiles.com/
 [125]: https://rocketfile.co/
+[126]: https://qiwi.gg/
+[127]: https://anontransfer.com/
+[128]: https://cyberfile.me/
+[129]: https://send.zcyph.cc/
+[130]: https://sendspace.com/
+[131]: https://anonfiles.me/
+[132]: https://anonfiles.me/docs/api
 
 <br />
 
