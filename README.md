@@ -86,9 +86,9 @@ Site | API | Api Key Required | Max File Size
 
 <br />
 
-### Q&A
+### FAQ
 <details>
-  <summary>Open Q&A</summary>
+  <summary>Open FAQ</summary>
   Q: Where did the sites like Anonfiles.com go?
 
   A: Anonfiles.com threw in the towel. With that the mirrors are also gone.
