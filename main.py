@@ -10,9 +10,12 @@ from datetime import datetime
 
 from modules import *
 
-DEBUG = False
+if sys.gettrace() is not None:
+    DEBUG = True
+else:
+    DEBUG = False
 
-version = "1.2.0"
+version = "1.3.0"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -135,7 +138,6 @@ class Main:
                     list_bar.title = f'-> Uploading {colored(bar_file_name, "light_blue")} to {colored(site, "yellow")}, please wait...'
                     output = {
                         "status": "",
-                        "file_site": "",
                         "file_name": "",
                         "file_url": "",
                         "exception": "",
@@ -158,45 +160,61 @@ class Main:
                         "1Fichier": OneFichier,
                         "YourFileStore": YourFileStore,
                         "Fileio": Fileio,
-                        "EasyUpload": EasyUpload
+                        "EasyUpload": EasyUpload,
+                        "AnonTransfer": AnonTransfer,
+                        "AnonFilesMe": AnonFilesMe,
+                        "1CloudFile": OneCloudFile,
+                        "AnonymFile": AnonymFile,
+                        "NitroFile": NitroFile,
+                        "GoFileCC": GoFileCC,
+                        "AnyFile": AnyFile,
+                        "BayFilesIo": BayFilesIo,
+                        "FileSi": FileSi,
+                        "FileUpload": FileUpload,
+                        "ClicknUpload": ClicknUpload,
+                        "BowFile": BowFile,
+                        "HexUpload": HexUpload,
+                        "UserCloud": UserCloud,
+                        "FileTransfer": FileTransfer
                     }
 
                     if site in uploader_classes:
-                        output = uploader_classes.get(site, "No_Site").Uploader(file, proxy_list, user_agents_list)
-                    else:
-                        pass
+                        api_key = config.get("api_keys", {}).get(site) if sites_data_dict.get(site, "").get("apiKey") == True else None
+                        output = uploader_classes.get(site, "No_Site").Uploader(file, proxy_list, user_agents_list, api_key)
 
-                    # All sites below this line are in beta state. Expect them to have mental breakdowns. 
-
-                    status = output.get("status", "404 status not found")
-                    file_site = output.get("site", "well fuck me there was no site")
-                    file_name = output.get("file_name", "oopsie_daisie.fish")
-                    file_url = output.get("file_url", "url be doing the hidy hole")
-                    exception_str = output.get("exception", "Fuck me there was no exception.")
-                    size_limit = output.get("size_limit", "-3 GB")
-                    extra = output.get("extra", "Monkey stole the bananas")
-                    
-                    os.chdir(owd)
-                    if status == "ok":
-                        print(f"{ok} {colored(file_name, 'light_blue')} {colored('successfully uploaded to', 'green')} {colored(file_site, 'yellow')}{colored('! URL:', 'green')} {colored(file_url, 'light_blue')}")
-                        with open("file_links.txt", "a") as file_links:
-                            file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
-                        file_links.close()
-                    
-                    elif status == "error":
-                        print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                        error_str = f"An error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
-                        Logger.log_event(error_str, extra)
+                        status = output.get("status", "404 status not found")
+                        file_name = output.get("file_name", "oopsie_daisie.fish")
+                        file_url = output.get("file_url", "url be doing the hidy hole")
+                        exception_str = output.get("exception", "Fuck me there was no exception.")
+                        size_limit = output.get("size_limit", "-3 GB")
+                        extra = output.get("extra", "Monkey stole the bananas")
                         
-                    elif status == "size_error":
-                        print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(file_site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
-                        error_str = f"File size of {file_name} to big for {file_site}! Compress it to fit the max size of {size_limit}"
-                        Logger.log_event(error_str, extra)    
-                    
+                        os.chdir(owd)
+                        if status == "ok":
+                            print(f"{ok} {colored(file_name, 'light_blue')} {colored('successfully uploaded to', 'green')} {colored(site, 'yellow')}{colored('! URL:', 'green')} {colored(file_url, 'light_blue')}")
+                            with open("file_links.txt", "a") as file_links:
+                                file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
+                            file_links.close()
+                        
+                        elif status == "error":
+                            print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                            error_str = f"An error occured while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
+                            Logger.log_event(error_str, extra)
+                            
+                        elif status == "size_error":
+                            print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
+                            error_str = f"File size of {file_name} to big for {site}! Compress it to fit the max size of {size_limit}"
+                            Logger.log_event(error_str, extra)    
+                        
+                        else:
+                            print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                            error_str = f"An unknown error occured while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
+                            Logger.log_event(error_str, extra)
                     else:
-                        print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                        error_str = f"An unknown error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
-                        Logger.log_event(error_str, extra)
+                        touch_grass = False
+                        feel_woman_touch = False
+                        pass
+                
                 list_bar()      
             os.chdir(owd) # reset to default working dir
 
@@ -221,7 +239,7 @@ If you are reading this then beware of wild notes and a rubber duck i let runnin
 # TODO: Find a way to change the colors for the selection windows
 # TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead
 # TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
-# TODO: Fix all broken sites since Anonfiles simulated The Soviet union in 1991
+# TODO: Fix Loading api key issue if none is present
 # TODO: Add presets system
 # TODO: Quack
 # TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code. This should also make it easier to maintain

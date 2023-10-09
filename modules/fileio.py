@@ -9,7 +9,7 @@ from main import DEBUG
 site = "Fileio"
 
 class Fileio:
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         """
         Uploads a file to a specified site using random user agents and proxies.
 
@@ -81,10 +81,17 @@ class Fileio:
                 patch_req = requests.patch(url=patch_url, json=json_data, headers=headers, proxies=proxies)
 
                 # Return successful message with the status, file name, file URL, and site
-                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
                 # Return size error message
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
         except Exception as e:
             # Return error message
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

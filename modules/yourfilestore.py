@@ -12,7 +12,7 @@ site = "YourFileStore"
 
 class YourFileStore:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -49,9 +49,16 @@ class YourFileStore:
                 match = re.search(url_pattern, raw_req.text)
                 download_url = match.group()
 
-                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

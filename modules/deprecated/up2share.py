@@ -25,7 +25,7 @@ Full Error:
 
 class Up2Share:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -103,11 +103,11 @@ class Up2Share:
                 file_url = response.get("result", {}).get("public_url", "")
 
                 if raw_req.status_code == 201:
-                    return {"status": "ok", "file_name": file_name, "file_url": file_url, "site": site}
+                    return {"status": "ok", "file_name": file_name, "file_url": file_url}
                 else:
                     raise Exception(f"Status code: {raw_req.status_code}")
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}

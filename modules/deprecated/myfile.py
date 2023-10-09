@@ -9,7 +9,7 @@ site = "MyFile"
 
 class MyFile:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -29,9 +29,9 @@ class MyFile:
                     req = requests.post(url=upload_url, files=files_data, headers={"User-Agent": ua}).json()
                 else:
                     req = requests.post(url=upload_url, files=files_data, headers={"User-Agent": ua}, proxies=random.choice(proxy_list)).json()
-                return {"status": "ok", "file_name": file_name, "file_url": req.get("data").get("file").get("url").get("short"), "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": req.get("data").get("file").get("url").get("short")}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}

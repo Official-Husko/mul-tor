@@ -10,7 +10,7 @@ site = "PixelDrain"
 
 class PixelDrain:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -31,9 +31,16 @@ class PixelDrain:
                 with open(file, "rb") as file_upload:
                     req = requests.put(url=upload_url + file_name, data=file_upload, headers=headers, proxies=proxies).json()
                     file_upload.close()
-                return {"status": "ok", "file_name": file_name, "file_url": base_url + req['id'], "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": base_url + req['id']}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": size_limit}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": size_limit}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

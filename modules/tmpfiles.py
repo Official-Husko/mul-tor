@@ -11,7 +11,7 @@ site = "TmpFiles"
 
 class TmpFiles:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -40,9 +40,16 @@ class TmpFiles:
                 else:
                     raise Exception(raw_req.status_code)
 
-                return {"status": "ok", "file_name": file_name, "file_url": response.get("data", {}).get("url", "No URL :("), "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": response.get("data", {}).get("url", "No URL :(")}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req} 
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req} 
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

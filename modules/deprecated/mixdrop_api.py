@@ -34,9 +34,9 @@ class MixDrop:
                 req = requests.post(url=upload_url, files=files_data, headers={"User-Agent": ua}, proxies=random.choice(proxy_list)).json
         
             if req.get("success", "") == True:
-                return {"status": "ok", "file_name": file_name, "file_url": base_url + req.get("result", {}).get("fileref", ""), "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": base_url + req.get("result", {}).get("fileref", "")}
             else:
                 raise Exception(req.get("result", {}).get("msg", ""))
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}

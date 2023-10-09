@@ -9,7 +9,7 @@ site = "GoFile"
 
 class GoFile:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         try:
             ua = random.choice(user_agents)
             server_url = sites_data_dict[site]["server_url"]
@@ -33,7 +33,14 @@ class GoFile:
                 raise Exception(req["status"])
             file_url = req["data"]["downloadPage"]
          
-            return {"status": "ok", "file_name": file_name, "file_url": file_url, "site": site}
+            return {"status": "ok", "file_name": file_name, "file_url": file_url}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

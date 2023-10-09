@@ -5,7 +5,7 @@ from time import sleep
 from .pretty_print import *
 from .logger import Logger
 
-current_config_version = "1.2.0"
+current_config_version = "1.3.0"
 
 class Config_Manager:
     
@@ -39,11 +39,14 @@ class Config_Manager:
                 "useProxies": False,
                 "saveLinksToFile": True,
                 "randomUserAgent": False,
-                "autoLoadPreset": None,
+                "presetSystem": {
+                    "autoLoadPreset": None,
+                    "enablePresetSelection": False
+                },
                 "api_keys": {
-                    "example": {
-                        "apiKey": "",
-                        "email": ""
+                    "BowFile": {
+                        "apiKey1": "",
+                        "apiKey2": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]

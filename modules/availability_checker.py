@@ -20,10 +20,7 @@ class Availability_Checker:
         for site in sites_data_dict:
             if DEBUG == True:
                 print(f"{colored('Checking:', 'green')} {site}")
-            # TODO: does not get api keys so fix shit shit cunt
-            if sites_data_dict[site]["apiKey"] == False and not site.lower() in blacklist:
-                ping_sites.append(site)
-            elif sites_data_dict[site]["apiKey"] == True and config.get("api_keys", {}).get(site.lower(), {}).get("apiKey", "") != "" and not site.lower() in blacklist:
+            if not site.lower() in blacklist:
                 ping_sites.append(site)
             else:
                 pass

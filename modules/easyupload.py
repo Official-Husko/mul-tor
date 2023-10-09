@@ -12,7 +12,7 @@ from main import DEBUG
 site = "EasyUpload"
 
 class EasyUpload:
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_key):
         """
         Uploads a file to a specified site using random user agents and proxies.
 
@@ -105,8 +105,8 @@ class EasyUpload:
                                     'file': (os.path.basename(file), chunk_data, 'application/octet-stream')
                                 }
 
-                        upload_url = sites_data_dict[site]["url"].format(number=6)
-                        #upload_url = sites_data_dict[site]["url"].format(number=random.randint(5, 9))
+                        #upload_url = sites_data_dict[site]["url"].format(number=6)
+                        upload_url = sites_data_dict[site]["url"].format(number=random.randint(5, 9))
 
                         # Send the upload request with the form data, headers, and proxies
                         raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
@@ -121,10 +121,17 @@ class EasyUpload:
                 download_url = upload_resp.get("download_link", "")
 
                 # Return successful message with the status, file name, file URL, and site
-                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
                 # Return size error message
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
         except Exception as e:
             # Return error message
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}
+
+"""
+
+Author: Husko
+Date: 06/10/2023
+
+"""

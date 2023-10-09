@@ -1,9 +1,7 @@
 import requests
 import random
-import base64
 from termcolor import colored
 import inquirer
-import webbrowser
 import os
 from time import sleep
 from alive_progress import alive_bar

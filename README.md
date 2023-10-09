@@ -27,7 +27,7 @@
 <br />
 
 ### Currently supported sites:
-Site | API | Api Key Required | Max File Size
+Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
 [GoFile][7] | [Yes][8] | No | ∞
 [PixelDrain][1] | [Yes][2] | No | 20 GB
@@ -44,15 +44,26 @@ Site | API | Api Key Required | Max File Size
 [Oshi][9] | No | No | 5 GB
 [File.io][70] | No | No | 2 GB
 [EasyUpload][72] | No | No | 10 GB
+[AnonTransfer][127] | No | No | 5 GB
+[AnonFiles.me][131] | [Yes][132] | No | 7 GB
+[AnonymFile][134] | [Yes][135] | No | 7 GB
+[NitroFile][136] | [Yes][137] | No | 7 GB
+[GoFile.cc][138] | [Yes][139] | No | 7 GB
+[AnyFile][140] | [Yes][141] | No | 7 GB
+[BayFiles.io][142] | [Yes][143] | No | 7 GB
+[File.si][145] | [Yes][146] | No | 7 GB
+[1CloudFile][133] | No | No | 5 GB
+[ClicknUpload][160] | No | No | 2 GB
+[FileUpload][161] | No | No | 5 GB
+[BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
+[HexUpload][21] | No | No | 2 GB
+[UserCloud][161] | No | No | 5 GB
 
 <br />
 
 ### Planned Sites:
-Site | API | Api Key Required | Max File Size
+Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
-[BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
-[1CloudFile][20] | [Yes][21] | [Yes][22] | 5 GB
-[SendSpace][26] | [Yes][27] | [Yes][28] | 300 MB
 [Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
 [FastUpload][67] | No | No | 10 GB
 [UFile][68] | [Yes][69] | No | 5 GB
@@ -62,7 +73,7 @@ Site | API | Api Key Required | Max File Size
 ### Rejected Sites:
 <details>
 
-  Site | API | Api Key Required | Max File Size | Reason
+  Site | API | API Key Required | Max File Size | Reason
   --- | --- | --- | --- | ---
   [DropMeFiles][106] | No | No | 50 GB | Terrible Uploading System
   [Up2Share][120] | No | No | 1 GB | Terrible Uploading System
@@ -73,14 +84,27 @@ Site | API | Api Key Required | Max File Size
   [Mediafire][113] | [Yes][114] | No | 10 GB | Same as MEGA
   [UploadHaven][115] | No | No | 50 GB | Paid/Invite Only
   [Terminal][116] | No | No | ? | Invite Only
-  [Uptobox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
+  [UpToBox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
   [SendGB][119] | No | No | 5 GB | Links are funky and garbage upload system
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
-  [RocketFile][125] | No | No | ? | I don't know what the fuck this is but no
   [Qiwi.gg][126] | No | No | ? | Really Complicated system
   [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [send.zcyph.cc][129] | No | No | ? | I have never seen or heard of an upload system like this
+  [SendZcyph][129] | No | No | ? | I have never seen or heard of an upload system like this
   [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
+  [BeeFiles][144] | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
+  [SwissTransfer][147] | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
+  [UploadBuzz][148] | No | No | ? | Website is down.
+  [pCloud][149] | [Yes][150] | No | 10 GB | Paid
+  [Wormhole][151] | No | No | 10 GB | Torrent System & Sockets stuff
+  [SendVis][152] | No | No | 2.5 GB | Torrent System & Sockets stuff
+  [Instant.io][153] | No | No | ? | Torrent System & Sockets stuff
+  [SendTresorit][154] | No | No | ? | Torrent System & Sockets stuff
+  [Sharrr][155] | No | No | ? | Torrent System & Sockets stuff
+  [TransferXL][156] | No | No | 5 GB | Captchas Required
+  [WeSendIt][157] | No | No | 2 GB | Can't reverse engineer the upload system
+  [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
+  [Archive.org][159] | No | No | ∞ | I see no reason to add this
+  [TransferNow][163] | No | No | 5 GB | Not worth the hassle
 
 </details>
 
@@ -208,7 +232,6 @@ Site | API | Api Key Required | Max File Size
 [122]: https://workupload.com/
 [123]: http://yourfilestore.com/
 [124]: https://krakenfiles.com/
-[125]: https://rocketfile.co/
 [126]: https://qiwi.gg/
 [127]: https://anontransfer.com/
 [128]: https://cyberfile.me/
@@ -216,6 +239,37 @@ Site | API | Api Key Required | Max File Size
 [130]: https://sendspace.com/
 [131]: https://anonfiles.me/
 [132]: https://anonfiles.me/docs/api
+[133]: https://1cloudfile.com/
+[134]: https://anonymfile.com/
+[135]: https://anonymfile.com/docs/api
+[136]: https://nitrofile.cc/
+[137]: https://nitrofile.cc/docs/api
+[138]: https://gofile.cc/
+[139]: https://gofile.cc/docs/api
+[140]: https://anyfile.co/
+[141]: https://anyfile.co/docs/api
+[142]: https://bayfiles.io/
+[143]: https://bayfiles.io/docs/api
+[144]: https://beefiles.io/
+[145]: https://file.si/
+[146]: https://file.si/docs/api
+[147]: https://www.swisstransfer.com/
+[148]: https://uploadbuzz.cc/
+[149]: https://pcloud.com/
+[150]: https://docs.pcloud.com/
+[151]: https://wormhole.app/
+[152]: https://send.vis.ee/
+[153]: https://instant.io/
+[154]: https://send.tresorit.com/
+[155]: https://sharrr.com/
+[156]: https://transferxl.com/
+[157]: https://wesendit.com/
+[158]: https://Yandex.Disk/
+[159]: https://archive.org/
+[160]: https://clicknupload.click
+[161]: https://file-upload.net/
+[162]: https://usercloud.com/
+[163]: https://transfernow.net/
 
 <br />
 

@@ -116,6 +116,130 @@ sites_data_dict = {
         "size_limit": 10,
         "size_unit": "GB"
     },
+    "AnonTransfer": {
+        "apiKey": False,
+        "url": "https://anontransfer.com/upload.php",
+        "api_url": "https://anontransfer.com/",
+        "download_url_base": "https://anontransfer.com/download/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "1CloudFile": {
+        "apiKey": False,
+        "url": "https://fs10.1cloudfile.com/ajax/file_upload_handler",
+        "api_url": "https://1cloudfile.com/",
+        "download_url_base": "https://1cloudfile.com/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "AnonFilesMe": {
+        "apiKey": False,
+        "url": "https://anonfiles.me/api/v1/upload",
+        "api_url": "https://anonfiles.me/",
+        "download_url_base": "https://anonfiles.me/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "AnonymFile": {
+        "apiKey": False,
+        "url": "https://anonymfile.com/api/v1/upload",
+        "api_url": "https://anonymfile.com/",
+        "download_url_base": "https://anonymfile.com/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "NitroFile": {
+        "apiKey": False,
+        "url": "https://nitrofile.cc/api/v1/upload",
+        "api_url": "https://nitrofile.cc/",
+        "download_url_base": "https://nitrofile.cc/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "GoFileCC": {
+        "apiKey": False,
+        "url": "https://gofile.cc/api/v1/upload",
+        "api_url": "https://gofile.cc/",
+        "download_url_base": "https://gofile.cc/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "AnyFile": {
+        "apiKey": False,
+        "url": "https://anyfile.co/api/v1/upload",
+        "api_url": "https://anyfile.co/",
+        "download_url_base": "https://anyfile.co/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "BayFilesIo": {
+        "apiKey": False,
+        "url": "https://bayfiles.io/api/v1/upload",
+        "api_url": "https://bayfiles.io/",
+        "download_url_base": "https://bayfiles.io/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "FileSi": {
+        "apiKey": False,
+        "url": "https://file.si/api/v1/upload",
+        "api_url": "https://file.si/",
+        "download_url_base": "https://file.si/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "ClicknUpload": {
+        "apiKey": False,
+        "url": "https://mover04.clicknupload.net/cgi-bin/upload.cgi",
+        "api_url": "https://clicknupload.click",
+        "download_url_base": "https://clicknupload.vip/",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "FileUpload": {
+        "apiKey": False,
+        "url": "https://up.file-upload.net/upload.php",
+        "api_url": "https://file-upload.net/",
+        "download_url_base": "https://file-upload.net/download-{file_id}/{server_name}.html",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "BowFile": {
+        "apiKey": True,
+        "url": "https://bowfile.com/api/v2/file/upload",
+        "api_url": "https://bowfile.com/",
+        "download_url_base": "https://bowfile.com/",
+        "authorize_url": "https://bowfile.com/api/v2/authorize",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "HexUpload": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://hexupload.net/",
+        "download_url_base": "https://hexupload.net/",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "UserCloud": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://userscloud.com/",
+        "download_url_base": "https://userscloud.com/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "FileTransfer": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://filetransfer.io/",
+        "download_url_base": "https://filetransfer.io/data-package/",
+        "server_url": "https://filetransfer.io/api/v1/upload",
+        "initialize_url": "https://filetransfer.io/start-upload",
+        "finalize_url": "{final_url}",
+        "size_limit": 6,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
