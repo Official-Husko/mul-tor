@@ -56,7 +56,7 @@ class Config_Manager:
             return template
         except Exception as e:
             # Construct and print the error
-            error_str = f"An error occured during the writing of the config file! Please report this. Exception: {e}"
+            error_str = f"An error occurred during the writing of the config file! Please report this. Exception: {e}"
             print(colored(f"{error} {error_str}"))
             Logger.log_event(error_str)
             sleep(5)

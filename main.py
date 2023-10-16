@@ -184,8 +184,8 @@ class Main:
                         file_links.close()
                     
                     elif status == "error":
-                        print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                        error_str = f"An error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                        print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                        error_str = f"An error occurred while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
                         Logger.log_event(error_str, extra)
                         
                     elif status == "size_error":
@@ -194,8 +194,8 @@ class Main:
                         Logger.log_event(error_str, extra)    
                     
                     else:
-                        print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                        error_str = f"An unknown error occured while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
+                        print(f"{major_error} An unknown error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(file_site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                        error_str = f"An unknown error occurred while uploading the file {file_name} to {file_site}! Please report this. Exception: {exception_str}"
                         Logger.log_event(error_str, extra)
                 list_bar()      
             os.chdir(owd) # reset to default working dir

@@ -48,12 +48,12 @@ class Availability_Checker:
                     Logger.log_event(error_str, extra=str(ping))
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
                 # Construct the error
-                error_str = f"An error occured while checking the sites! Please report this. Exception: {e}"
+                error_str = f"An error occurred while checking the sites! Please report this. Exception: {e}"
                 Logger.log_event(error_str, extra=str(ping))
                 sleep(5)
             except Exception as e:
                 # Construct and print the error
-                error_str = f"An error occured while checking {site}! Please report this. Exception: {e}"
+                error_str = f"An error occurred while checking {site}! Please report this. Exception: {e}"
                 print(colored(f"{error} {error_str}"))
                 Logger.log_event(error_str, extra=str(ping))
                 sleep(5)

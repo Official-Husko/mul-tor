@@ -47,7 +47,7 @@ class UserAgentManager:
         except Exception as e:
             
             # Construct and print the error
-            error_str = f"An error occured during the Fetching of user_agents! Please report this. Exception: {e}"
+            error_str = f"An error occurred during the Fetching of user_agents! Please report this. Exception: {e}"
             print(colored(f"{warning} {error_str}"))
             print(colored(f"{warning} Defaulting back to backup user-agents"))
             Logger.log_event(error_str, req)
