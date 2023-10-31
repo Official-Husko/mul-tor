@@ -22,7 +22,6 @@ class Config_Manager:
                     pass
                 os.rename("config.json", "config_old.json")
                 Config_Manager.Writer()
-            sleep(5)
         else:
             Config_Manager.Writer()
 
@@ -47,6 +46,10 @@ class Config_Manager:
                     "BowFile": {
                         "apiKey1": "",
                         "apiKey2": ""
+                    },
+                    "DooDrive": {
+                        "apiKey": "",
+                        "apiToken": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]

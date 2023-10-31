@@ -11,7 +11,7 @@ site = "TmpFiles"
 
 class TmpFiles:
     
-     def Uploader(file, proxy_list, user_agents, api_key):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -47,9 +47,3 @@ class TmpFiles:
         except Exception as e:
             return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req} 
 
-"""
-
-Author: Husko
-Date: 06/10/2023
-
-"""

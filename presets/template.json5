@@ -16,7 +16,7 @@
     "site-url": "https://github.com/husko/mul-tor/presets/template.json",
     // Repo-URL is the URL of the repository of the preset. Used to check for updates.
     "repo-url": "https://github.com/husko/mul-tor",
-    // Sites is the list of sites that are whitelisted on the target website.
+    // Sites is the list of sites that are whitelisted/should be auto loaded for the target website.
     "sites": [
         "Delafil",
         "DropMeFiles",

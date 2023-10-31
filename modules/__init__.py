@@ -6,6 +6,7 @@ from .proxy_scraper import ProxyScraper
 from .config_manager import Config_Manager
 from .logger import Logger
 from .auto_update import AutoUpdate
+from .preset_manager import Preset_Manager
 
 
 # Here are all modules for the sites that are supported
@@ -38,4 +39,7 @@ from .clicknupload import ClicknUpload
 from .bowfile import BowFile
 from .hexupload import HexUpload
 from .usercloud import UserCloud
-from .filetransfer import FileTransfer
+from .doodrive import DooDrive
+from .udrop import uDrop
+from .ufile import uFile
+from .downloadgg import DownloadGG

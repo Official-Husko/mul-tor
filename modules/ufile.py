@@ -1,16 +1,15 @@
 import requests
 import os
 import random
-import base64
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "FileTransfer"
+site = "uFile"
 
-class FileTransfer:
-     def Uploader(file, proxy_list, user_agents, api_key):
+class uFile:
+     def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
 
@@ -35,9 +34,6 @@ class FileTransfer:
             file_size = os.stat(file).st_size
             file_name = os.path.basename(file)
 
-            # Get the upload URL and size limit from the site data dictionary
-            initialize_url = sites_data_dict[site]["initialize_url"]
-
             # Truncate the file name if it is too long
             file_name = (file_name[:240] + '..') if len(file_name) > 240 else file_name
 
@@ -47,23 +43,36 @@ class FileTransfer:
             # Set the user agent header
             headers = {
                 "User-Agent": ua,
-                "Accept": "application/json",
-                "X-Requested-With": "XMLHttpRequest"
+                "Accept": "application/json"
             }
 
             # Select a random proxy, if available
             proxies = random.choice(proxy_list) if proxy_list else None
 
+            chunk_size = 69512747  # 66 MB
+            chunk_index = 1
+            total_chunks = (file_size + chunk_size - 1) // chunk_size
+
             if calc_size == "OK":
-                # Send the upload request with the form data, headers, and proxies
-                init_req = requests.get(url=initialize_url, headers=headers, proxies=proxies)
 
-                # Parse the response JSON and get the download URL
-                init_resp = init_req.json()
-                upload_url = init_resp.get("uploadUrl", "")
+                server_url = sites_data_dict[site]["server_url"]
 
-                chunk_size = 10485760  # 10 MB (WHO THE FUCK DOES THIS SHIT IN 10MB CHUNKS? THIS WEBSITE IS FUCKED)
-                chunk_offset = 0
+                raw_req = requests.post(url=server_url, headers=headers, proxies=proxies, timeout=50)
+
+                req = raw_req.json()
+
+                storage_server = req.get("storageBaseUrl", "")
+
+                initialize_url = sites_data_dict[site]["initialize_url"].format(server=storage_server)
+
+                upload_data = {
+                    "file_size": file_size
+                }
+
+                raw_req = requests.post(url=initialize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+
+                req = raw_req.json()
+                file_id = req.get("fuid", "")
 
                 with open(file, 'rb') as file_data:
                     while True:
@@ -71,14 +80,9 @@ class FileTransfer:
                         if not chunk_data:
                             break  # Exit the loop if we've reached the end of the file
                         
-                        base64_filename = base64.b64encode(file_name.encode('utf-8'))
-
-                        headers = {
-                            "User-Agent": ua,
-                            "Tus-Resumable": "1.0.0",
-                            "Upload-Length": f"{file_size}",
-                            "Upload-Metadata": f"filename {base64_filename},filetype YXBwbGljYXRpb24vb2N0ZXQtc3RyZWFt,fileorder MQ==",
-                            "Upload-Offset": f"{chunk_offset}"
+                        upload_data = {
+                            "fuid": file_id,
+                            "chunk_index": chunk_index
                         }
 
                         # Prepare the json data to add extra data to the upload
@@ -86,25 +90,27 @@ class FileTransfer:
                                     'file': (os.path.basename(file), chunk_data, 'application/octet-stream')
                                 }
 
+                        # Get the upload URL from the site data dictionary
+                        upload_url = sites_data_dict[site]["url"].format(server=storage_server)
+
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
 
-                        if raw_req.status_code == 200:
-                            print("chunk uploaded")
+                        chunk_index += 1
 
-                        chunk_offset += chunk_size
+                finalize_url = sites_data_dict[site]["finalize_url"].format(server=storage_server)
 
-                headers = {
-                    "User-Agent": ua,
-                    "X-Requested-With": "XMLHttpRequest"
+                upload_data = {
+                    "fuid": file_id,
+                    "file_name": file_name,
+                    "file_type": "unknown",
+                    "total_chunks": total_chunks
                 }
 
-                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=50)
-                print(raw_req.text)
+                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
 
-                upload_resp = raw_req.json()
-
-                download_url = upload_resp.get("deliveryPublicLink", "")
+                req = raw_req.json()
+                download_url = req.get("url", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}
@@ -113,11 +119,5 @@ class FileTransfer:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
         except Exception as e:
             # Return error message
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 
-"""
-
-Author: Husko
-Date: 06/10/2023
-
-"""

@@ -90,6 +90,7 @@ class Main:
         if DEBUG == True:
             print(available)
 
+        
 
         return config, available, proxy_list, ua_list
         
@@ -175,7 +176,10 @@ class Main:
                         "BowFile": BowFile,
                         "HexUpload": HexUpload,
                         "UserCloud": UserCloud,
-                        "FileTransfer": FileTransfer
+                        "DooDrive": DooDrive,
+                        "uDrop": uDrop,
+                        "uFile": uFile,
+                        "DownloadGG": DownloadGG
                     }
 
                     if site in uploader_classes:

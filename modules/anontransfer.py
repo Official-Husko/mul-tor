@@ -10,7 +10,7 @@ from main import DEBUG
 site = "AnonTransfer"
 
 class AnonTransfer:
-     def Uploader(file, proxy_list, user_agents, api_key):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
 
@@ -99,11 +99,5 @@ class AnonTransfer:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
         except Exception as e:
             # Return error message
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 
-"""
-
-Author: Husko
-Date: 06/10/2023
-
-"""

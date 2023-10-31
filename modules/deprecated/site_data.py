@@ -152,4 +152,15 @@ sites_data_dict = {
         "size_limit": 19,
         "size_unit": "GB"
     },
+    "FileTransfer": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://filetransfer.io/",
+        "download_url_base": "https://filetransfer.io/data-package/",
+        "server_url": "https://filetransfer.io/api/v1/upload",
+        "initialize_url": "https://filetransfer.io/start-upload",
+        "finalize_url": "{final_url}",
+        "size_limit": 6,
+        "size_unit": "GB"
+    },
 }

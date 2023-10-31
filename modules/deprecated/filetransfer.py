@@ -1,17 +1,22 @@
 import requests
 import os
 import random
-import uuid
-import re
-import json
+import base64
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "EasyUpload"
+site = "FileTransfer"
 
-class EasyUpload:
+"""
+
+Throws 415 errors even tho it should all be correct. wasted too much time for something this poorly coded. 
+To whoever made this site and system go fuck yourself and do us all a favor and stop coding things.
+
+"""
+
+class FileTransfer:
      def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
@@ -49,39 +54,47 @@ class EasyUpload:
             # Set the user agent header
             headers = {
                 "User-Agent": ua,
-                "Accept": "application/json",
-                "Referer": "https://easyupload.io/",
+                "X-Requested-With": "XMLHttpRequest"
             }
 
             # Select a random proxy, if available
             proxies = random.choice(proxy_list) if proxy_list else None
 
-            file_uuid = str(uuid.uuid4())
-
-            pattern = r'\{.*\}'
-
             if calc_size == "OK":
-                # Prepare the form data for file upload
-                init_data = {
-                    "type": "validate_tuf",
-                    "files[]": file_uuid
-                }
                 # Send the upload request with the form data, headers, and proxies
-                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies)
+                init_req = requests.get(url=initialize_url, headers=headers, proxies=proxies)
 
                 # Parse the response JSON and get the download URL
-                match = re.search(pattern, init_req.text)
-                json_part = match.group()
-                init_resp = json.loads(json_part)
-                status = init_resp.get("status", "")
+                init_resp = init_req.json()
+                server_url = init_resp.get("uploadUrl", "")
 
-                if status != True:
-                    raise Exception(f"Init status: {status}")
+                base64_filename = base64.b64encode(file_name.encode('utf-8'))
+                base64_filename = base64_filename.decode('utf-8')
+                print(base64_filename)
 
-                chunk_size = 100000000  # 100 MB
-                total_chunks = (file_size + chunk_size - 1) // chunk_size
-                chunk_index = 0
-                dzchunkbyteoffset = 0
+                headers = {
+                    "User-Agent": ua,
+                    "Tus-Resumable": "1.0.0",
+                    "Upload-Length": f"{file_size}",
+                    "Upload-Metadata": f"filename {base64_filename},filetype ,fileorder MQ==",
+                }
+
+                server_req = requests.post(url=server_url, headers=headers, proxies=proxies)
+
+                print(server_req.status_code)
+                print(server_req.headers)
+
+                parts = server_url.split("/")
+                print(parts)
+                upload_url_start = parts[2]
+                print(upload_url_start)
+
+                server_location = server_req.headers["Location"]
+                upload_url = f"https://{upload_url_start}{server_location}"
+                print(upload_url)
+
+                chunk_size = 10485760  # 10 MB (WHO THE FUCK DOES THIS SHIT IN 10MB CHUNKS? THIS WEBSITE IS FUCKED)
+                chunk_offset = 0
 
                 with open(file, 'rb') as file_data:
                     while True:
@@ -89,36 +102,40 @@ class EasyUpload:
                         if not chunk_data:
                             break  # Exit the loop if we've reached the end of the file
                         
-                        upload_data = {
-                            "dzuuid": file_uuid,
-                            "dzchunkindex": chunk_index,
-                            "dztotalfilesize": file_size,
-                            "dzchunksize": chunk_size,
-                            "dztotalchunkcount": total_chunks,
-                            "dzchunkbyteoffset": dzchunkbyteoffset,
-                            "type": "dropzone-multi-upload",
-                            "expiration": "30"
-                        }
+                        base64_filename = base64.b64encode(file_name.encode('utf-8'))
 
-                        # Prepare the json data to add extra data to the upload
+                        headers = {
+                            "User-Agent": ua,
+                            "Tus-Resumable": "1.0.0",
+                            "Upload-Offset": f"{chunk_offset}"
+                        }
+                        print(headers)
+
                         form_data = {
-                                    'file': (os.path.basename(file), chunk_data, 'application/octet-stream')
+                                    'file': (os.path.basename(file), chunk_data, 'application/offset+octet-stream')
                                 }
 
-                        #upload_url = sites_data_dict[site]["url"].format(number=6)
-                        upload_url = sites_data_dict[site]["url"].format(number=random.randint(5, 9))
-
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.patch(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50)
 
-                        chunk_index += 1
-                        dzchunkbyteoffset += chunk_size
+                        print(raw_req.status_code)
 
-                match = re.search(pattern, raw_req.text)
-                json_part = match.group()
-                upload_resp = json.loads(json_part)
+                        if raw_req.status_code == 200 or raw_req.status_code == 204:
+                            print("chunk uploaded")
 
-                download_url = upload_resp.get("download_link", "")
+                        chunk_offset += chunk_size
+
+                headers = {
+                    "User-Agent": ua,
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+
+                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=50)
+                print(raw_req.text)
+
+                upload_resp = raw_req.json()
+
+                download_url = upload_resp.get("deliveryPublicLink", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}

@@ -19,7 +19,7 @@ Shitty 2 uploads limit per day. Even the initializing counts as one.
 
 class FileMail:
     
-    def Uploader(file, proxy_list, user_agents, api_key):
+    def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]

@@ -48,11 +48,10 @@ sites_data_dict = {
     },
     "Krakenfiles": {
         "apiKey": False,
-        "url": "https://{server}.krakenfiles.com/api/file",
+        "url": "{server}",
         "api_url": "https://krakenfiles.com/",
         "download_url_base": "https://krakenfiles.com",
         "server_url": "https://krakenfiles.com/api/server/available",
-        "site_upload_url": "https://uploads{number}.krakenfiles.com/_uploader/gallery/upload",
         "size_limit": 1,
         "size_unit": "GB"
     },
@@ -229,15 +228,41 @@ sites_data_dict = {
         "size_limit": 5,
         "size_unit": "GB"
     },
-    "FileTransfer": {
-        "apiKey": False,
+    "DooDrive": {
+        "apiKey": True,
         "url": "{server}",
-        "api_url": "https://filetransfer.io/",
-        "download_url_base": "https://filetransfer.io/data-package/",
-        "server_url": "https://filetransfer.io/api/v1/upload",
-        "initialize_url": "https://filetransfer.io/start-upload",
-        "finalize_url": "{final_url}",
-        "size_limit": 6,
+        "api_url": "https://doodrive.com/",
+        "download_url_base": "https://doodrive.com/f/",
+        "initialize_url": "https://doodrive.com/api/v1/upload",
+        "finalize_url": "{server}",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "uDrop": {
+        "apiKey": False,
+        "url": "https://www.udrop.com/ajax/file_upload_handler",
+        "api_url": "https://www.udrop.com/",
+        "download_url_base": "https://www.udrop.com/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
+    "uFile": {
+        "apiKey": False,
+        "url": "{server}v1/upload/chunk",
+        "api_url": "https://ufile.io/",
+        "download_url_base": "https://ufile.io/",
+        "initialize_url": "{server}v1/upload/create_session",
+        "finalize_url": "{server}v1/upload/finalise",
+        "server_url": "https://ufile.io/v1/upload/select_storage",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "DownloadGG": {
+        "apiKey": False,
+        "url": "https://download.gg/server/upload.php",
+        "api_url": "https://download.gg/",
+        "download_url_base": "https://download.gg/file-",
+        "size_limit": 25,
         "size_unit": "GB"
     },
     "Oshi": {

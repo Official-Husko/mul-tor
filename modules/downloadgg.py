@@ -1,17 +1,14 @@
 import requests
 import os
 import random
-import uuid
-import re
-import json
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "FileUpload"
+site = "DownloadGG"
 
-class FileUpload:
+class DownloadGG:
      def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
@@ -50,25 +47,19 @@ class FileUpload:
             proxies = random.choice(proxy_list) if proxy_list else None
 
             if calc_size == "OK":
-                upload_data = {
-                    "description": "Uploaded using Mul-Tor on GitHub!"
-                }
 
                 # Prepare the json data to add extra data to the upload
                 form_data = {
-                            'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                            'file[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                         }
 
                 upload_url = sites_data_dict[site]["url"]
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50)
 
-                req = raw_req.json()
-
-                server_name = req.get("name", "")
-                file_id = req.get("id", "")
-                download_url = sites_data_dict[site]["download_url_base"].format(server_name=server_name, file_id=file_id)
+                file_id = raw_req.text
+                download_url = download_url_base + file_id.replace("&", "_")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}
@@ -79,9 +70,8 @@ class FileUpload:
             # Return error message
             return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 
-
 """
     Author: Billy
     Date: 10/5/2023 1:23 AM
     Message: Always blame Jamos
-""" 
+"""

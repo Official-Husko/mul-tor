@@ -22,7 +22,7 @@
 * Check Website Availability
 * Progress Bar
 * Auto Updater
-* Site Presets (Coming with 1.3.0)
+* Site Presets
 
 <br />
 
@@ -31,6 +31,9 @@ Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
 [GoFile][7] | [Yes][8] | No | ∞
 [PixelDrain][1] | [Yes][2] | No | 20 GB
+[BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
+[Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
+[Download.gg][102] | No | No | 25 GB
 [Filebin][92] | No | No | ∞
 [Delafil][107] | No | No | 6 GB
 [Files.dp.ua][108] | No | No | 100 GB
@@ -55,18 +58,17 @@ Site | API | API Key Required | Max File Size
 [1CloudFile][133] | No | No | 5 GB
 [ClicknUpload][160] | No | No | 2 GB
 [FileUpload][161] | No | No | 5 GB
-[BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
 [HexUpload][21] | No | No | 2 GB
 [UserCloud][161] | No | No | 5 GB
+[uDrop][165] | No | No | 10 GB
+[UFile][68] | [Yes][69] | No | 5 GB
 
 <br />
 
 ### Planned Sites:
 Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
-[Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
-[FastUpload][67] | No | No | 10 GB
-[UFile][68] | [Yes][69] | No | 5 GB
+None Currently :)
 
 <br />
 
@@ -79,9 +81,9 @@ Site | API | API Key Required | Max File Size
   [Up2Share][120] | No | No | 1 GB | Terrible Uploading System
   [WeTransfer][121] | No | No | 2 GB | When do the terrible uploading systems end?
   [Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB | Garbage Limit of 2 Uploads a Day
-  [MEGA][109] | [Yes][110] | No | 20 GB | I just can't be bothered
-  [Google Drive][111] | [Yes][112] | No | 15 GB | Same as MEGA
-  [Mediafire][113] | [Yes][114] | No | 10 GB | Same as MEGA
+  [MEGA][109] | [Yes][110] | No | 20 GB | Uses complicated Encrypting & Decrypting
+  [Google Drive][111] | [Yes][112] | No | 15 GB | I see no reason to add this
+  [Mediafire][113] | [Yes][114] | No | 10 GB | I see no reason to add this
   [UploadHaven][115] | No | No | 50 GB | Paid/Invite Only
   [Terminal][116] | No | No | ? | Invite Only
   [UpToBox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
@@ -89,11 +91,11 @@ Site | API | API Key Required | Max File Size
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
   [Qiwi.gg][126] | No | No | ? | Really Complicated system
   [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [SendZcyph][129] | No | No | ? | I have never seen or heard of an upload system like this
+  [SendZcyph][129] | No | No | ? | Sockets stuff
   [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
   [BeeFiles][144] | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
   [SwissTransfer][147] | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
-  [UploadBuzz][148] | No | No | ? | Website is down.
+  [UploadBuzz][148] | No | No | ? | Website is down
   [pCloud][149] | [Yes][150] | No | 10 GB | Paid
   [Wormhole][151] | No | No | 10 GB | Torrent System & Sockets stuff
   [SendVis][152] | No | No | 2.5 GB | Torrent System & Sockets stuff
@@ -101,10 +103,12 @@ Site | API | API Key Required | Max File Size
   [SendTresorit][154] | No | No | ? | Torrent System & Sockets stuff
   [Sharrr][155] | No | No | ? | Torrent System & Sockets stuff
   [TransferXL][156] | No | No | 5 GB | Captchas Required
-  [WeSendIt][157] | No | No | 2 GB | Can't reverse engineer the upload system
+  [WeSendIt][157] | No | No | 2 GB | Can't figure out the upload system
   [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
   [Archive.org][159] | No | No | ∞ | I see no reason to add this
   [TransferNow][163] | No | No | 5 GB | Not worth the hassle
+  [HotDropp][96] | No | No | ? | Stuck on "In Maintenance" message
+  [FileDropper][88] | No | No | ? | Website is down
 
 </details>
 
@@ -115,7 +119,7 @@ Site | API | API Key Required | Max File Size
   <summary>Open FAQ</summary>
   Q: Where did the sites like Anonfiles.com go?
 
-  A: Anonfiles.com threw in the towel. With that the mirrors are also gone.
+  A: Check the [Deprecated Sites][164] list.
 
   Q: How do I get the API key?\
   A: Click on the blue yes in the Api Key Required row for the site you wish to get a key for.
@@ -134,6 +138,9 @@ Site | API | API Key Required | Max File Size
 
   Q: Certain sites offer an API but you didn't use it. Why?\
   A: Because this makes it easier for users and it doesn't need any accounts and sign ups. I plan to add api functions to these for users that want to use it.
+
+  Q: Somebody else already has the issue im having. What do i do?\
+  A: Simply upvote the issue. If you have additional data you think could help me solve said issue feel free to comment it.
 </details>
 
 [comment]: # (Below are all links to the sites)
@@ -218,15 +225,15 @@ Site | API | API Key Required | Max File Size
 [108]: https://files.dp.ua/
 [109]: https://mega.nz/
 [110]: https://mega.io/developers
-[111]: https://www.google.com/drive/
+[111]: https://google.com/drive/
 [112]: https://developers.google.com/drive/api/guides/about-sdk
-[113]: https://www.mediafire.com/
-[114]: https://www.mediafire.com/developers/core_api/1.5/getting_started/
+[113]: https://mediafire.com/
+[114]: https://mediafire.com/developers/core_api/1.5/getting_started/
 [115]: https://uploadhaven.com/
 [116]: https://terminal.lc/
 [117]: https://tmpfiles.org/
 [118]: https://tmpfiles.org/api
-[119]: https://www.sendgb.com/
+[119]: https://sendgb.com/
 [120]: https://up2sha.re/
 [121]: https://wetransfer.com/
 [122]: https://workupload.com/
@@ -253,7 +260,7 @@ Site | API | API Key Required | Max File Size
 [144]: https://beefiles.io/
 [145]: https://file.si/
 [146]: https://file.si/docs/api
-[147]: https://www.swisstransfer.com/
+[147]: https://swisstransfer.com/
 [148]: https://uploadbuzz.cc/
 [149]: https://pcloud.com/
 [150]: https://docs.pcloud.com/
@@ -270,6 +277,8 @@ Site | API | API Key Required | Max File Size
 [161]: https://file-upload.net/
 [162]: https://usercloud.com/
 [163]: https://transfernow.net/
+[164]: https://github.com/Official-Husko/mul-tor/blob/master/modules/deprecated/README.md
+[165]: https://udrop.com/
 
 <br />
 

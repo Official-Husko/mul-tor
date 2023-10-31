@@ -9,7 +9,7 @@ site = "Oshi"
 
 class Oshi:
     
-     def Uploader(file, proxy_list, user_agents, api_key):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -43,9 +43,3 @@ class Oshi:
         except Exception as e:
             return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
 
-"""
-
-Author: Husko
-Date: 06/10/2023
-
-"""

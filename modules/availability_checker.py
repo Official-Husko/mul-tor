@@ -30,12 +30,9 @@ class Availability_Checker:
             try:
                 ua = random.choice(ua_list)
                 url = sites_data_dict[site]["api_url"]
+                proxies = random.choice(proxy_list) if proxy_list else None
                 
-                if proxy_list == []:
-                    ping = requests.get(url, headers={"User-Agent": ua}, timeout=5)
-                else:
-                    proxy = random.choice(proxy_list)
-                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxy, timeout=5)
+                ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
                 
                 if ping.status_code == 200:
                     available_sites.append(site)
