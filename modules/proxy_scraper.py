@@ -36,6 +36,6 @@ class ProxyScraper():
             return proxy_list
         except Exception as e:
             # Construct and print the error
-            error_str = f"An error occured during the fetching of proxies! Please report this. Exception: {e}"
+            error_str = f"An error occurred during the fetching of proxies! Please report this. Exception: {e}"
             print(colored(f"{error} {error_str}"))
             Logger.log_event(error_str, response)

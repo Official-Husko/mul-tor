@@ -201,8 +201,8 @@ class Main:
                             file_links.close()
                         
                         elif status == "error":
-                            print(f"{error} An error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                            error_str = f"An error occured while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
+                            print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                            error_str = f"An error occurred while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
                             Logger.log_event(error_str, extra)
                             
                         elif status == "size_error":

@@ -80,7 +80,7 @@ class AutoUpdate:
         
         except Exception as e:
             # Construct and print the error
-            error_str = f"An error occured while checking for updates! Please report this. Exception: {e}"
+            error_str = f"An error occurred while checking for updates! Please report this. Exception: {e}"
             print(f"{error} {error_str}")
             Logger.log_event(error_str, req)
             sleep(7)
