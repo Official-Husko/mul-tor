@@ -42,7 +42,7 @@ class Files_dp_ua:
                     'files[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 if raw_req.status_code == 200:
                     return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_id}

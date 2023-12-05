@@ -56,7 +56,7 @@ class Fileio:
                 }
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 # Parse the response JSON and get the download URL
                 token = raw_req.headers.get("x-file-io-anonymous-access-token", "")

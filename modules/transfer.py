@@ -33,7 +33,7 @@ class Transfer:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.put(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.put(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 if raw_req.status_code == 200:
                     return {"status": "ok", "file_name": file_name, "file_url": str(raw_req.text)}

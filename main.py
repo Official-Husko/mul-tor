@@ -49,11 +49,7 @@ class Main:
             print("")
 
         # Check if a config exists else create it
-        if os.path.exists("config.json"):
-            config = Config_Manager.Reader()
-        else:
-            Config_Manager.Writer()
-            config = Config_Manager.Reader()
+        config = Config_Manager.Checker()
         
         proxies_enabled = config.get("useProxies", False)
         random_ua_enabled = config.get("randomUserAgent", False)
@@ -95,6 +91,17 @@ class Main:
         return config, available, proxy_list, ua_list
         
     def selection(config, available, user_agents_list, proxy_list=""):
+
+        auto_load_preset = config.get("presetSystem", {}).get("autoLoadPreset", False)
+        enable_preset_selection = config.get("presetSystem", {}).get("enablePresetSelection", False)
+        preset_name = config.get("presetSystem", {}).get("presetName", "")
+
+        if auto_load_preset == True:
+            auto_load_data = Preset_Manager.loader(available, preset_name)
+            available = auto_load_data[0]
+            link_format = auto_load_data[1]
+            print(auto_load_data)
+
         amount_question = [
         inquirer.List('selection',
                             message=colored("What file/s do you want to upload?", "green"),
@@ -120,7 +127,7 @@ class Main:
             else:
                 print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
                 sleep(5)
-
+        
         questions = [
         inquirer.Checkbox('selections',
                             message=colored("What sites do you want to upload too?", "green"),
@@ -199,6 +206,11 @@ class Main:
                             with open("file_links.txt", "a") as file_links:
                                 file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
                             file_links.close()
+                            if auto_load_preset == True and link_format != "":
+                                link_format = link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site)
+                                with open("file_links_formatted.txt", "a") as formatted_links_file:
+                                    formatted_links_file.writelines(f"{datetime.now()} | {site} | {file_name} - {link_format}\n")
+                                formatted_links_file.close()
                         
                         elif status == "error":
                             print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
@@ -240,13 +252,14 @@ If you are reading this then beware of wild notes and a rubber duck i let runnin
 # TODO: Might be just me but this code is dog shit
 # TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
 # TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
-# TODO: Find a way to change the colors for the selection windows
-# TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead
+# TODO: Find a way to change the colors for the selection windows.
+# TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead.
 # TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
 # TODO: Fix Loading api key issue if none is present
 # TODO: Add presets system
 # TODO: Quack
 # TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code. This should also make it easier to maintain
+# TODO: I told myself i would fix my sleep schedule to improve my productivity. Its now 2am and i surely failed to follow that plan at least 20 times. Fuck me..
 """
 
 """

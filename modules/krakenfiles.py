@@ -46,7 +46,7 @@ class Krakenfiles:
                     'files[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
                 if DEBUG == True:
                     print(raw_req.text)
 

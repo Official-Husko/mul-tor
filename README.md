@@ -80,7 +80,7 @@ None Currently :)
   [DropMeFiles][106] | No | No | 50 GB | Terrible Uploading System
   [Up2Share][120] | No | No | 1 GB | Terrible Uploading System
   [WeTransfer][121] | No | No | 2 GB | When do the terrible uploading systems end?
-  [Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB | Garbage Limit of 2 Uploads a Day
+  [Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB | Garbage Limit of 2 Uploads a Day (Sucks regarding coding and testing)
   [MEGA][109] | [Yes][110] | No | 20 GB | Uses complicated Encrypting & Decrypting
   [Google Drive][111] | [Yes][112] | No | 15 GB | I see no reason to add this
   [Mediafire][113] | [Yes][114] | No | 10 GB | I see no reason to add this
@@ -117,24 +117,27 @@ None Currently :)
 ### FAQ
 <details>
   <summary>Open FAQ</summary>
-  Q: Where did the sites like Anonfiles.com go?
+  Q: Where did the site X go?
 
   A: Check the [Deprecated Sites][164] list.
+
+  Q: How can i get help?\
+  A: Check the [Wiki][166] for any information that might help you. If you can't find the answer there check out the [issues page][4] and if there is none [open one up][167].
 
   Q: How do I get the API key?\
   A: Click on the blue yes in the Api Key Required row for the site you wish to get a key for.
 
   Q: I want to request a site.\
-  A: Please first check the [rejected sites][3] and [issues page][4] to ensure it hasn't been previously mentioned. If not, feel free to open a new issue.
+  A: Please first check the [rejected sites][3] and [issues page][4] to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue][167].
 
   Q: What about rejected sites?\
-  A: I will check the sites every once in a while to see if the issues i mentioned have been resolved. If you know the issue has been resolved or why i encountered an issue feel free to open a new issue.
+  A: I will check the sites every once in a while to see if the issues i mentioned have been resolved. If you know the issue has been resolved or why i encountered an issue feel free to [open a new issue][167].
 
   Q: Why is it called Mul-Tor?\
   A: I have no idea.
 
   Q: What if i really need one of the rejected sites?\
-  A: This project is open to contributions. Maybe somebody else can add it. You may open a new issue if there isn't one already so that i can check it again.
+  A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue][167] if there isn't one already so that i can check it again.
 
   Q: Certain sites offer an API but you didn't use it. Why?\
   A: Because this makes it easier for users and it doesn't need any accounts and sign ups. I plan to add api functions to these for users that want to use it.
@@ -142,6 +145,14 @@ None Currently :)
   Q: Somebody else already has the issue im having. What do i do?\
   A: Simply upvote the issue. If you have additional data you think could help me solve said issue feel free to comment it.
 </details>
+
+<br />
+
+### Contributors
+[**kianmeng**](https://github.com/kianmeng),
+[**SillyBilly0069**](https://github.com/SillyBilly0069)
+
+<br />
 
 [comment]: # (Below are all links to the sites)
 [0]: #
@@ -279,6 +290,8 @@ None Currently :)
 [163]: https://transfernow.net/
 [164]: https://github.com/Official-Husko/mul-tor/blob/master/modules/deprecated/README.md
 [165]: https://udrop.com/
+[166]: https://github.com/Official-Husko/mul-tor/wiki
+[167]: https://github.com/Official-Husko/mul-tor/issues/new/choose
 
 <br />
 

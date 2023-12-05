@@ -75,7 +75,7 @@ class UserCloud:
                         }
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)
 
                 req = raw_req.json()
 

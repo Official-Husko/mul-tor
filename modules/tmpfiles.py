@@ -33,7 +33,7 @@ class TmpFiles:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 if raw_req.status_code == 200:
                     response = raw_req.json()

@@ -33,7 +33,7 @@ class Delafil:
                 headers = {"User-Agent": ua}
                 proxies = random.choice(proxy_list) if proxy_list else None
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
                 
                 req = raw_req.json()
 

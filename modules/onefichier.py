@@ -41,7 +41,7 @@ class OneFichier:
                     'file[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
                 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(server=server_url, upload_id=file_id)
 

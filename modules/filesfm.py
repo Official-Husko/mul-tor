@@ -33,17 +33,17 @@ class FilesFM:
 
             server_response = str(raw_req.text).split(",")
 
+            upload_id = server_response[0]
+            upload_key = server_response[2]
+
+            upload_url = sites_data_dict[site]["url"].format(upload_id=upload_id, upload_key=upload_key)
+
             if calc_size == "OK":
                 form_data = {
                     'Filedata': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
-                
-                upload_id = server_response[0]
-                upload_key = server_response[2]
 
-                upload_url = sites_data_dict[site]["url"].format(upload_id=upload_id, upload_key=upload_key)
-
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(upload_id=upload_id)
                 fin_req = requests.get(url=finalize_url, headers=headers, proxies=proxies)

@@ -42,7 +42,7 @@ class YourFileStore:
                     'userfile': (safe_file_name, open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 url_pattern = r'https://yourfilestore\.com/download/\d+/[^"]+'
 

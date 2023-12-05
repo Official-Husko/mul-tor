@@ -57,7 +57,7 @@ class HexUpload:
 
                 normal_url = sites_data_dict[site]["api_url"]
 
-                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50, stream=True)
 
                 pattern = r'action\s*=\s*["\'](https?://[^\s"\']+)["\']'
                 match = re.search(pattern, raw_req.text)

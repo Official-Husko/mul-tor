@@ -8,7 +8,7 @@ sites_data_dict = {
     },
     "PixelDrain": {
         "apiKey": False,
-        "url": "https://pixeldrain.com/api/file/",
+        "url": "https://pixeldrain.com/api/file/{file_name}",
         "api_url": "https://pixeldrain.com/api/",
         "download_url_base": "https://pixeldrain.com/u/",
         "size_limit": 20,
