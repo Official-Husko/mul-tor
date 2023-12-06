@@ -14,3 +14,6 @@ art/site_banners.ai
 file_links_formatted.txt
 config_old.json
 run.bat
+build
+Mul-Tor.spec
+Build Releases.bat
