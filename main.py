@@ -207,9 +207,8 @@ class Main:
                                 file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
                             file_links.close()
                             if auto_load_preset == True and link_format != "":
-                                link_format = link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site)
                                 with open("file_links_formatted.txt", "a") as formatted_links_file:
-                                    formatted_links_file.writelines(f"{datetime.now()} | {site} | {file_name} - {link_format}\n")
+                                    formatted_links_file.writelines(f"{datetime.now()} | {site} | {file_name} - {link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site)}\n")
                                 formatted_links_file.close()
                         
                         elif status == "error":
