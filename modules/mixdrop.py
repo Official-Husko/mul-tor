@@ -13,7 +13,6 @@ class MixDrop:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
-        print(api_keys)
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
