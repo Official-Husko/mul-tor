@@ -7,12 +7,13 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "Mixdrop"
+site = "MixDrop"
 
-class Mixdrop:
+class MixDrop:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
+        print(api_keys)
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -31,16 +32,17 @@ class Mixdrop:
 
             if calc_size == "OK":
                 data = {
-                    "upload": 1
+                    "email": api_keys.get("email"),
+                    "key": api_keys.get("apiKey"),
                 }
                 form_data = {
-                    'files': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                    'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
                 raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 response = raw_req.json()
-                file_id = response.get("file", {}).get("ref", "")
+                file_id = response.get("result", {}).get("fileref", "")
 
                 if raw_req.status_code == 200:
                     return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_id}

@@ -71,11 +71,11 @@ sites_data_dict = {
         "size_limit": 100,
         "size_unit": "MB"
     },
-    "Mixdrop": {
-        "apiKey": False,
-        "url": "https://ul.mixdrop.co/up",
-        "api_url": "https://ul.mixdrop.co/up",
-        "download_url_base": "https://mixdrop.co/f/",
+    "MixDrop": {
+        "apiKey": True,
+        "url": "https://ul.MixDrop.ag/api",
+        "api_url": "https://ul.MixDrop.ag/api",
+        "download_url_base": "https://MixDrop.ag/f/",
         "size_limit": 10,
         "size_unit": "GB"
     },

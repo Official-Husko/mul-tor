@@ -164,7 +164,7 @@ class Main:
                         "Krakenfiles": Krakenfiles,
                         "Transfer": Transfer,
                         "TmpFiles": TmpFiles,
-                        "Mixdrop": Mixdrop,
+                        "MixDrop": MixDrop,
                         "1Fichier": OneFichier,
                         "YourFileStore": YourFileStore,
                         "Fileio": Fileio,

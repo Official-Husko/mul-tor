@@ -41,7 +41,7 @@ Site | API | API Key Required | Max File Size
 [Krakenfiles][124] | No | No | 1 GB
 [Transfer.sh][98] | No | No | ∞
 [/tmp/files][117] | [Yes][118] | No | 100 MB
-[Mixdrop][29] | No | No | ∞
+[MixDrop][29] | [Yes][30] | [Yes][30] | ∞
 [1Fichier][31] | [Yes][32] | No | 300 GB
 [YourFileStore][123] | No | No | 500 MB
 [Oshi][9] | No | No | 5 GB
@@ -170,8 +170,8 @@ None Currently :)
 [26]: https://sendspace.com/
 [27]: https://sendspace.com/dev_method.html
 [28]: https://sendspace.com/dev_apikeys.html
-[29]: https://mixdrop.co/
-[30]: https://mixdrop.co/api/
+[29]: https://MixDrop.ag/
+[30]: https://MixDrop.ag/api/
 [31]: https://1fichier.com/
 [32]: https://1fichier.com/api.html
 [33]: https://uptobox.com/

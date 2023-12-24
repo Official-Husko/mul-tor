@@ -20,7 +20,7 @@ from .filesfm import FilesFM
 from .krakenfiles import Krakenfiles
 from .transfer import Transfer
 from .tmpfiles import TmpFiles
-from .mixdrop import Mixdrop
+from .mixdrop import MixDrop
 from .onefichier import OneFichier
 from .yourfilestore import YourFileStore
 from .fileio import Fileio
