@@ -26,13 +26,8 @@ from .yourfilestore import YourFileStore
 from .fileio import Fileio
 from .easyupload import EasyUpload
 from .anontransfer import AnonTransfer
-from .anonfilesme import AnonFilesMe
 from .onecloudfile import OneCloudFile
 from .anonymfile import AnonymFile
-from .nitrofile import NitroFile
-from .gofilecc import GoFileCC
-from .anyfile import AnyFile
-from .bayfilesio import BayFilesIo
 from .filesi import FileSi
 from .fileupload import FileUpload
 from .clicknupload import ClicknUpload

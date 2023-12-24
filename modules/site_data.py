@@ -131,51 +131,11 @@ sites_data_dict = {
         "size_limit": 5,
         "size_unit": "GB"
     },
-    "AnonFilesMe": {
-        "apiKey": False,
-        "url": "https://anonfiles.me/api/v1/upload",
-        "api_url": "https://anonfiles.me/",
-        "download_url_base": "https://anonfiles.me/",
-        "size_limit": 7,
-        "size_unit": "GB"
-    },
     "AnonymFile": {
         "apiKey": False,
         "url": "https://anonymfile.com/api/v1/upload",
         "api_url": "https://anonymfile.com/",
         "download_url_base": "https://anonymfile.com/",
-        "size_limit": 7,
-        "size_unit": "GB"
-    },
-    "NitroFile": {
-        "apiKey": False,
-        "url": "https://nitrofile.cc/api/v1/upload",
-        "api_url": "https://nitrofile.cc/",
-        "download_url_base": "https://nitrofile.cc/",
-        "size_limit": 7,
-        "size_unit": "GB"
-    },
-    "GoFileCC": {
-        "apiKey": False,
-        "url": "https://gofile.cc/api/v1/upload",
-        "api_url": "https://gofile.cc/",
-        "download_url_base": "https://gofile.cc/",
-        "size_limit": 7,
-        "size_unit": "GB"
-    },
-    "AnyFile": {
-        "apiKey": False,
-        "url": "https://anyfile.co/api/v1/upload",
-        "api_url": "https://anyfile.co/",
-        "download_url_base": "https://anyfile.co/",
-        "size_limit": 7,
-        "size_unit": "GB"
-    },
-    "BayFilesIo": {
-        "apiKey": False,
-        "url": "https://bayfiles.io/api/v1/upload",
-        "api_url": "https://bayfiles.io/",
-        "download_url_base": "https://bayfiles.io/",
         "size_limit": 7,
         "size_unit": "GB"
     },

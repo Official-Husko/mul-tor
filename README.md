@@ -48,12 +48,7 @@ Site | API | API Key Required | Max File Size
 [File.io][70] | No | No | 2 GB
 [EasyUpload][72] | No | No | 10 GB
 [AnonTransfer][127] | No | No | 5 GB
-[AnonFiles.me][131] | [Yes][132] | No | 7 GB
 [AnonymFile][134] | [Yes][135] | No | 7 GB
-[NitroFile][136] | [Yes][137] | No | 7 GB
-[GoFile.cc][138] | [Yes][139] | No | 7 GB
-[AnyFile][140] | [Yes][141] | No | 7 GB
-[BayFiles.io][142] | [Yes][143] | No | 7 GB
 [File.si][145] | [Yes][146] | No | 7 GB
 [1CloudFile][133] | No | No | 5 GB
 [ClicknUpload][160] | No | No | 2 GB
