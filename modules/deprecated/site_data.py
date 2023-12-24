@@ -163,6 +163,14 @@ sites_data_dict = {
         "size_limit": 6,
         "size_unit": "GB"
     },
+    "YourFileStore": {
+        "apiKey": False,
+        "url": "https://yourfilestore.com/upload",
+        "api_url": "https://yourfilestore.com/upload",
+        "download_url_base": "https://yourfilestore.com/download/",
+        "size_limit": 500,
+        "size_unit": "MB"
+    },
     "AnonFilesMe": {
         "apiKey": False,
         "url": "https://anonfiles.me/api/v1/upload",

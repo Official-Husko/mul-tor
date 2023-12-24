@@ -166,7 +166,6 @@ class Main:
                         "TmpFiles": TmpFiles,
                         "MixDrop": MixDrop,
                         "1Fichier": OneFichier,
-                        "YourFileStore": YourFileStore,
                         "Fileio": Fileio,
                         "EasyUpload": EasyUpload,
                         "AnonTransfer": AnonTransfer,

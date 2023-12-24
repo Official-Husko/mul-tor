@@ -8,6 +8,13 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
+"""
+This worked perfectly before but they changed something in the uploading system.
+I tried to figure it out for half an hour or more but i was unable to figure it out.
+It says "some error occured" and that's it. Uploading on the site works but it can't be recreated in insomnia.
+Further Testing is needed. Maybe it can be fixed.
+"""
+
 site = "YourFileStore"
 
 class YourFileStore:
@@ -43,6 +50,8 @@ class YourFileStore:
                 }
                 
                 raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+
+                print(raw_req.text)
 
                 url_pattern = r'https://yourfilestore\.com/download/\d+/[^"]+'
 

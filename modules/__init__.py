@@ -22,7 +22,6 @@ from .transfer import Transfer
 from .tmpfiles import TmpFiles
 from .mixdrop import MixDrop
 from .onefichier import OneFichier
-from .yourfilestore import YourFileStore
 from .fileio import Fileio
 from .easyupload import EasyUpload
 from .anontransfer import AnonTransfer

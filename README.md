@@ -43,7 +43,6 @@ Site | API | API Key Required | Max File Size
 [/tmp/files][117] | [Yes][118] | No | 100 MB
 [MixDrop][29] | [Yes][30] | [Yes][30] | ∞
 [1Fichier][31] | [Yes][32] | No | 300 GB
-[YourFileStore][123] | No | No | 500 MB
 [Oshi][9] | No | No | 5 GB
 [File.io][70] | No | No | 2 GB
 [EasyUpload][72] | No | No | 10 GB
