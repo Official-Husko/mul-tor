@@ -13,7 +13,7 @@ site = "FileBin"
 
 class FileBin:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -24,7 +24,7 @@ class FileBin:
             file_name = (file_name[:240] + '') if len(file_name) > 240 else file_name # Changed from 255 to 15 as an additional safety net.
             
             characters = string.ascii_lowercase + string.digits
-            random_string = ''.join(random.choice(characters) for i in range(random.randint(6, 16)))
+            random_string = ''.join(random.choice(characters) for i in range(16))
 
             rand_url = f"{base_url}{random_string}/{file_name}"
                 
@@ -32,12 +32,13 @@ class FileBin:
             proxies = random.choice(proxy_list) if proxy_list else None
 
             with open(file, "rb") as file_upload:
-                req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies)
+                req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies, stream=True)
                 file_upload.close()
             if req.status_code == 201:
-                return {"status": "ok", "file_name": file_name, "file_url": rand_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": rand_url}
             else:
                 raise Exception(req.status_code)
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req.content}
+

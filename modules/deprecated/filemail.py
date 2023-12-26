@@ -19,7 +19,7 @@ Shitty 2 uploads limit per day. Even the initializing counts as one.
 
 class FileMail:
     
-    def Uploader(file, proxy_list, user_agents, api_key):
+    def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -48,9 +48,9 @@ class FileMail:
                     req = requests.put(url=rand_url, data=file_upload, headers=headers, proxies=random.choice(proxy_list))
                 file_upload.close()
             if req.status_code == 201:
-                return {"status": "ok", "file_name": file_name, "file_url": rand_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": rand_url}
             else:
                 raise Exception("Wrong Response Code. View request body below or in log file.")
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}

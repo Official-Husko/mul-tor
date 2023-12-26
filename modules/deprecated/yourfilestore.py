@@ -8,11 +8,18 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
+"""
+This worked perfectly before but they changed something in the uploading system.
+I tried to figure it out for half an hour or more but i was unable to figure it out.
+It says "some error occured" and that's it. Uploading on the site works but it can't be recreated in insomnia.
+Further Testing is needed. Maybe it can be fixed.
+"""
+
 site = "YourFileStore"
 
 class YourFileStore:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -42,16 +49,19 @@ class YourFileStore:
                     'userfile': (safe_file_name, open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+
+                print(raw_req.text)
 
                 url_pattern = r'https://yourfilestore\.com/download/\d+/[^"]+'
 
                 match = re.search(url_pattern, raw_req.text)
                 download_url = match.group()
 
-                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
+

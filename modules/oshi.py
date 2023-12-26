@@ -9,7 +9,7 @@ site = "Oshi"
 
 class Oshi:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -34,11 +34,12 @@ class Oshi:
                 if req.status_code == 200:
                     file_url = req.content.decode("utf-8").rsplit("\nDL: ")
                     file_url = file_url[-1].replace("\n", "")
-                    return {"status": "ok", "file_name": file_name, "file_url": file_url, "site": site}
+                    return {"status": "ok", "file_name": file_name, "file_url": file_url}
                 else:
                     raise Exception(f"Upload Failed: {req.content.decode('utf-8')}")
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+

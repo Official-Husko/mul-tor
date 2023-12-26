@@ -1,35 +1,39 @@
 import json
 from termcolor import colored
 from time import sleep
+import os
 
 from .pretty_print import *
 from .logger import Logger
 
-current_config_version = "1.2.0"
+current_config_version = "1.3.0"
 
 class Config_Manager:
     
     def Checker():
         if os.path.exists("config.json"):
-            config = Config_Manager.Reader()
+            with open("config.json", "r") as cfg_file:
+                config = json.load(cfg_file)
 
             config_version = config.get("version", "0.0.0")
+            advancedMode = config.get("advancedMode", False)
 
-            if config_version < current_config_version:
+            if config_version < current_config_version and advancedMode == False:
                 try:
                     os.remove("config_old.json")
                 except:
                     pass
                 os.rename("config.json", "config_old.json")
-                Config_Manager.Writer()
-            sleep(5)
-        else:
-            Config_Manager.Writer()
+                print(colored(f"{info} You are using an outdated config version! Old one is backed up. Creating New one.", "green"))
 
-    def Reader():
-        with open("config.json", "r") as cfg_file:
-            config = json.load(cfg_file)
-        return config
+                config = Config_Manager.Writer()
+                return config
+            else:
+                return config
+
+        else:
+            config = Config_Manager.Writer()
+            return config
     
     def Writer():
         try:
@@ -39,18 +43,31 @@ class Config_Manager:
                 "useProxies": False,
                 "saveLinksToFile": True,
                 "randomUserAgent": False,
-                "autoLoadPreset": None,
+                "presetSystem": {
+                    "autoLoadPreset": False,
+                    "presetName": "",
+                    "enablePresetSelection": False
+                },
+                "advancedMode": False,
                 "api_keys": {
-                    "example": {
+                    "BowFile": {
+                        "apiKey1": "",
+                        "apiKey2": ""
+                    },
+                    "DooDrive": {
                         "apiKey": "",
-                        "email": ""
+                        "apiToken": ""
+                    },
+                    "MixDrop": {
+                        "email": "",
+                        "apiKey": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
             }
             with open("config.json", "w") as cfg_file:
                 json.dump(template, cfg_file, indent=6)
-            print(colored(f"{info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values"))
+            print(colored(f"{info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values."), "green")
             print("")
             sleep(5)
             return template

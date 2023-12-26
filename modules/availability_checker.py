@@ -20,10 +20,7 @@ class Availability_Checker:
         for site in sites_data_dict:
             if DEBUG == True:
                 print(f"{colored('Checking:', 'green')} {site}")
-            # TODO: does not get api keys so fix shit shit cunt
-            if sites_data_dict[site]["apiKey"] == False and not site.lower() in blacklist:
-                ping_sites.append(site)
-            elif sites_data_dict[site]["apiKey"] == True and config.get("api_keys", {}).get(site.lower(), {}).get("apiKey", "") != "" and not site.lower() in blacklist:
+            if not site.lower() in blacklist:
                 ping_sites.append(site)
             else:
                 pass
@@ -33,12 +30,9 @@ class Availability_Checker:
             try:
                 ua = random.choice(ua_list)
                 url = sites_data_dict[site]["api_url"]
+                proxies = random.choice(proxy_list) if proxy_list else None
                 
-                if proxy_list == []:
-                    ping = requests.get(url, headers={"User-Agent": ua}, timeout=5)
-                else:
-                    proxy = random.choice(proxy_list)
-                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxy, timeout=5)
+                ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
                 
                 if ping.status_code == 200:
                     available_sites.append(site)
@@ -48,7 +42,7 @@ class Availability_Checker:
                     Logger.log_event(error_str, extra=str(ping))
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
                 # Construct the error
-                error_str = f"An error occurred while checking the sites! Please report this. Exception: {e}"
+                error_str = f"An error occurred while checking {site}! Please report this. Exception: {e}"
                 Logger.log_event(error_str, extra=str(ping))
                 sleep(5)
             except Exception as e:

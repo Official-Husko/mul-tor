@@ -8,7 +8,7 @@ sites_data_dict = {
     },
     "PixelDrain": {
         "apiKey": False,
-        "url": "https://pixeldrain.com/api/file/",
+        "url": "https://pixeldrain.com/api/file/{file_name}",
         "api_url": "https://pixeldrain.com/api/",
         "download_url_base": "https://pixeldrain.com/u/",
         "size_limit": 20,
@@ -48,11 +48,10 @@ sites_data_dict = {
     },
     "Krakenfiles": {
         "apiKey": False,
-        "url": "https://{server}.krakenfiles.com/api/file",
+        "url": "{server}",
         "api_url": "https://krakenfiles.com/",
         "download_url_base": "https://krakenfiles.com",
         "server_url": "https://krakenfiles.com/api/server/available",
-        "site_upload_url": "https://uploads{number}.krakenfiles.com/_uploader/gallery/upload",
         "size_limit": 1,
         "size_unit": "GB"
     },
@@ -72,11 +71,11 @@ sites_data_dict = {
         "size_limit": 100,
         "size_unit": "MB"
     },
-    "Mixdrop": {
-        "apiKey": False,
-        "url": "https://ul.mixdrop.co/up",
-        "api_url": "https://ul.mixdrop.co/up",
-        "download_url_base": "https://mixdrop.co/f/",
+    "MixDrop": {
+        "apiKey": True,
+        "url": "https://ul.MixDrop.ag/api",
+        "api_url": "https://ul.MixDrop.ag/api",
+        "download_url_base": "https://MixDrop.ag/f/",
         "size_limit": 10,
         "size_unit": "GB"
     },
@@ -89,14 +88,6 @@ sites_data_dict = {
         "finalize_url": "https://{server}/end.pl?xid={upload_id}",
         "size_limit": 300,
         "size_unit": "GB"
-    },
-    "YourFileStore": {
-        "apiKey": False,
-        "url": "https://yourfilestore.com/upload",
-        "api_url": "https://yourfilestore.com/upload",
-        "download_url_base": "https://yourfilestore.com/download/",
-        "size_limit": 500,
-        "size_unit": "MB"
     },
     "Fileio": {
         "apiKey": False,
@@ -114,6 +105,148 @@ sites_data_dict = {
         "download_url_base": "https://easyupload.io/",
         "initialize_url": "https://easyupload.io/action.php",
         "size_limit": 10,
+        "size_unit": "GB"
+    },
+    "AnonTransfer": {
+        "apiKey": False,
+        "url": "https://anontransfer.com/upload.php",
+        "api_url": "https://anontransfer.com/",
+        "download_url_base": "https://anontransfer.com/download/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "1CloudFile": {
+        "apiKey": False,
+        "url": "https://fs10.1cloudfile.com/ajax/file_upload_handler",
+        "api_url": "https://1cloudfile.com/",
+        "download_url_base": "https://1cloudfile.com/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "AnonymFile": {
+        "apiKey": False,
+        "url": "https://anonymfile.com/api/v1/upload",
+        "api_url": "https://anonymfile.com/",
+        "download_url_base": "https://anonymfile.com/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "FileSi": {
+        "apiKey": False,
+        "url": "https://file.si/api/v1/upload",
+        "api_url": "https://file.si/",
+        "download_url_base": "https://file.si/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "ClicknUpload": {
+        "apiKey": False,
+        "url": "https://mover04.clicknupload.net/cgi-bin/upload.cgi",
+        "api_url": "https://clicknupload.click",
+        "download_url_base": "https://clicknupload.vip/",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "FileUpload": {
+        "apiKey": False,
+        "url": "https://up.file-upload.net/upload.php",
+        "api_url": "https://file-upload.net/",
+        "download_url_base": "https://file-upload.net/download-{file_id}/{server_name}.html",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "BowFile": {
+        "apiKey": True,
+        "url": "https://bowfile.com/api/v2/file/upload",
+        "api_url": "https://bowfile.com/",
+        "download_url_base": "https://bowfile.com/",
+        "authorize_url": "https://bowfile.com/api/v2/authorize",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "HexUpload": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://hexupload.net/",
+        "download_url_base": "https://hexupload.net/",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "UserCloud": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://userscloud.com/",
+        "download_url_base": "https://userscloud.com/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "DooDrive": {
+        "apiKey": True,
+        "url": "{server}",
+        "api_url": "https://doodrive.com/",
+        "download_url_base": "https://doodrive.com/f/",
+        "initialize_url": "https://doodrive.com/api/v1/upload",
+        "finalize_url": "{server}",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "uDrop": {
+        "apiKey": False,
+        "url": "https://www.udrop.com/ajax/file_upload_handler",
+        "api_url": "https://www.udrop.com/",
+        "download_url_base": "https://www.udrop.com/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
+    "uFile": {
+        "apiKey": False,
+        "url": "{server}v1/upload/chunk",
+        "api_url": "https://ufile.io/",
+        "download_url_base": "https://ufile.io/",
+        "initialize_url": "{server}v1/upload/create_session",
+        "finalize_url": "{server}v1/upload/finalise",
+        "server_url": "https://ufile.io/v1/upload/select_storage",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "DownloadGG": {
+        "apiKey": False,
+        "url": "https://download.gg/server/upload.php",
+        "api_url": "https://download.gg/",
+        "download_url_base": "https://download.gg/file-",
+        "size_limit": 25,
+        "size_unit": "GB"
+    },
+    "CatBox": {
+        "apiKey": False,
+        "url": "https://catbox.moe/user/api.php",
+        "api_url": "https://catbox.moe/",
+        "download_url_base": "https://files.catbox.moe/",
+        "size_limit": 200,
+        "size_unit": "MB",
+    },
+    "LitterBox": {
+        "apiKey": False,
+        "url": "https://litterbox.catbox.moe/resources/internals/api.php",
+        "api_url": "https://litterbox.catbox.moe/",
+        "download_url_base": "https://litter.catbox.moe/",
+        "size_limit": 1,
+        "size_unit": "GB"
+    },
+    "Keep": {
+        "apiKey": False,
+        "url": "https://free.keep.sh/",
+        "api_url": "https://keep.sh/",
+        "download_url_base": "https://free.keep.sh/",
+        "size_limit": 500,
+        "size_unit": "MB"
+    },
+    "TempSend": {
+        "apiKey": False,
+        "url": "https://tempsend.com/send",
+        "api_url": "https://tempsend.com/",
+        "download_url_base": "https://tempsend.com/",
+        "size_limit": 2,
         "size_unit": "GB"
     },
     "Oshi": {

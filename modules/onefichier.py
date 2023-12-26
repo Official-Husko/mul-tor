@@ -10,7 +10,7 @@ site = "1Fichier"
 
 class OneFichier:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -41,7 +41,7 @@ class OneFichier:
                     'file[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
                 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(server=server_url, upload_id=file_id)
 
@@ -50,9 +50,10 @@ class OneFichier:
                 req = raw_req.json()
                 download_url = req.get("links", [])[0].get("download", "")
 
-                return {"status": "ok", "file_name": file_name, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": raw_req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
+

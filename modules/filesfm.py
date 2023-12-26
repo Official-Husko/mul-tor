@@ -11,7 +11,7 @@ site = "FilesFM"
 
 class FilesFM:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         req = "which one of you maggots ate the fucking request huh?"
         try:
             ua = random.choice(user_agents)
@@ -33,17 +33,17 @@ class FilesFM:
 
             server_response = str(raw_req.text).split(",")
 
+            upload_id = server_response[0]
+            upload_key = server_response[2]
+
+            upload_url = sites_data_dict[site]["url"].format(upload_id=upload_id, upload_key=upload_key)
+
             if calc_size == "OK":
                 form_data = {
                     'Filedata': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
-                
-                upload_id = server_response[0]
-                upload_key = server_response[2]
 
-                upload_url = sites_data_dict[site]["url"].format(upload_id=upload_id, upload_key=upload_key)
-
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(upload_id=upload_id)
                 fin_req = requests.get(url=finalize_url, headers=headers, proxies=proxies)
@@ -51,11 +51,12 @@ class FilesFM:
                 result = fin_req.json()
 
                 if result.get("status", "") == "ok":
-                    return {"status": "ok", "file_name": file_name, "file_url": download_url_base.format(upload_id=upload_id), "site": site}
+                    return {"status": "ok", "file_name": file_name, "file_url": download_url_base.format(upload_id=upload_id)}
                 else:
                     raise Exception("Upload Failed :(")
             else:
-                return {"status": "size_error", "file_name": file_name, "site": site, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
+                return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+

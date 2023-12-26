@@ -15,7 +15,7 @@ site = "WeTransfer"
 
 class WeTransfer:
     
-    def Uploader(file, proxy_list, user_agents):
+     def Uploader(file, proxy_list, user_agents, api_keys):
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -159,9 +159,9 @@ class WeTransfer:
             download_url = sites_data_dict[site]["download_url_base"].format(file_id=final_id, security_hash=security_hash)
 
             if state == "downloadable":
-                return {"status": "ok", "file_name": file_name_normal, "file_url": download_url, "site": site}
+                return {"status": "ok", "file_name": file_name_normal, "file_url": download_url}
             else:
                 raise Exception("Fuck me it failed somehow")
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name_normal, "site": site, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name_normal, "exception": str(e), "extra": req}

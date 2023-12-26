@@ -144,4 +144,71 @@ sites_data_dict = {
         "size_limit": 2,
         "size_unit": "GB"
     },
+    "CyberFile": {
+        "apiKey": False,
+        "url": "https://cyberfile.me/ajax/file_upload_handler",
+        "api_url": "https://cyberfile.me/",
+        "download_url_base": "https://cyberfile.me/",
+        "size_limit": 19,
+        "size_unit": "GB"
+    },
+    "FileTransfer": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://filetransfer.io/",
+        "download_url_base": "https://filetransfer.io/data-package/",
+        "server_url": "https://filetransfer.io/api/v1/upload",
+        "initialize_url": "https://filetransfer.io/start-upload",
+        "finalize_url": "{final_url}",
+        "size_limit": 6,
+        "size_unit": "GB"
+    },
+    "YourFileStore": {
+        "apiKey": False,
+        "url": "https://yourfilestore.com/upload",
+        "api_url": "https://yourfilestore.com/upload",
+        "download_url_base": "https://yourfilestore.com/download/",
+        "size_limit": 500,
+        "size_unit": "MB"
+    },
+    "AnonFilesMe": {
+        "apiKey": False,
+        "url": "https://anonfiles.me/api/v1/upload",
+        "api_url": "https://anonfiles.me/",
+        "download_url_base": "https://anonfiles.me/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "NitroFile": {
+        "apiKey": False,
+        "url": "https://nitrofile.cc/api/v1/upload",
+        "api_url": "https://nitrofile.cc/",
+        "download_url_base": "https://nitrofile.cc/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "GoFileCC": {
+        "apiKey": False,
+        "url": "https://gofile.cc/api/v1/upload",
+        "api_url": "https://gofile.cc/",
+        "download_url_base": "https://gofile.cc/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "AnyFile": {
+        "apiKey": False,
+        "url": "https://anyfile.co/api/v1/upload",
+        "api_url": "https://anyfile.co/",
+        "download_url_base": "https://anyfile.co/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    },
+    "BayFilesIo": {
+        "apiKey": False,
+        "url": "https://bayfiles.io/api/v1/upload",
+        "api_url": "https://bayfiles.io/",
+        "download_url_base": "https://bayfiles.io/",
+        "size_limit": 7,
+        "size_unit": "GB"
+    }
 }
