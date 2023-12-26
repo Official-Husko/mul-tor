@@ -4,6 +4,13 @@ import json
 class Preset_Manager:
 
     def loader(available, preset_name):
+        if not os.path.exists("presets"):
+            os.mkdir("presets")
+        if not os.path.exists(f"presets/readme.txt"):
+            with open("presets\\readme.txt", "a") as readme:
+                text = "To create your own preset visit the wiki here: https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration"
+                readme.write(text)
+
         print("loader started")
         print(os.getcwd())
         try:
