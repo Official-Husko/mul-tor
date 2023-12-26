@@ -24,7 +24,7 @@ class FileBin:
             file_name = (file_name[:240] + '') if len(file_name) > 240 else file_name # Changed from 255 to 15 as an additional safety net.
             
             characters = string.ascii_lowercase + string.digits
-            random_string = ''.join(random.choice(characters) for i in range(random.randint(6, 16)))
+            random_string = ''.join(random.choice(characters) for i in range(16))
 
             rand_url = f"{base_url}{random_string}/{file_name}"
                 
