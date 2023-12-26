@@ -15,7 +15,7 @@ if sys.gettrace() is not None:
 else:
     DEBUG = False
 
-version = "1.3.0"
+version = "1.3.1"
 owd = os.getcwd()
 platform = sys.platform
 
