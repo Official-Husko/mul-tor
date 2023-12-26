@@ -119,6 +119,12 @@ None Currently :)
 
   A: Check the [Deprecated Sites][164] list.
 
+  Q: Are there any presets?\
+  A: Yes, simply check [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets) here and download the ones you wish to use.
+
+  Q: Can I make my own presets?\
+  A: Yes you can, for that read [this wiki page](https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration).
+
   Q: How can I get help?\
   A: Check the [Wiki][166] for any information that might help you. If you can't find the answer there check out the [issues page][4] and if there is none [open one up][167].
 

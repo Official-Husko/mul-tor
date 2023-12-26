@@ -15,7 +15,7 @@ if sys.gettrace() is not None:
 else:
     DEBUG = False
 
-version = "1.3.1"
+version = "1.3.0"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -86,7 +86,12 @@ class Main:
         if DEBUG == True:
             print(available)
 
-        
+        if not os.path.exists("presets"):
+            os.mkdir("presets")
+        if not os.path.exists(f"presets/readme.txt"):
+            with open("presets\\readme.txt", "a") as readme:
+                text = "To create your own preset visit the wiki here: https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration"
+                readme.write(text)
 
         return config, available, proxy_list, ua_list
         
