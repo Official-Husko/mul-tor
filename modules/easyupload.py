@@ -10,6 +10,7 @@ from .pretty_print import *
 from main import DEBUG
 
 site = "EasyUpload"
+raw_req = "None :("
 
 class EasyUpload:
      def Uploader(file, proxy_list, user_agents, api_keys):
@@ -46,15 +47,30 @@ class EasyUpload:
             # Calculate the size unit for the site
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
 
+            # Select a random proxy, if available
+            proxies = random.choice(proxy_list) if proxy_list else None
+
+            # This will get the actual upload URL from the website
+            normal_url = sites_data_dict[site]["api_url"]
+
+            raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=50)
+
+            pattern = r"https://upload\d+\.easyupload\.io/action\.php"
+            match = re.search(pattern, raw_req.text)
+            print(match)
+
+            if match:
+                upload_url = match.group(0)
+                print(f"Upload URL: {upload_url}")
+            else:
+                raise Exception("Server URL Missing. Report this!")
+
             # Set the user agent header
             headers = {
                 "User-Agent": ua,
                 "Accept": "application/json",
                 "Referer": "https://easyupload.io/",
             }
-
-            # Select a random proxy, if available
-            proxies = random.choice(proxy_list) if proxy_list else None
 
             file_uuid = str(uuid.uuid4())
 
@@ -104,9 +120,6 @@ class EasyUpload:
                         form_data = {
                                     'file': (os.path.basename(file), chunk_data, 'application/octet-stream')
                                 }
-
-                        #upload_url = sites_data_dict[site]["url"].format(number=6)
-                        upload_url = sites_data_dict[site]["url"].format(number=random.randint(5, 9))
 
                         # Send the upload request with the form data, headers, and proxies
                         raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
