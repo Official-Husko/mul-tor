@@ -37,3 +37,5 @@ from .doodrive import DooDrive
 from .udrop import uDrop
 from .ufile import uFile
 from .downloadgg import DownloadGG
+from .catbox import CatBox
+from .litterbox import LitterBox

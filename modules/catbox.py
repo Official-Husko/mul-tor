@@ -6,9 +6,9 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "ClicknUpload"
+site = "CatBox"
 
-class ClicknUpload:
+class CatBox:
      def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
@@ -24,6 +24,7 @@ class ClicknUpload:
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
+
             download_url_base = sites_data_dict[site]["download_url_base"]
 
             size_limit = f'{sites_data_dict[site]["size_limit"]} {sites_data_dict[site]["size_unit"]}'
@@ -48,15 +49,12 @@ class ClicknUpload:
 
             if calc_size == "OK":
                 upload_data = {
-                    "utype": "anon",
-                    "file_descr": "Uploaded using Mul-Tor on GitHub!",
-                    "file_public": 1,
-                    "keepalive": 1
+                    "reqtype": "fileupload"
                 }
 
                 # Prepare the json data to add extra data to the upload
                 form_data = {
-                            'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
+                            'fileToUpload': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                         }
 
                 upload_url = sites_data_dict[site]["url"]
@@ -64,12 +62,13 @@ class ClicknUpload:
                 # Send the upload request with the form data, headers, and proxies
                 raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)
 
-                req = raw_req.json()
-
-                file_code = req[0].get("file_code", "")
+                if download_url_base in raw_req.text:
+                    download_url = raw_req.text
+                else:
+                    raise Exception("Upload somehow failed. Please report this!")
 
                 # Return successful message with the status, file name, file URL, and site
-                return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_code}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
                 # Return size error message
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}

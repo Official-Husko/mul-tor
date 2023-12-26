@@ -69,9 +69,3 @@ class DownloadGG:
         except Exception as e:
             # Return error message
             return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
-
-"""
-    Author: Billy
-    Date: 10/5/2023 1:23 AM
-    Message: Always blame Jamos
-"""

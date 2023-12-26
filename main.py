@@ -180,7 +180,9 @@ class Main:
                         "DooDrive": DooDrive,
                         "uDrop": uDrop,
                         "uFile": uFile,
-                        "DownloadGG": DownloadGG
+                        "DownloadGG": DownloadGG,
+                        "CatBox": CatBox,
+                        "LitterBox": LitterBox
                     }
 
                     if site in uploader_classes:

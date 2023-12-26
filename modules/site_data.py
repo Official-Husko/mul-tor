@@ -217,6 +217,22 @@ sites_data_dict = {
         "size_limit": 25,
         "size_unit": "GB"
     },
+    "CatBox": {
+        "apiKey": False,
+        "url": "https://catbox.moe/user/api.php",
+        "api_url": "https://catbox.moe/",
+        "download_url_base": "https://files.catbox.moe/",
+        "size_limit": 200,
+        "size_unit": "MB",
+    },
+    "LitterBox": {
+        "apiKey": False,
+        "url": "https://litterbox.catbox.moe/resources/internals/api.php",
+        "api_url": "https://litterbox.catbox.moe/",
+        "download_url_base": "https://litter.catbox.moe/",
+        "size_limit": 1,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
