@@ -57,6 +57,10 @@ class Config_Manager:
                     "DooDrive": {
                         "apiKey": "",
                         "apiToken": ""
+                    },
+                    "MixDrop": {
+                        "email": "",
+                        "apiKey": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
