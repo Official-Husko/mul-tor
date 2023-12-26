@@ -39,3 +39,5 @@ from .ufile import uFile
 from .downloadgg import DownloadGG
 from .catbox import CatBox
 from .litterbox import LitterBox
+from .keep import Keep
+from .tempsend import TempSend

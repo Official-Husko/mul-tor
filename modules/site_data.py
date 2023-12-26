@@ -233,6 +233,22 @@ sites_data_dict = {
         "size_limit": 1,
         "size_unit": "GB"
     },
+    "Keep": {
+        "apiKey": False,
+        "url": "https://free.keep.sh/",
+        "api_url": "https://keep.sh/",
+        "download_url_base": "https://free.keep.sh/",
+        "size_limit": 500,
+        "size_unit": "MB"
+    },
+    "TempSend": {
+        "apiKey": False,
+        "url": "https://tempsend.com/send",
+        "api_url": "https://tempsend.com/",
+        "download_url_base": "https://tempsend.com/",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

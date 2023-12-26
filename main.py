@@ -182,7 +182,9 @@ class Main:
                         "uFile": uFile,
                         "DownloadGG": DownloadGG,
                         "CatBox": CatBox,
-                        "LitterBox": LitterBox
+                        "LitterBox": LitterBox,
+                        "Keep": Keep,
+                        "TempSend": TempSend
                     }
 
                     if site in uploader_classes:

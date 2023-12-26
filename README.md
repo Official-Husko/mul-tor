@@ -1,7 +1,7 @@
 # Mul-Tor
 ## Your tool for easy file uploading and sharing.
 
-#### Like mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
+#### As mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
 
 <br />
 
@@ -56,6 +56,10 @@ Site | API | API Key Required | Max File Size
 [UserCloud][161] | No | No | 5 GB
 [uDrop][165] | No | No | 10 GB
 [UFile][68] | [Yes][69] | No | 5 GB
+[CatBox][168] | [Yes][169] | No | 200 MB
+[LitterBox][170] | [Yes][171] | No | 1 GB
+[Keep.sh][172] | No | No | 500 MB
+[TempSend][173] | No | No | 2 GB
 
 <br />
 
@@ -115,7 +119,7 @@ None Currently :)
 
   A: Check the [Deprecated Sites][164] list.
 
-  Q: How can i get help?\
+  Q: How can I get help?\
   A: Check the [Wiki][166] for any information that might help you. If you can't find the answer there check out the [issues page][4] and if there is none [open one up][167].
 
   Q: How do I get the API key?\
@@ -125,18 +129,18 @@ None Currently :)
   A: Please first check the [rejected sites][3] and [issues page][4] to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue][167].
 
   Q: What about rejected sites?\
-  A: I will check the sites every once in a while to see if the issues i mentioned have been resolved. If you know the issue has been resolved or why i encountered an issue feel free to [open a new issue][167].
+  A: I will check the sites every once in a while to see if the issues I mentioned have been resolved. If you know the issue has been resolved or why I encountered an issue feel free to [open a new issue][167].
 
   Q: Why is it called Mul-Tor?\
   A: I have no idea.
 
-  Q: What if i really need one of the rejected sites?\
-  A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue][167] if there isn't one already so that i can check it again.
+  Q: What if I need one of the rejected sites?\
+  A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue][167] if there isn't one already so that I can check it again.
 
   Q: Certain sites offer an API but you didn't use it. Why?\
-  A: Because this makes it easier for users and it doesn't need any accounts and sign ups. I plan to add api functions to these for users that want to use it.
+  A: Because this makes it easier for users and it doesn't need any accounts and sign-ups. I plan to add API functions to these for users who want to use it.
 
-  Q: Somebody else already has the issue im having. What do i do?\
+  Q: Somebody else already has the issue I'm having. What do I do?\
   A: Simply upvote the issue. If you have additional data you think could help me solve said issue feel free to comment it.
 </details>
 
@@ -286,6 +290,12 @@ None Currently :)
 [165]: https://udrop.com/
 [166]: https://github.com/Official-Husko/mul-tor/wiki
 [167]: https://github.com/Official-Husko/mul-tor/issues/new/choose
+[168]: https://catbox.moe/
+[169]: https://catbox.moe/tools.php
+[170]: https://litterbox.catbox.moe/
+[171]: https://litterbox.catbox.moe/tools.php
+[172]: https://keep.sh/
+[173]: https://tempsend.com/
 
 <br />
 
