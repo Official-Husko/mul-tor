@@ -57,11 +57,9 @@ class EasyUpload:
 
             pattern = r"https://upload\d+\.easyupload\.io/action\.php"
             match = re.search(pattern, raw_req.text)
-            print(match)
 
             if match:
                 upload_url = match.group(0)
-                print(f"Upload URL: {upload_url}")
             else:
                 raise Exception("Server URL Missing. Report this!")
 
