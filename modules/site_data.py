@@ -249,6 +249,14 @@ sites_data_dict = {
         "size_limit": 2,
         "size_unit": "GB"
     },
+    "UsersDrive": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://usersdrive.com/",
+        "download_url_base": "https://usersdrive.com/{file_id}.html",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

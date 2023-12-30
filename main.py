@@ -189,7 +189,8 @@ class Main:
                         "CatBox": CatBox,
                         "LitterBox": LitterBox,
                         "Keep": Keep,
-                        "TempSend": TempSend
+                        "TempSend": TempSend,
+                        "UsersDrive": UsersDrive,
                     }
 
                     if site in uploader_classes:
