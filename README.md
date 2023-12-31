@@ -60,6 +60,7 @@ Site | API | API Key Required | Max File Size
 [LitterBox][170] | [Yes][171] | No | 1 GB
 [Keep.sh][172] | No | No | 500 MB
 [TempSend][173] | No | No | 2 GB
+[Rapidgator][174] | [Yes][174] | [Yes][175] | ?
 
 <br />
 

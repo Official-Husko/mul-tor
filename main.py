@@ -191,6 +191,7 @@ class Main:
                         "Keep": Keep,
                         "TempSend": TempSend,
                         "UsersDrive": UsersDrive,
+                        "Rapidgator": Rapidgator
                     }
 
                     if site in uploader_classes:

@@ -257,6 +257,15 @@ sites_data_dict = {
         "size_limit": 2,
         "size_unit": "GB"
     },
+    "Rapidgator": {
+        "apiKey": True,
+        "url": "{server}",
+        "api_url": "https://rapidgator.net/",
+        "download_url_base": "https://rapidgator.net/file/",
+        "initialize_url": "https://rapidgator.net/api/v2/user/login",
+        "server_url": "https://rapidgator.net/api/v2/file/upload",
+        "finalize_url": "https://rapidgator.net/api/v2/file/upload_info",
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
