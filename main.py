@@ -273,17 +273,32 @@ TODO: Add presets system
 TODO: Quack
 TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
 
-# TODO: Might be just me but this code is dog shit
-# TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
-# TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
-# TODO: Find a way to change the colors for the selection windows.
-# TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead.
-# TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
-# TODO: Fix Loading api key issue if none is present
-# TODO: Add presets system
-# TODO: Quack
-# TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code. This should also make it easier to maintain
-# TODO: I told myself i would fix my sleep schedule to improve my productivity. Its now 2am and i surely failed to follow that plan at least 20 times. Fuck me..
+these are here for later...
+https://uplodea.com/en
+https://fastupload.io/
+https://filepost.io/
+https://workupload.com/
+https://www.dropbox.com/features/share
+https://uploadnow.io/en
+https://uploadify.net/
+https://www.4shared.com/
+https://www.zipshare.com/
+https://usaupload.com/
+https://fileroy.com/
+https://upfiles.com/
+https://file-up.org/
+https://www.mediafire.com/developers/
+https://www.dropsend.com/
+https://surgesend.com/
+https://www.filesharing.com/
+https://file.guru/en
+https://uploady.io/
+https://bestfile.io/en
+https://megaup.net/faq.html
+https://www.mirrored.to/
+https://www.similarsites.com/site/download.gg
+https://f95zone.to/threads/approved-file-hosts-updated-2023-12-24.3432/
+https://workupload.com/
 
 """
 
