@@ -105,34 +105,44 @@ class Main:
             auto_load_data = Preset_Manager.loader(available, preset_name)
             available = auto_load_data[0]
             link_format = auto_load_data[1]
-            print(auto_load_data)
 
-        amount_question = [
-        inquirer.List('selection',
-                            message=colored("What file/s do you want to upload?", "green"),
-                            choices=["Single", "Multiple"],
-                            ),
-        ]
-        amount_answers = inquirer.prompt(amount_question)
-        print("")
-        sites = amount_answers.get("selection")
+        if DEBUG == True:
+            amount_question = [
+            inquirer.List('selection',
+                                message=colored("What file/s do you want to upload?", "green"),
+                                choices=["Single", "Multiple"],
+                                ),
+            ]
+            amount_answers = inquirer.prompt(amount_question)
+            print("")
+            sites = amount_answers.get("selection")
 
-        files_list = []
-        while len(files_list) == 0 or files_list == [[]]:
-            files_list = [] # Reset it
-            if amount_answers.get("selection") == "Single":
-                files_list = plyer.filechooser.open_file()
-            elif amount_answers.get("selection") == "Multiple":
-                fn = plyer.filechooser.choose_dir()
-                fn = fn[0]
-                files_in_folder = os.listdir(fn)
-                for found_file in files_in_folder:
-                    if os.path.isdir(f"{fn}\\{found_file}") != True:
-                        files_list.append(f"{fn}\\{found_file}")
-            else:
-                print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
-                sleep(5)
         
+            files_list = []
+            while len(files_list) == 0 or files_list == [[]]:
+                files_list = [] # Reset it
+                if amount_answers.get("selection") == "Single":
+                    files_list = plyer.filechooser.open_file()
+                elif amount_answers.get("selection") == "Multiple":
+                    fn = plyer.filechooser.choose_dir()
+                    fn = fn[0]
+                    files_in_folder = os.listdir(fn)
+                    for found_file in files_in_folder:
+                        if os.path.isdir(f"{fn}\\{found_file}") != True:
+                            files_list.append(f"{fn}\\{found_file}")
+                else:
+                    print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
+                    sleep(5)
+        else:
+            files_list = [f"{owd}\\test.png"]
+
+        print(files_list)
+        
+        if available == []:
+            print(colored("No sites are available. Please double check your config (and preset if used). If you think this is an error please report it on github.", "red"))
+            sleep(10)
+            exit(0)
+
         questions = [
         inquirer.Checkbox('selections',
                             message=colored("What sites do you want to upload too?", "green"),
@@ -253,6 +263,16 @@ if __name__ == '__main__':
 """
 If you are reading this then beware of wild notes and a rubber duck i let running loose in these lines.
 
+TODO: Might be just me but this code is dog shit
+TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
+TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
+TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead.
+TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
+TODO: Fix Loading api key issue if none is present
+TODO: Add presets system
+TODO: Quack
+TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
+
 # TODO: Might be just me but this code is dog shit
 # TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
 # TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
@@ -264,6 +284,7 @@ If you are reading this then beware of wild notes and a rubber duck i let runnin
 # TODO: Quack
 # TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code. This should also make it easier to maintain
 # TODO: I told myself i would fix my sleep schedule to improve my productivity. Its now 2am and i surely failed to follow that plan at least 20 times. Fuck me..
+
 """
 
 """

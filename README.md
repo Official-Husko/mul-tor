@@ -60,6 +60,7 @@ Site | API | API Key Required | Max File Size
 [LitterBox][170] | [Yes][171] | No | 1 GB
 [Keep.sh][172] | No | No | 500 MB
 [TempSend][173] | No | No | 2 GB
+[UsersDrive][100] | No | No | 2 GB
 [Rapidgator][174] | [Yes][174] | [Yes][175] | ?
 
 <br />
@@ -86,7 +87,7 @@ None Currently :)
   [UploadHaven][115] | No | No | 50 GB | Paid/Invite Only
   [Terminal][116] | No | No | ? | Invite Only
   [UpToBox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
-  [SendGB][119] | No | No | 5 GB | Links are funky and garbage upload system
+  [SendGB][119] | No | No | 5 GB | [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
   [Qiwi.gg][126] | No | No | ? | Really Complicated system
   [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
@@ -230,7 +231,7 @@ None Currently :)
 [97]: https://cyberdrop.me/
 [98]: https://transfer.sh/
 [99]: https://k2s.cc/
-[100]: https://rapidgator.net/
+[100]: https://usersdrive.com/
 [101]: https://1fichier.com/
 [102]: https://download.gg/
 [103]: https://torrentfreak.com/file-hosting-icon-anonfiles-throws-in-the-towel-domain-for-sale-230817/
@@ -303,6 +304,8 @@ None Currently :)
 [171]: https://litterbox.catbox.moe/tools.php
 [172]: https://keep.sh/
 [173]: https://tempsend.com/
+[174]: https://rapidgator.net/
+[175]: https://rapidgator.net/article/api/
 
 <br />
 
