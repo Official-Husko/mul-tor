@@ -213,7 +213,8 @@ class Main:
                         "UsersDrive": UsersDrive,
                         "Rapidgator": Rapidgator,
                         "FileStore": FileStore,
-                        "WDHO": WDHO
+                        "WDHO": WDHO,
+                        "Filesadmin": Filesadmin
                     }
 
                     if site in uploader_classes:

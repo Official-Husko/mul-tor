@@ -283,6 +283,14 @@ sites_data_dict = {
         "size_limit": 5,
         "size_unit": "GB"
     },
+    "Filesadmin": {
+        "apiKey": False,
+        "url": "https://filesadmin.com/ajax/file_upload_handler",
+        "api_url": "https://filesadmin.com/",
+        "download_url_base": "https://filesadmin.com/",
+        "size_limit": 3,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

@@ -64,6 +64,7 @@ Site | API | API Key Required | Max File Size
 [Rapidgator][174] | [Yes][174] | [Yes][175] | ?
 [Filestore.me][176] | No | [Yes][177] | ?
 [WDHO][180] | No | No | 5 GB
+[Filesadmin][181] | No | No | 3 GB
 
 <br />
 
@@ -312,6 +313,7 @@ None Currently :)
 [178]: https://app.bunkrr.su/
 [179]: https://app.bunkrr.su/dashboard
 [180]: https://wdho.ru/
+[181]: https://filesadmin.com/
 
 <br />
 
