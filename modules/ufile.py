@@ -24,6 +24,7 @@ class uFile:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -59,9 +60,9 @@ class uFile:
 
                 raw_req = requests.post(url=server_url, headers=headers, proxies=proxies, timeout=50)
 
-                req = raw_req.json()
+                raw_req = raw_req.json()
 
-                storage_server = req.get("storageBaseUrl", "")
+                storage_server = raw_req.get("storageBaseUrl", "")
 
                 initialize_url = sites_data_dict[site]["initialize_url"].format(server=storage_server)
 
@@ -71,8 +72,8 @@ class uFile:
 
                 raw_req = requests.post(url=initialize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
 
-                req = raw_req.json()
-                file_id = req.get("fuid", "")
+                raw_req = raw_req.json()
+                file_id = raw_req.get("fuid", "")
 
                 with open(file, 'rb') as file_data:
                     while True:
@@ -109,8 +110,8 @@ class uFile:
 
                 raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
 
-                req = raw_req.json()
-                download_url = req.get("url", "")
+                raw_req = raw_req.json()
+                download_url = raw_req.get("url", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}

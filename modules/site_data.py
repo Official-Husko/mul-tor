@@ -266,6 +266,15 @@ sites_data_dict = {
         "server_url": "https://rapidgator.net/api/v2/file/upload",
         "finalize_url": "https://rapidgator.net/api/v2/file/upload_info",
     },
+    "FileStore": {
+        "apiKey": True,
+        "url": "{server}",
+        "api_url": "https://filestore.me/",
+        "download_url_base": "https://filestore.me/",
+        "server_url": "https://filestore.me/?op=upload_form",
+        "size_limit": 100,
+        "size_unit": "MB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

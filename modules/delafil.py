@@ -11,7 +11,7 @@ site = "Delafil"
 class Delafil:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -35,9 +35,9 @@ class Delafil:
                 
                 raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
                 
-                req = raw_req.json()
+                raw_req = raw_req.json()
 
-                return {"status": "ok", "file_name": file_name, "file_url": req[0].get("url", "url went AWOL")}
+                return {"status": "ok", "file_name": file_name, "file_url": raw_req[0].get("url", "url went AWOL")}
             else:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 

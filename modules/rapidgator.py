@@ -15,7 +15,7 @@ site = "Rapidgator"
 class Rapidgator:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        raw_req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         status = "terrible"
         try:
             ua = random.choice(user_agents)

@@ -12,7 +12,7 @@ site = "Transfer"
 class Transfer:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"].format(file_name=os.path.basename(file))

@@ -27,6 +27,7 @@ class OneCloudFile:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -78,8 +79,8 @@ class OneCloudFile:
                         # Send the upload request with the form data, headers, and proxies
                         raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
 
-                req = raw_req.json()
-                download_url = req[0].get("url", "")
+                raw_req = raw_req.json()
+                download_url = raw_req[0].get("url", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}

@@ -53,4 +53,4 @@ class FileMail:
                 raise Exception("Wrong Response Code. View request body below or in log file.")
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

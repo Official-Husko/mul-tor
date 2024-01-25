@@ -25,6 +25,7 @@ class AnonTransfer:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             download_url_base = sites_data_dict[site]["download_url_base"]
             # Select a random user agent

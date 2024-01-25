@@ -13,7 +13,7 @@ site = "Krakenfiles"
 class Krakenfiles:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             download_url_base = sites_data_dict[site]["download_url_base"]

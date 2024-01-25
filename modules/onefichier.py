@@ -11,7 +11,7 @@ site = "1Fichier"
 class OneFichier:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             initialize_url = sites_data_dict[site]["initialize_url"]
@@ -47,8 +47,8 @@ class OneFichier:
 
                 raw_req = requests.get(url=finalize_url, headers={"User-Agent": ua, "JSON": "1"}, proxies=proxies)
 
-                req = raw_req.json()
-                download_url = req.get("links", [])[0].get("download", "")
+                raw_req = raw_req.json()
+                download_url = raw_req.get("links", [])[0].get("download", "")
 
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
