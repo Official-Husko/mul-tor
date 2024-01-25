@@ -210,5 +210,14 @@ sites_data_dict = {
         "download_url_base": "https://bayfiles.io/",
         "size_limit": 7,
         "size_unit": "GB"
-    }
+    },
+    "Bunkrr": {
+        "apiKey": True,
+        "url": "{server}",
+        "api_url": "https://app.bunkrr.su/",
+        "download_url_base": "https://bunkrr.ru/d/",
+        "server_url": "https://app.bunkrr.su/api/node",
+        "options_url": "https://app.bunkrr.su/api/check",
+        "finalize_url": "{server}/finishchunks"
+    },
 }

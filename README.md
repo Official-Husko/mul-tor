@@ -109,6 +109,7 @@ None Currently :)
   [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
   [Archive.org][159] | No | No | ∞ | I see no reason to add this
   [TransferNow][163] | No | No | 5 GB | Not worth the hassle
+  [Bunkrr][178] | [Yes][179] | [Yes][179] | 2GB | [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
 
 </details>
 
@@ -308,6 +309,8 @@ None Currently :)
 [175]: https://rapidgator.net/article/api/
 [176]: https://filestore.me/
 [177]: https://filestore.me/account/
+[178]: https://app.bunkrr.su/
+[179]: https://app.bunkrr.su/dashboard
 [180]: https://wdho.ru/
 
 <br />
