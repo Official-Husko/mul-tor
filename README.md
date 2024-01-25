@@ -62,6 +62,7 @@ Site | API | API Key Required | Max File Size
 [TempSend][173] | No | No | 2 GB
 [UsersDrive][100] | No | No | 2 GB
 [Rapidgator][174] | [Yes][174] | [Yes][175] | ?
+[Filestore.me][176] | No | [Yes][177] | ?
 
 <br />
 
