@@ -200,7 +200,8 @@ class Main:
                         "TempSend": TempSend,
                         "UsersDrive": UsersDrive,
                         "Rapidgator": Rapidgator,
-                        "FileStore": FileStore
+                        "FileStore": FileStore,
+                        "WDHO": WDHO
                     }
 
                     if site in uploader_classes:

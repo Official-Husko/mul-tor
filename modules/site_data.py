@@ -275,6 +275,14 @@ sites_data_dict = {
         "size_limit": 100,
         "size_unit": "MB"
     },
+    "WDHO": {
+        "apiKey": False,
+        "url": "https://wdho.ru/core/page/ajax/file_upload_handler.ajax.php",
+        "api_url": "https://wdho.ru/",
+        "download_url_base": "https://wdho.ru/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

@@ -63,6 +63,7 @@ Site | API | API Key Required | Max File Size
 [UsersDrive][100] | No | No | 2 GB
 [Rapidgator][174] | [Yes][174] | [Yes][175] | ?
 [Filestore.me][176] | No | [Yes][177] | ?
+[WDHO][180] | No | No | 5 GB
 
 <br />
 
@@ -307,6 +308,7 @@ None Currently :)
 [175]: https://rapidgator.net/article/api/
 [176]: https://filestore.me/
 [177]: https://filestore.me/account/
+[180]: https://wdho.ru/
 
 <br />
 
