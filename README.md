@@ -92,24 +92,22 @@ None Currently :)
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
   [Qiwi.gg][126] | No | No | ? | Really Complicated system
   [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [SendZcyph][129] | No | No | ? | Sockets stuff
   [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
   [BeeFiles][144] | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
   [SwissTransfer][147] | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
   [UploadBuzz][148] | No | No | ? | Website is down
   [pCloud][149] | [Yes][150] | No | 10 GB | Paid
-  [Wormhole][151] | No | No | 10 GB | Torrent System & Sockets stuff
-  [SendVis][152] | No | No | 2.5 GB | Torrent System & Sockets stuff
-  [Instant.io][153] | No | No | ? | Torrent System & Sockets stuff
-  [SendTresorit][154] | No | No | ? | Torrent System & Sockets stuff
-  [Sharrr][155] | No | No | ? | Torrent System & Sockets stuff
+  [Wormhole][151] | No | No | 10 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendVis][152] | No | No | 2.5 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Instant.io][153] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendTresorit][154] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Sharrr][155] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendZcyph][129] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
   [TransferXL][156] | No | No | 5 GB | Captchas Required
   [WeSendIt][157] | No | No | 2 GB | Can't figure out the upload system
   [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
   [Archive.org][159] | No | No | ∞ | I see no reason to add this
   [TransferNow][163] | No | No | 5 GB | Not worth the hassle
-  [HotDropp][96] | No | No | ? | Stuck on "In Maintenance" message
-  [FileDropper][88] | No | No | ? | Website is down
 
 </details>
 
@@ -307,6 +305,8 @@ None Currently :)
 [173]: https://tempsend.com/
 [174]: https://rapidgator.net/
 [175]: https://rapidgator.net/article/api/
+[176]: https://filestore.me/
+[177]: https://filestore.me/account/
 
 <br />
 
