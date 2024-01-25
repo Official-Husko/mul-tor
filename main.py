@@ -15,6 +15,14 @@ if sys.gettrace() is not None:
 else:
     DEBUG = False
 
+###
+# Things in this part are meant for debugging and toggling certaint things.
+use_test_file = True
+test_small_file = True
+test_large_file = False
+#
+###
+
 version = "1.3.0"
 owd = os.getcwd()
 platform = sys.platform
@@ -106,7 +114,13 @@ class Main:
             available = auto_load_data[0]
             link_format = auto_load_data[1]
 
-        if DEBUG == False:
+        if DEBUG == True and use_test_file == True:
+            if test_small_file == True:
+                files_list = [f"{owd}\\test.png"]
+            else:
+                files_list = [f"{owd}\\big_game.zip"]
+
+        else:
             amount_question = [
             inquirer.List('selection',
                                 message=colored("What file/s do you want to upload?", "green"),
@@ -133,8 +147,6 @@ class Main:
                 else:
                     print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
                     sleep(5)
-        else:
-            files_list = [f"{owd}\\test.png"]
         
         if available == []:
             print(colored("No sites are available. Please double check your config (and preset if used). If you think this is an error please report it on github.", "red"))
