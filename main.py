@@ -106,7 +106,7 @@ class Main:
             available = auto_load_data[0]
             link_format = auto_load_data[1]
 
-        if DEBUG == True:
+        if DEBUG == False:
             amount_question = [
             inquirer.List('selection',
                                 message=colored("What file/s do you want to upload?", "green"),
@@ -135,8 +135,6 @@ class Main:
                     sleep(5)
         else:
             files_list = [f"{owd}\\test.png"]
-
-        print(files_list)
         
         if available == []:
             print(colored("No sites are available. Please double check your config (and preset if used). If you think this is an error please report it on github.", "red"))
@@ -298,7 +296,6 @@ https://bestfile.io/en
 https://megaup.net/faq.html
 https://www.mirrored.to/
 https://www.similarsites.com/site/download.gg
-https://f95zone.to/threads/approved-file-hosts-updated-2023-12-24.3432/
 https://workupload.com/
 
 """
