@@ -83,7 +83,7 @@ class AnonTransfer:
                         upload_url = sites_data_dict[site]["url"]
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                         chunk_index += 1
                         dzchunkbyteoffset += chunk_size

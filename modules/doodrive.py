@@ -68,7 +68,7 @@ class DooDrive:
                     "file_size": file_size
                 }
                 # Send the upload request with the form data, headers, and proxies
-                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies)
+                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies, timeout=300)
 
                 # Parse the response JSON and get the download URL
                 init_resp = init_req.json()
@@ -103,7 +103,7 @@ class DooDrive:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                         req_resp = raw_req.json()
                         status = req_resp.get("status", "")

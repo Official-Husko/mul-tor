@@ -41,7 +41,7 @@ class BowFile:
                     "key2": api_key2
                 }
 
-                raw_auth = requests.post(url=auth_url, data=auth_data, headers=headers, proxies=proxies)
+                raw_auth = requests.post(url=auth_url, data=auth_data, headers=headers, proxies=proxies, timeout=300)
 
                 auth_resp = raw_auth.json()
                 access_token = auth_resp.get("data", {}).get("access_token", "")
@@ -63,7 +63,7 @@ class BowFile:
                     'upload_file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=form_data, files=file_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, data=form_data, files=file_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
                 download_url = response.get("data", [])[0].get("url", "")

@@ -296,8 +296,6 @@ Critical Tasks:
 
 TODO: Re-evaluate all deprecated sites.
 
-TODO: Check all upload code for "stream=True"
-
 TODO: add https://fastupload.io/en support then release 1.4.0 build
 
 these are here for later...

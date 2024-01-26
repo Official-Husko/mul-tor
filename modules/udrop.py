@@ -76,7 +76,7 @@ class uDrop:
                         upload_url = sites_data_dict[site]["url"]
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 raw_req = raw_req.json()
                 download_url = raw_req[0].get("url", "")

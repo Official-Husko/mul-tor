@@ -29,7 +29,7 @@ class OneFichier:
 
             if calc_size == "OK":
 
-                raw_server = requests.get(url=initialize_url, headers={"User-Agent": ua, "Content-Type": "application/json"}, proxies=proxies)
+                raw_server = requests.get(url=initialize_url, headers={"User-Agent": ua, "Content-Type": "application/json"}, timeout=300)
 
                 server_response = raw_server.json()
                 server_url = server_response.get("url", "")
@@ -41,7 +41,7 @@ class OneFichier:
                     'file[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
                 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(server=server_url, upload_id=file_id)
 

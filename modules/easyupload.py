@@ -82,7 +82,7 @@ class EasyUpload:
                     "files[]": file_uuid
                 }
                 # Send the upload request with the form data, headers, and proxies
-                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies)
+                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies, timeout=300)
 
                 # Parse the response JSON and get the download URL
                 match = re.search(pattern, init_req.text)
@@ -121,7 +121,7 @@ class EasyUpload:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                         chunk_index += 1
                         dzchunkbyteoffset += chunk_size

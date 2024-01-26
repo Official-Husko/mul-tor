@@ -31,7 +31,7 @@ class AnonymFile:
             headers = {"User-Agent": ua}
             proxies = random.choice(proxy_list) if proxy_list else None
 
-            raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies)
+            raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300)
 
             csrf_token_match = re.search(r'<meta name="csrf-token" content="(.*?)" />', raw_req.text)
 
@@ -61,7 +61,7 @@ class AnonymFile:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 if raw_req.status_code != 200:
                     raise Exception(f"Failed to upload file. Status Code {raw_req.status_code}. Report this!")

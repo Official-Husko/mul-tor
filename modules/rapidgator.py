@@ -72,7 +72,7 @@ class Rapidgator:
                     "token": token
                 }
                 
-                raw_req = requests.get(url=server_url, params=params, headers=headers, proxies=proxies)
+                raw_req = requests.get(url=server_url, params=params, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
 
@@ -91,7 +91,7 @@ class Rapidgator:
                             'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                         }
 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 raw_req = raw_req.json()
                 status = raw_req.get("status", "terrible")
@@ -111,7 +111,7 @@ class Rapidgator:
                 }
 
                 while True:
-                    raw_req = requests.get(url=finalize_url, params=params, headers=headers, proxies=proxies)
+                    raw_req = requests.get(url=finalize_url, params=params, headers=headers, proxies=proxies, timeout=300)
 
                     raw_req = raw_req.json()
                     status = raw_req.get("status", "terrible")

@@ -33,7 +33,7 @@ class FileBin:
             proxies = random.choice(proxy_list) if proxy_list else None
 
             with open(file, "rb") as file_upload:
-                raw_req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
                 file_upload.close()
             if raw_req.status_code == 201:
                 return {"status": "ok", "file_name": file_name, "file_url": rand_url}

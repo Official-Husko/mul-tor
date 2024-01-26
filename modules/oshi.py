@@ -30,7 +30,7 @@ class Oshi:
             if calc_size == "OK":
 
                 files_data = {'file': (os.path.basename(file), open(str(file), 'rb'), 'multipart/form-data')}
-                req = requests.post(url=upload_url, files=files_data, headers=headers, proxies=proxies)
+                req = requests.post(url=upload_url, files=files_data, headers=headers, proxies=proxies, timeout=300, stream=True)
             
                 if req.status_code == 200:
                     file_url = req.content.decode("utf-8").rsplit("\nDL: ")

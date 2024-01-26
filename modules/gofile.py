@@ -21,7 +21,7 @@ class GoFile:
 
             while True:
                 proxies = random.choice(proxy_list) if proxy_list else None
-                server_res = requests.get(url=server_url, headers=headers, proxies=proxies).json()
+                server_res = requests.get(url=server_url, headers=headers, proxies=proxies, timeout=300).json()
                 status = server_res.get("status", "noServer")
                 if status == "ok":
                     server = server_res["data"]["server"]
@@ -37,7 +37,7 @@ class GoFile:
             
             files_data = {'file': (os.path.basename(file), open(str(file), 'rb'), 'multipart/form-data')}
             
-            raw_req = requests.post(url=upload_url, files=files_data, headers=headers, proxies=proxies).json()
+            raw_req = requests.post(url=upload_url, files=files_data, headers=headers, proxies=proxies, timeout=300, stream=True).json()
             
             if raw_req["status"] != "ok":
                 raise Exception(raw_req["status"])

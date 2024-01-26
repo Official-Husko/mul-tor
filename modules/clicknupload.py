@@ -51,7 +51,7 @@ class ClicknUpload:
             # Get the upload server
             normal_url = sites_data_dict[site]["api_url"]
             
-            raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300)
+            raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300, stream=True)
 
             pattern = r'https://(\w+\.clicknupload\.net)/cgi-bin/upload\.cgi'
             match = re.search(pattern, raw_req.text)

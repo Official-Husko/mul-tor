@@ -44,7 +44,7 @@ class MixDrop:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
                 file_id = response.get("result", {}).get("fileref", "")

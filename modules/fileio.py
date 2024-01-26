@@ -57,7 +57,7 @@ class Fileio:
                 }
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 # Parse the response JSON and get the download URL
                 token = raw_req.headers.get("x-file-io-anonymous-access-token", "")
@@ -79,7 +79,7 @@ class Fileio:
                 patch_url = sites_data_dict[site]["patch_url"].format(file_id=file_id)
 
                 # Send the patch request
-                patch_req = requests.patch(url=patch_url, json=json_data, headers=headers, proxies=proxies)
+                patch_req = requests.patch(url=patch_url, json=json_data, headers=headers, proxies=proxies, timeout=300)
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}
