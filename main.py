@@ -297,9 +297,6 @@ Critical Tasks:
 
 TODO: Re-evaluate all deprecated sites.
 
-TODO: Fix ClicknUpload
-[!] An error occurred while uploading the file test.png to ClicknUpload! Please report this. Exception: Expecting value: line 1 column 1 (char 0)
-
 TODO: Test HexUpload
 
 TODO: Fix Keep

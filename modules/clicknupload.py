@@ -1,6 +1,7 @@
 import requests
 import os
 import random
+import re
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
@@ -47,6 +48,19 @@ class ClicknUpload:
             # Select a random proxy, if available
             proxies = random.choice(proxy_list) if proxy_list else None
 
+            # Get the upload server
+            normal_url = sites_data_dict[site]["api_url"]
+            
+            raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50)
+
+            pattern = r'https://(\w+\.clicknupload\.net)/cgi-bin/upload\.cgi'
+            match = re.search(pattern, raw_req.text)
+
+            if match:
+                upload_url = match.group(0)
+            else:
+                raise Exception("Server URL Missing. Report this!")
+
             if calc_size == "OK":
                 upload_data = {
                     "utype": "anon",
@@ -59,8 +73,6 @@ class ClicknUpload:
                 form_data = {
                             'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                         }
-
-                upload_url = sites_data_dict[site]["url"]
 
                 # Send the upload request with the form data, headers, and proxies
                 raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)

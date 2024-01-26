@@ -141,7 +141,7 @@ sites_data_dict = {
     },
     "ClicknUpload": {
         "apiKey": False,
-        "url": "https://mover04.clicknupload.net/cgi-bin/upload.cgi",
+        "url": "{server}",
         "api_url": "https://clicknupload.click",
         "download_url_base": "https://clicknupload.vip/",
         "size_limit": 2,
