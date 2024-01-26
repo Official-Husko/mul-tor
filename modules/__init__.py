@@ -43,6 +43,5 @@ from .keep import Keep
 from .tempsend import TempSend
 from .usersdrive import UsersDrive
 from .rapidgator import Rapidgator
-from .filestore import FileStore
 from .wdho import WDHO
 from .filesadmin import Filesadmin
