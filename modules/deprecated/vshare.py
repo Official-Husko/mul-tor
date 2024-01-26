@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "vShare"
 
+"""
+
+"vShare": {
+    "apiKey": False,
+    "url": "https://api.vshare.is/upload",
+    "api_url": "https://api.vshare.is/",
+    "download_url_base": "https://vshare.is/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class vShare:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

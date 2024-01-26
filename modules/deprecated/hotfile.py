@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "HotFile"
 
+"""
+
+"HotFile": {
+    "apiKey": False,
+    "url": "https://api.hotfile.io/upload",
+    "api_url": "https://api.hotfile.io/",
+    "download_url_base": "https://hotfile.io/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class HotFile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

@@ -5,6 +5,20 @@ import random
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 
+"""
+
+"AnonFiles": {
+    "apiKey": False,
+    "url": "https://api.anonfiles.com/upload",
+    "api_url": "https://api.anonfiles.com/",
+    "download_url_base": "https://anonfiles.com/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+}
+
+"""
+
 site = "AnonFiles"
 
 class AnonFiles:

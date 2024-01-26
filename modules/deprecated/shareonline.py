@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "ShareOnline"
 
+"""
+
+"ShareOnline": {
+    "apiKey": False,
+    "url": "https://api.share-online.is/upload",
+    "api_url": "https://api.share-online.is/",
+    "download_url_base": "https://share-online.is/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class ShareOnline:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

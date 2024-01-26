@@ -23,6 +23,7 @@
 * Progress Bar
 * Auto Updater
 * Site Presets
+* Over 35+ Sites Supported
 
 <br />
 

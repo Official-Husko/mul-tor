@@ -11,8 +11,26 @@ site = "FileTransfer"
 
 """
 
+"FileTransfer": {
+    "apiKey": False,
+    "url": "{server}",
+    "api_url": "https://filetransfer.io/",
+    "download_url_base": "https://filetransfer.io/data-package/",
+    "server_url": "https://filetransfer.io/api/v1/upload",
+    "initialize_url": "https://filetransfer.io/start-upload",
+    "finalize_url": "{final_url}",
+    "size_limit": 6,
+    "size_unit": "GB"
+},
+
+"""
+
+"""
+
 Throws 415 errors even tho it should all be correct. wasted too much time for something this poorly coded. 
 To whoever made this site and system go fuck yourself and do us all a favor and stop coding things.
+
+~ An edit 3 months later. I was a bit angry yes.
 
 """
 

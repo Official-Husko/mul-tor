@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "BayFiles"
 
+"""
+
+"BayFiles": {
+    "apiKey": False,
+    "url": "https://api.bayfiles.com/upload",
+    "api_url": "https://api.bayfiles.com/",
+    "download_url_base": "https://bayfiles.com/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+}
+
+"""
+
 class BayFiles:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

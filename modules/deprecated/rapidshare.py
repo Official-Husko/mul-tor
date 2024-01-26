@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "RapidShare"
 
+"""
+
+"RapidShare": {
+    "apiKey": False,
+    "url": "https://api.rapidshare.nu/upload",
+    "api_url": "https://api.rapidshare.nu/",
+    "download_url_base": "https://rapidshare.nu/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class RapidShare:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

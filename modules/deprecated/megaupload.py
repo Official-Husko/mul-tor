@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "MegaUpload"
 
+"""
+
+"MegaUpload": {
+    "apiKey": False,
+    "url": "https://api.megaupload.nz/upload",
+    "api_url": "https://api.megaupload.nz/",
+    "download_url_base": "https://megaupload.nz/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class MegaUpload:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
@@ -34,4 +48,4 @@ class MegaUpload:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}req}req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

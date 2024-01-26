@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "LolaBits"
 
+"""
+
+"LolaBits": {
+    "apiKey": False,
+    "url": "https://api.lolabits.se/upload",
+    "api_url": "https://api.lolabits.se/",
+    "download_url_base": "https://lolabits.se/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class LolaBits:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

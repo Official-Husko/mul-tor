@@ -7,6 +7,19 @@ from .pretty_print import *
 
 site = "OpenLoad"
 
+"""
+"OpenLoad": {
+    "apiKey": False,
+    "url": "https://api.openload.cc/upload",
+    "api_url": "https://api.openload.cc/",
+    "download_url_base": "https://openload.cc/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+}
+
+"""
+
 class OpenLoad:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

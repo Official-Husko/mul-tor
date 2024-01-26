@@ -23,7 +23,7 @@ test_large_file = False
 #
 ###
 
-version = "1.3.0"
+version = "1.4.0"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -49,7 +49,10 @@ class Main:
     def startup():
         if platform == "win32":
             os.system("cls")
-            windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version}")
+            if DEBUG == True:
+                windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version} - Development Build")
+            else:
+                windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version}")
         print(logo)
 
         if DEBUG == True:
@@ -109,7 +112,7 @@ class Main:
         enable_preset_selection = config.get("presetSystem", {}).get("enablePresetSelection", False)
         preset_name = config.get("presetSystem", {}).get("presetName", "")
 
-        if auto_load_preset == True:
+        if auto_load_preset == True and DEBUG == False:
             auto_load_data = Preset_Manager.loader(available, preset_name)
             available = auto_load_data[0]
             link_format = auto_load_data[1]
@@ -155,7 +158,7 @@ class Main:
 
         questions = [
         inquirer.Checkbox('selections',
-                            message=colored("What sites do you want to upload too?", "green"),
+                            message=f"{colored('What sites do you want to upload too?', 'green')} {colored(f'{len(available)} available', 'yellow')}",
                             choices=available,
                             ),
         ]
@@ -285,6 +288,12 @@ TODO: Fix Loading api key issue if none is present
 TODO: Add presets system
 TODO: Quack
 TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
+
+
+Critical Tasks:
+
+TODO: Re-evaluate all deprecated sites.
+
 
 these are here for later...
 https://uplodea.com/en

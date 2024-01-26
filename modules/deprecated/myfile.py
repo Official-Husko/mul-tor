@@ -7,6 +7,20 @@ from .pretty_print import *
 
 site = "MyFile"
 
+"""
+
+"MyFile": {
+    "apiKey": False,
+    "url": "https://api.myfile.is/upload",
+    "api_url": "https://api.myfile.is/",
+    "download_url_base": "https://myfile.is/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class MyFile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

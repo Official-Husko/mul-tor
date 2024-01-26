@@ -9,6 +9,19 @@ from main import DEBUG
 
 site = "GoFileCC"
 
+"""
+
+"GoFileCC": {
+    "apiKey": False,
+    "url": "https://gofile.cc/api/v1/upload",
+    "api_url": "https://gofile.cc/",
+    "download_url_base": "https://gofile.cc/",
+    "size_limit": 7,
+    "size_unit": "GB"
+},
+
+"""
+
 class GoFileCC:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

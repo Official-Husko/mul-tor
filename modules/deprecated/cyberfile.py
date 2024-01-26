@@ -9,6 +9,19 @@ from main import DEBUG
 
 site = "CyberFile"
 
+"""
+
+"CyberFile": {
+    "apiKey": False,
+    "url": "https://cyberfile.me/ajax/file_upload_handler",
+    "api_url": "https://cyberfile.me/",
+    "download_url_base": "https://cyberfile.me/",
+    "size_limit": 19,
+    "size_unit": "GB"
+},
+
+"""
+
 class CyberFile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

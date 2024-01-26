@@ -10,6 +10,23 @@ from main import DEBUG
 
 site = "Bunkrr"
 
+# https://github.com/Official-Husko/mul-tor/discussions/13
+
+"""
+
+"Bunkrr": {
+    "apiKey": True,
+    "url": "{server}",
+    "api_url": "https://app.bunkrr.su/",
+    "download_url_base": "https://bunkrr.ru/d/",
+    "server_url": "https://app.bunkrr.su/api/node",
+    "options_url": "https://app.bunkrr.su/api/check",
+    "finalize_url": "{server}/finishchunks"
+},
+
+"""
+
+
 class Bunkrr:
     def Uploader(file, proxy_list, user_agents, api_keys):
         """
