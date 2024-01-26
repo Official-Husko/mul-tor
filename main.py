@@ -218,7 +218,6 @@ class Main:
                         "TempSend": TempSend,
                         "UsersDrive": UsersDrive,
                         "Rapidgator": Rapidgator,
-                        "FileStore": FileStore,
                         "WDHO": WDHO,
                         "Filesadmin": Filesadmin
                     }
@@ -297,16 +296,9 @@ Critical Tasks:
 
 TODO: Re-evaluate all deprecated sites.
 
-TODO: Test HexUpload
+TODO: Check all upload code for "stream=True"
 
-TODO: Fix Keep
-[!] An error occurred while uploading the file test.png to Keep! Please report this. Exception: HTTPSConnectionPool(host='free.keep.sh', port=443): Max retries exceeded with url: /test.png (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001F1F0935F50>: Failed to resolve 'free.keep.sh' ([Errno 11004] getaddrinfo failed)"))
-
-TODO: Test Rapidgator
-[!] An error occurred while uploading the file test.png to Rapidgator! Please report this. Exception: Missing API Credentials?
-
-TODO: Fix FileStore
-[!] An error occurred while uploading the file test.png to FileStore! Please report this. Exception: name 'file_id' is not defined
+TODO: add https://fastupload.io/en support then release 1.4.0 build
 
 these are here for later...
 https://uplodea.com/en

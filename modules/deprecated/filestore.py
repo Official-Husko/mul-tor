@@ -9,6 +9,20 @@ from main import DEBUG
 
 site = "FileStore"
 
+"""
+
+"FileStore": {
+    "apiKey": True,
+    "url": "{server}",
+    "api_url": "https://filestore.me/",
+    "download_url_base": "https://filestore.me/",
+    "server_url": "https://filestore.me/?op=upload_form",
+    "size_limit": 100,
+    "size_unit": "MB"
+},
+
+"""
+
 class FileStore:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
