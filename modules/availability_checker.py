@@ -6,7 +6,7 @@ import random
 from .site_data import sites_data_dict
 from .logger import Logger
 from .pretty_print import *
-from main import DEBUG
+from main import DEBUG, SKIP_SITE_CHECK
 
 available_sites = []
 ping_sites = []
@@ -32,14 +32,19 @@ class Availability_Checker:
                 url = sites_data_dict[site]["api_url"]
                 proxies = random.choice(proxy_list) if proxy_list else None
                 
-                ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
-                
-                if ping.status_code == 200:
+
+                if DEBUG == True and SKIP_SITE_CHECK == True:
                     available_sites.append(site)
                 else:
-                    # Construct and save low level error
-                    error_str = f"Site ping for {site} Failed! Error Code {ping.status_code}"
-                    Logger.log_event(error_str, extra=str(ping))
+                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
+                
+                    if ping.status_code == 200:
+                        available_sites.append(site)
+                    else:
+                        # Construct and save low level error
+                        error_str = f"Site ping for {site} Failed! Error Code {ping.status_code}"
+                        Logger.log_event(error_str, extra=str(ping))
+            
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
                 # Construct the error
                 error_str = f"An error occurred while checking {site}! Please report this. Exception: {e}"

@@ -117,7 +117,7 @@ sites_data_dict = {
     },
     "1CloudFile": {
         "apiKey": False,
-        "url": "https://fs10.1cloudfile.com/ajax/file_upload_handler",
+        "url": "https://1cloudfile.com/ajax/file_upload_handler",
         "api_url": "https://1cloudfile.com/",
         "download_url_base": "https://1cloudfile.com/",
         "size_limit": 5,
@@ -125,7 +125,7 @@ sites_data_dict = {
     },
     "AnonymFile": {
         "apiKey": False,
-        "url": "https://anonymfile.com/api/v1/upload",
+        "url": "https://anonymfile.com/upload",
         "api_url": "https://anonymfile.com/",
         "download_url_base": "https://anonymfile.com/",
         "size_limit": 7,

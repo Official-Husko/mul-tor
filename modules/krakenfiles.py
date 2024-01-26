@@ -47,8 +47,6 @@ class Krakenfiles:
                 }
                 
                 raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
-                if DEBUG == True:
-                    print(raw_req.text)
 
                 response = raw_req.json()
 

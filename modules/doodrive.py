@@ -55,9 +55,10 @@ class DooDrive:
             api_key = api_keys.get("apiKey", False)
             api_token = api_keys.get("apiToken", False)
 
+            if api_key in (False, "") or api_token in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
-                if api_key == False and api_token == False:
-                    raise Exception("Missing API Keys?")
                     
                 # Prepare the form data for file upload
                 init_data = {

@@ -31,9 +31,10 @@ class BowFile:
             api_key1 = api_keys.get("apiKey1", False)
             api_key2 = api_keys.get("apiKey2", False)
 
+            if api_key1 in (False, "") or api_key2 in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
-                if api_key1 == False and api_key2 == False:
-                    raise Exception("Missing API Keys?")
 
                 auth_data = {
                     "key1": api_key1,

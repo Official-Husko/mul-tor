@@ -29,10 +29,16 @@ class MixDrop:
             headers = {"User-Agent": ua}
             proxies = random.choice(proxy_list) if proxy_list else None
 
+            api_email = api_keys.get("email", False)
+            api_key = api_keys.get("apiKey", False)
+
+            if api_email in (False, "") or api_key in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
                 data = {
-                    "email": api_keys.get("email"),
-                    "key": api_keys.get("apiKey"),
+                    "email": api_email,
+                    "key": api_key
                 }
                 form_data = {
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')

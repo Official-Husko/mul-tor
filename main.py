@@ -20,6 +20,7 @@ else:
 use_test_file = True
 test_small_file = True
 test_large_file = False
+SKIP_SITE_CHECK = True
 #
 ###
 
@@ -116,6 +117,8 @@ class Main:
             auto_load_data = Preset_Manager.loader(available, preset_name)
             available = auto_load_data[0]
             link_format = auto_load_data[1]
+        else:
+            link_format = ""
 
         if DEBUG == True and use_test_file == True:
             if test_small_file == True:
@@ -237,7 +240,7 @@ class Main:
                             with open("file_links.txt", "a") as file_links:
                                 file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
                             file_links.close()
-                            if auto_load_preset == True and link_format != "":
+                            if auto_load_preset == True and link_format != "" and DEBUG == False:
                                 with open("file_links_formatted.txt", "a") as formatted_links_file:
                                     formatted_links_file.writelines(f"{datetime.now()} | {site} | {file_name} - {link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site)}\n")
                                 formatted_links_file.close()
@@ -294,6 +297,19 @@ Critical Tasks:
 
 TODO: Re-evaluate all deprecated sites.
 
+TODO: Fix ClicknUpload
+[!] An error occurred while uploading the file test.png to ClicknUpload! Please report this. Exception: Expecting value: line 1 column 1 (char 0)
+
+TODO: Test HexUpload
+
+TODO: Fix Keep
+[!] An error occurred while uploading the file test.png to Keep! Please report this. Exception: HTTPSConnectionPool(host='free.keep.sh', port=443): Max retries exceeded with url: /test.png (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001F1F0935F50>: Failed to resolve 'free.keep.sh' ([Errno 11004] getaddrinfo failed)"))
+
+TODO: Test Rapidgator
+[!] An error occurred while uploading the file test.png to Rapidgator! Please report this. Exception: Missing API Credentials?
+
+TODO: Fix FileStore
+[!] An error occurred while uploading the file test.png to FileStore! Please report this. Exception: name 'file_id' is not defined
 
 these are here for later...
 https://uplodea.com/en
