@@ -36,7 +36,7 @@ class Availability_Checker:
                 if DEBUG == True and SKIP_SITE_CHECK == True:
                     available_sites.append(site)
                 else:
-                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
+                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=60)
                 
                     if ping.status_code == 200:
                         available_sites.append(site)

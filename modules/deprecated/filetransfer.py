@@ -134,7 +134,7 @@ class FileTransfer:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.patch(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.patch(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                         print(raw_req.status_code)
 
@@ -148,7 +148,7 @@ class FileTransfer:
                     "X-Requested-With": "XMLHttpRequest"
                 }
 
-                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=300)
                 print(raw_req.text)
 
                 upload_resp = raw_req.json()

@@ -103,7 +103,7 @@ class DooDrive:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                         req_resp = raw_req.json()
                         status = req_resp.get("status", "")
@@ -120,7 +120,7 @@ class DooDrive:
                     "chunks": total_chunks,
                 }
 
-                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=300)
 
                 req_resp = raw_req.json()
                 download_url = req_resp.get("data", {}).get("url", "")

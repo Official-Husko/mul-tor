@@ -57,7 +57,7 @@ class HexUpload:
 
                 normal_url = sites_data_dict[site]["api_url"]
 
-                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50, stream=True)
+                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 pattern = r'action\s*=\s*["\'](https?://[^\s"\']+)["\']'
                 match = re.search(pattern, raw_req.text)
@@ -81,7 +81,7 @@ class HexUpload:
                         }
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
 

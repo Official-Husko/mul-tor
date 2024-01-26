@@ -33,7 +33,7 @@ class UsersDrive:
 
             if calc_size == "OK":
 
-                raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=50)
+                raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=300)
 
                 pattern = r'https://d\d+\.userdrive\.me/cgi-bin/upload\.cgi\?upload_type=file'
                 match = re.search(pattern, raw_req.text)

@@ -24,7 +24,7 @@ class ProxyScraper():
             proxy_list = []
             for source in proxy_source_list:
                 sleep(1)
-                response = requests.get(source,headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"},timeout=10)
+                response = requests.get(source,headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"},timeout=30)
                 proxy_raw = response.text
                 split_proxies = proxy_raw.split()
                 for proxy in split_proxies:

@@ -41,7 +41,7 @@ class Rapidgator:
                 "password": api_password
             }
 
-            raw_req = requests.get(url=initialize_url, headers={"User-Agent": ua}, proxies=proxies, timeout=50, params=params)
+            raw_req = requests.get(url=initialize_url, headers={"User-Agent": ua}, proxies=proxies, timeout=300, params=params)
 
             raw_req = raw_req.json()
 

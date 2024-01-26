@@ -61,7 +61,7 @@ class CatBox:
                 upload_url = sites_data_dict[site]["url"]
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)
+                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 if download_url_base in raw_req.text:
                     download_url = raw_req.text

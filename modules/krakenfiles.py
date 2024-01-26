@@ -33,7 +33,7 @@ class Krakenfiles:
             if calc_size == "OK":
                 normal_url = sites_data_dict[site]["api_url"]
 
-                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300)
 
                 pattern = r'https://uploads\d+\.krakenfiles\.com/_uploader/gallery/upload'
                 match = re.search(pattern, raw_req.text)

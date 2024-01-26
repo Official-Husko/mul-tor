@@ -58,7 +58,7 @@ class uFile:
 
                 server_url = sites_data_dict[site]["server_url"]
 
-                raw_req = requests.post(url=server_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=server_url, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
 
@@ -70,7 +70,7 @@ class uFile:
                     "file_size": file_size
                 }
 
-                raw_req = requests.post(url=initialize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=initialize_url, data=upload_data, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
                 file_id = raw_req.get("fuid", "")
@@ -95,7 +95,7 @@ class uFile:
                         upload_url = sites_data_dict[site]["url"].format(server=storage_server)
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                         chunk_index += 1
 
@@ -108,7 +108,7 @@ class uFile:
                     "total_chunks": total_chunks
                 }
 
-                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
                 download_url = raw_req.get("url", "")

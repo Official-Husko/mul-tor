@@ -71,7 +71,7 @@ class Bunkrr:
                 "Accept": "application/json",
             }
 
-            raw_req = requests.get(url=options_url, headers=headers, proxies=proxies, timeout=50)
+            raw_req = requests.get(url=options_url, headers=headers, proxies=proxies, timeout=300)
             raw_req = raw_req.json()
 
             max_file_size = raw_req.get("maxSize", "0B")
@@ -118,7 +118,7 @@ class Bunkrr:
                     "token": api_token
                 }
 
-                raw_req = requests.get(url=server_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.get(url=server_url, headers=headers, proxies=proxies, timeout=300)
 
                 try:
                     raw_req = raw_req.json()
@@ -155,7 +155,7 @@ class Bunkrr:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                         raw_req = raw_req.json()
 
@@ -181,7 +181,7 @@ class Bunkrr:
 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(server=upload_url)
                 
-                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=300)
 
                 json_req = raw_req.json()
 
