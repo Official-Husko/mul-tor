@@ -107,7 +107,7 @@ class Bunkrr:
 
             if file_size <= max_file_size:
                 if file_extension in file_blacklist:
-                    raise Exception("File is blacklisted!")
+                    raise Exception(f"File is blacklisted! {file_blacklist}")
 
                 # Get server URL
                 server_url = sites_data_dict[site]["server_url"]

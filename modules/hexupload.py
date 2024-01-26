@@ -53,7 +53,7 @@ class HexUpload:
 
             if calc_size == "OK":
                 if file_extension in file_blacklist:
-                    raise Exception("File is blacklisted!")
+                    raise Exception(f"File is blacklisted! {file_blacklist}")
 
                 normal_url = sites_data_dict[site]["api_url"]
 
