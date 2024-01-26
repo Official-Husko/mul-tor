@@ -290,6 +290,14 @@ sites_data_dict = {
         "size_limit": 10,
         "size_unit": "GB"
     },
+    "CyberFile": {
+        "apiKey": False,
+        "url": "https://cyberfile.me/ajax/file_upload_handler",
+        "api_url": "https://cyberfile.me/",
+        "download_url_base": "https://cyberfile.me/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

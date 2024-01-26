@@ -46,3 +46,4 @@ from .rapidgator import Rapidgator
 from .wdho import WDHO
 from .filesadmin import Filesadmin
 from .fastupload import Fastupload
+from .cyberfile import CyberFile

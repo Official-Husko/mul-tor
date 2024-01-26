@@ -220,7 +220,8 @@ class Main:
                         "Rapidgator": Rapidgator,
                         "WDHO": WDHO,
                         "Filesadmin": Filesadmin,
-                        "Fastupload": Fastupload
+                        "Fastupload": Fastupload,
+                        "CyberFile": CyberFile
                     }
 
                     if site in uploader_classes:
@@ -291,13 +292,6 @@ TODO: Fix Loading api key issue if none is present
 TODO: Add presets system
 TODO: Quack
 TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
-
-
-Critical Tasks:
-
-TODO: Re-evaluate all deprecated sites.
-
-TODO: add https://fastupload.io/en support then release 1.4.0 build
 
 these are here for later...
 https://uplodea.com/en
