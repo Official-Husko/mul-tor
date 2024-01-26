@@ -10,6 +10,10 @@ from main import DEBUG
 site = "GoFileCC"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "GoFileCC": {
     "apiKey": False,

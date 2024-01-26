@@ -8,6 +8,10 @@ from .pretty_print import *
 site = "MegaUpload"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "MegaUpload": {
     "apiKey": False,

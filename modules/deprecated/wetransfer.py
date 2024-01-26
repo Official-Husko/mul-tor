@@ -14,6 +14,10 @@ from main import DEBUG
 site = "WeTransfer"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "WeTransfer": {
     "apiKey": False,

@@ -12,6 +12,10 @@ from main import DEBUG
 site = "FileMail"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 Shitty 2 uploads limit per day. Even the initializing counts as one.
 

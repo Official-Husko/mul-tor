@@ -8,6 +8,10 @@ from .pretty_print import *
 site = "OpenLoad"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 "OpenLoad": {
     "apiKey": False,
     "url": "https://api.openload.cc/upload",

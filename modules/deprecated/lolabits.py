@@ -8,6 +8,10 @@ from .pretty_print import *
 site = "LolaBits"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "LolaBits": {
     "apiKey": False,

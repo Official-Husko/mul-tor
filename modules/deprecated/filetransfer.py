@@ -10,6 +10,10 @@ from main import DEBUG
 site = "FileTransfer"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "FileTransfer": {
     "apiKey": False,

@@ -8,6 +8,10 @@ from .pretty_print import *
 site = "HotFile"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 "HotFile": {
     "apiKey": False,

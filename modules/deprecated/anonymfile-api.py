@@ -10,7 +10,7 @@ from main import DEBUG
 site = "AnonymFile"
 
 """
-
+Last Checked 26/01/2024
 This is the API version of AnonymFile. They broke the API a while ago so i replaced it with the non-api variant for now.
 
 """
