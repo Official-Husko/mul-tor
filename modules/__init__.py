@@ -45,3 +45,4 @@ from .usersdrive import UsersDrive
 from .rapidgator import Rapidgator
 from .wdho import WDHO
 from .filesadmin import Filesadmin
+from .fastupload import Fastupload

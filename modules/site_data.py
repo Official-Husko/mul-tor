@@ -282,6 +282,14 @@ sites_data_dict = {
         "size_limit": 3,
         "size_unit": "GB"
     },
+    "Fastupload": {
+        "apiKey": False,
+        "url": "https://fastupload.io/upload",
+        "api_url": "https://fastupload.io/",
+        "download_url_base": "https://fastupload.io/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
