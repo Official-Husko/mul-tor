@@ -34,7 +34,6 @@ from .bowfile import BowFile
 from .hexupload import HexUpload
 from .usercloud import UserCloud
 from .doodrive import DooDrive
-from .udrop import uDrop
 from .ufile import uFile
 from .downloadgg import DownloadGG
 from .catbox import CatBox

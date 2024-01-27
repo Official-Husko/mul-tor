@@ -190,14 +190,6 @@ sites_data_dict = {
         "size_limit": 2,
         "size_unit": "GB"
     },
-    "uDrop": {
-        "apiKey": False,
-        "url": "https://www.udrop.com/ajax/file_upload_handler",
-        "api_url": "https://www.udrop.com/",
-        "download_url_base": "https://www.udrop.com/",
-        "size_limit": 10,
-        "size_unit": "GB"
-    },
     "uFile": {
         "apiKey": False,
         "url": "{server}v1/upload/chunk",

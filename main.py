@@ -209,7 +209,6 @@ class Main:
                         "HexUpload": HexUpload,
                         "UserCloud": UserCloud,
                         "DooDrive": DooDrive,
-                        "uDrop": uDrop,
                         "uFile": uFile,
                         "DownloadGG": DownloadGG,
                         "CatBox": CatBox,
@@ -298,25 +297,25 @@ https://uplodea.com/en
 https://fastupload.io/
 https://filepost.io/
 https://workupload.com/
-https://www.dropbox.com/features/share
+https://dropbox.com/features/share
 https://uploadnow.io/en
 https://uploadify.net/
-https://www.4shared.com/
-https://www.zipshare.com/
+https://4shared.com/
+https://zipshare.com/
 https://usaupload.com/
 https://fileroy.com/
 https://upfiles.com/
 https://file-up.org/
-https://www.mediafire.com/developers/
-https://www.dropsend.com/
+https://mediafire.com/developers/
+https://dropsend.com/
 https://surgesend.com/
-https://www.filesharing.com/
+https://filesharing.com/
 https://file.guru/en
 https://uploady.io/
 https://bestfile.io/en
 https://megaup.net/faq.html
-https://www.mirrored.to/
-https://www.similarsites.com/site/download.gg
+https://mirrored.to/
+https://similarsites.com/site/download.gg
 https://workupload.com/
 
 """
