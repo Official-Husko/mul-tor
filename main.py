@@ -113,6 +113,11 @@ class Main:
         enable_preset_selection = config.get("presetSystem", {}).get("enablePresetSelection", False)
         preset_name = config.get("presetSystem", {}).get("presetName", "")
 
+        if auto_load_preset == True and not os.path.exists(f"presets/{preset_name}"):
+            print(colored(f"Error: Preset {preset_name} does not exist. Continuing without preset!", "red"))
+            print("")
+            auto_load_preset = False
+
         if auto_load_preset == True and DEBUG == False:
             auto_load_data = Preset_Manager.loader(available, preset_name)
             available = auto_load_data[0]

@@ -57,7 +57,6 @@ class Rapidgator:
             if file_size <= max_file_size and space_left > file_size:
 
                 md5_hash = hashlib.md5()
-
                 with open(os.path.basename(file), "rb") as file_hc:
                     # Read the file in chunks to handle large files
                     for chunk in iter(lambda: file_hc.read(4096), b""):
@@ -71,13 +70,14 @@ class Rapidgator:
                     "size": file_size,
                     "token": token
                 }
-                
+
                 raw_req = requests.get(url=server_url, params=params, headers=headers, proxies=proxies, timeout=300)
 
                 raw_req = raw_req.json()
 
                 upload_id = raw_req.get("response", {}).get("upload", {}).get("upload_id", "No_UploadID")
                 upload_url = raw_req.get("response", {}).get("upload", {}).get("url", "No_UploadURL")
+                state = raw_req.get("response", {}).get("upload", {}).get("state", 99)
                 status = raw_req.get("status", "terrible")
                 details = raw_req.get("details", "No_Details")
 
@@ -86,6 +86,9 @@ class Rapidgator:
                         raise Exception(details)
                     except Exception as e:
                         raise Exception("Shit failed spectacularly. Please report this. " + str(e))
+                elif state == 2:
+                    download_url = raw_req.get("response", {}).get("upload", {}).get("file", {}).get("url", "No_FileURL")
+                    return {"status": "ok", "file_name": file_name, "file_url": download_url}
 
                 form_data = {
                             'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
