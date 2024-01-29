@@ -12,7 +12,7 @@ site = "MixDrop"
 class MixDrop:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -29,16 +29,22 @@ class MixDrop:
             headers = {"User-Agent": ua}
             proxies = random.choice(proxy_list) if proxy_list else None
 
+            api_email = api_keys.get("email", False)
+            api_key = api_keys.get("apiKey", False)
+
+            if api_email in (False, "") or api_key in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
                 data = {
-                    "email": api_keys.get("email"),
-                    "key": api_keys.get("apiKey"),
+                    "email": api_email,
+                    "key": api_key
                 }
                 form_data = {
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, data=data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
                 file_id = response.get("result", {}).get("fileref", "")

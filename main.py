@@ -15,7 +15,16 @@ if sys.gettrace() is not None:
 else:
     DEBUG = False
 
-version = "1.3.0"
+###
+# Things in this part are meant for debugging and toggling certaint things.
+use_test_file = True
+test_small_file = True
+test_large_file = False
+SKIP_SITE_CHECK = True
+#
+###
+
+version = "1.4.0"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -41,7 +50,10 @@ class Main:
     def startup():
         if platform == "win32":
             os.system("cls")
-            windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version}")
+            if DEBUG == True:
+                windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version} - Development Build")
+            else:
+                windll.kernel32.SetConsoleTitleW(f"Mul-Tor | v{version}")
         print(logo)
 
         if DEBUG == True:
@@ -86,7 +98,12 @@ class Main:
         if DEBUG == True:
             print(available)
 
-        
+        if not os.path.exists("presets"):
+            os.mkdir("presets")
+        if not os.path.exists(f"presets/readme.txt"):
+            with open("presets\\readme.txt", "a") as readme:
+                text = "To create your own preset visit the wiki here: https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration"
+                readme.write(text)
 
         return config, available, proxy_list, ua_list
         
@@ -96,41 +113,60 @@ class Main:
         enable_preset_selection = config.get("presetSystem", {}).get("enablePresetSelection", False)
         preset_name = config.get("presetSystem", {}).get("presetName", "")
 
-        if auto_load_preset == True:
+        if auto_load_preset == True and not os.path.exists(f"presets/{preset_name}"):
+            print(colored(f"Error: Preset {preset_name} does not exist. Continuing without preset!", "red"))
+            print("")
+            auto_load_preset = False
+
+        if auto_load_preset == True and DEBUG == False:
             auto_load_data = Preset_Manager.loader(available, preset_name)
             available = auto_load_data[0]
             link_format = auto_load_data[1]
-            print(auto_load_data)
+        else:
+            link_format = ""
 
-        amount_question = [
-        inquirer.List('selection',
-                            message=colored("What file/s do you want to upload?", "green"),
-                            choices=["Single", "Multiple"],
-                            ),
-        ]
-        amount_answers = inquirer.prompt(amount_question)
-        print("")
-        sites = amount_answers.get("selection")
-
-        files_list = []
-        while len(files_list) == 0 or files_list == [[]]:
-            files_list = [] # Reset it
-            if amount_answers.get("selection") == "Single":
-                files_list = plyer.filechooser.open_file()
-            elif amount_answers.get("selection") == "Multiple":
-                fn = plyer.filechooser.choose_dir()
-                fn = fn[0]
-                files_in_folder = os.listdir(fn)
-                for found_file in files_in_folder:
-                    if os.path.isdir(f"{fn}\\{found_file}") != True:
-                        files_list.append(f"{fn}\\{found_file}")
+        if DEBUG == True and use_test_file == True:
+            if test_small_file == True:
+                files_list = [f"{owd}\\test.png"]
             else:
-                print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
-                sleep(5)
+                files_list = [f"{owd}\\big_game.zip"]
+
+        else:
+            amount_question = [
+            inquirer.List('selection',
+                                message=colored("What file/s do you want to upload?", "green"),
+                                choices=["Single", "Multiple"],
+                                ),
+            ]
+            amount_answers = inquirer.prompt(amount_question)
+            print("")
+            sites = amount_answers.get("selection")
+
         
+            files_list = []
+            while len(files_list) == 0 or files_list == [[]]:
+                files_list = [] # Reset it
+                if amount_answers.get("selection") == "Single":
+                    files_list = plyer.filechooser.open_file()
+                elif amount_answers.get("selection") == "Multiple":
+                    fn = plyer.filechooser.choose_dir()
+                    fn = fn[0]
+                    files_in_folder = os.listdir(fn)
+                    for found_file in files_in_folder:
+                        if os.path.isdir(f"{fn}\\{found_file}") != True:
+                            files_list.append(f"{fn}\\{found_file}")
+                else:
+                    print(colored("Something fucked up! Please report this on github. Selection_Error", "red"))
+                    sleep(5)
+        
+        if available == []:
+            print(colored("No sites are available. Please double check your config (and preset if used). If you think this is an error please report it on github.", "red"))
+            sleep(10)
+            exit(0)
+
         questions = [
         inquirer.Checkbox('selections',
-                            message=colored("What sites do you want to upload too?", "green"),
+                            message=f"{colored('What sites do you want to upload too?', 'green')} {colored(f'{len(available)} available', 'yellow')}",
                             choices=available,
                             ),
         ]
@@ -178,13 +214,18 @@ class Main:
                         "HexUpload": HexUpload,
                         "UserCloud": UserCloud,
                         "DooDrive": DooDrive,
-                        "uDrop": uDrop,
                         "uFile": uFile,
                         "DownloadGG": DownloadGG,
                         "CatBox": CatBox,
                         "LitterBox": LitterBox,
                         "Keep": Keep,
-                        "TempSend": TempSend
+                        "TempSend": TempSend,
+                        "UsersDrive": UsersDrive,
+                        "Rapidgator": Rapidgator,
+                        "WDHO": WDHO,
+                        "Filesadmin": Filesadmin,
+                        "Fastupload": Fastupload,
+                        "CyberFile": CyberFile
                     }
 
                     if site in uploader_classes:
@@ -204,7 +245,7 @@ class Main:
                             with open("file_links.txt", "a") as file_links:
                                 file_links.writelines(f"{datetime.now()} | {site} | {file_name} - {file_url}\n")
                             file_links.close()
-                            if auto_load_preset == True and link_format != "":
+                            if auto_load_preset == True and link_format != "" and DEBUG == False:
                                 with open("file_links_formatted.txt", "a") as formatted_links_file:
                                     formatted_links_file.writelines(f"{datetime.now()} | {site} | {file_name} - {link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site)}\n")
                                 formatted_links_file.close()
@@ -246,17 +287,42 @@ if __name__ == '__main__':
 """
 If you are reading this then beware of wild notes and a rubber duck i let running loose in these lines.
 
-# TODO: Might be just me but this code is dog shit
-# TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
-# TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
-# TODO: Find a way to change the colors for the selection windows.
-# TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead.
-# TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
-# TODO: Fix Loading api key issue if none is present
-# TODO: Add presets system
-# TODO: Quack
-# TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code. This should also make it easier to maintain
-# TODO: I told myself i would fix my sleep schedule to improve my productivity. Its now 2am and i surely failed to follow that plan at least 20 times. Fuck me..
+TODO: Might be just me but this code is dog shit
+TODO: Multiply time and space by 12 then divide by 25 for accurate quantum physics inside of VS Codium
+TODO: add a working progress bar to each upload. Possible solution https://stackoverflow.com/questions/13909900/progress-of-python-requests-post
+TODO: Finish this so i can start learning Rust *Turns out im too retarded for Rust*. Im learning Godot instead.
+TODO: Since September 12th 2023 and even before that to be honest i've had a special note to unity. GO FUCK YOURSELF.
+TODO: Fix Loading api key issue if none is present
+TODO: Add presets system
+TODO: Quack
+TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
+
+these are here for later...
+https://uplodea.com/en
+https://fastupload.io/
+https://filepost.io/
+https://workupload.com/
+https://dropbox.com/features/share
+https://uploadnow.io/en
+https://uploadify.net/
+https://4shared.com/
+https://zipshare.com/
+https://usaupload.com/
+https://fileroy.com/
+https://upfiles.com/
+https://file-up.org/
+https://mediafire.com/developers/
+https://dropsend.com/
+https://surgesend.com/
+https://filesharing.com/
+https://file.guru/en
+https://uploady.io/
+https://bestfile.io/en
+https://megaup.net/faq.html
+https://mirrored.to/
+https://similarsites.com/site/download.gg
+https://workupload.com/
+
 """
 
 """

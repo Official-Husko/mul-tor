@@ -10,6 +10,23 @@ from main import DEBUG
 site = "Up2Share"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
+
+"Up2Share": {
+    "apiKey": False,
+    "url": "https://up2sha.re/upload",
+    "api_url": "https://up2sha.re/",
+    "download_url_base": "https://up2sha.re/file?f=",
+    "size_limit": 1,
+    "size_unit": "GB"
+},
+
+"""
+
+"""
 This file is marked as deprecated due to a 400 error when uploading files after chunk 0.
 I can't figure out why it does that
 

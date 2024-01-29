@@ -7,6 +7,24 @@ from .pretty_print import *
 
 site = "FileChan"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"FileChan": {
+    "apiKey": False,
+    "url": "https://api.filechan.org/upload",
+    "api_url": "https://api.filechan.org/",
+    "download_url_base": "https://filechan.org/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class FileChan:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
@@ -34,4 +52,4 @@ class FileChan:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

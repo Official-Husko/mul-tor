@@ -12,7 +12,7 @@ site = "Transfer"
 class Transfer:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"].format(file_name=os.path.basename(file))
@@ -33,7 +33,7 @@ class Transfer:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.put(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.put(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 if raw_req.status_code == 200:
                     return {"status": "ok", "file_name": file_name, "file_url": str(raw_req.text)}

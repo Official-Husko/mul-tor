@@ -12,7 +12,7 @@ site = "FileSi"
 class FileSi:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -33,7 +33,7 @@ class FileSi:
                     'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
                 download_url = response.get("data", {}).get("file", {}).get("url", {}).get("short", "")

@@ -14,6 +14,7 @@ site = "FileBin"
 class FileBin:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -32,13 +33,13 @@ class FileBin:
             proxies = random.choice(proxy_list) if proxy_list else None
 
             with open(file, "rb") as file_upload:
-                req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=rand_url, data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
                 file_upload.close()
-            if req.status_code == 201:
+            if raw_req.status_code == 201:
                 return {"status": "ok", "file_name": file_name, "file_url": rand_url}
             else:
-                raise Exception(req.status_code)
+                raise Exception(raw_req.status_code)
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req.content}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 

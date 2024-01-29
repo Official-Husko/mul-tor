@@ -13,7 +13,7 @@ site = "Krakenfiles"
 class Krakenfiles:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             download_url_base = sites_data_dict[site]["download_url_base"]
@@ -33,7 +33,7 @@ class Krakenfiles:
             if calc_size == "OK":
                 normal_url = sites_data_dict[site]["api_url"]
 
-                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300)
 
                 pattern = r'https://uploads\d+\.krakenfiles\.com/_uploader/gallery/upload'
                 match = re.search(pattern, raw_req.text)
@@ -46,9 +46,7 @@ class Krakenfiles:
                     'files[]': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
-                if DEBUG == True:
-                    print(raw_req.text)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
 

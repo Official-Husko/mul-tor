@@ -30,12 +30,12 @@ class PixelDrain:
 
             if calc_size == "OK":
                 with open(file, "rb") as file_upload:
-                    req = requests.put(url=upload_url, data=file_upload, headers=headers, proxies=proxies, stream=True).json()
+                    req = requests.put(url=upload_url, data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True).json()
                     file_upload.close()
                 return {"status": "ok", "file_name": file_name, "file_url": base_url + req['id']}
             else:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": size_limit}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 

@@ -2,14 +2,16 @@ import requests
 import os
 import random
 import uuid
+import re
+import json
 
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "AnonTransfer"
+site = "WDHO"
 
-class AnonTransfer:
+class WDHO:
      def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
@@ -27,7 +29,6 @@ class AnonTransfer:
         """
         raw_req = "None :("
         try:
-            download_url_base = sites_data_dict[site]["download_url_base"]
             # Select a random user agent
             ua = random.choice(user_agents)
 
@@ -43,58 +44,53 @@ class AnonTransfer:
             # Calculate the size unit for the site
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
 
-            # Set the user agent header
-            headers = {
-                "User-Agent": ua
-            }
-
             # Select a random proxy, if available
             proxies = random.choice(proxy_list) if proxy_list else None
 
-            file_uuid = str(uuid.uuid4())
-
             if calc_size == "OK":
 
-                chunk_size = 52428800  # 52.4288 MB
-                total_chunks = (file_size + chunk_size - 1) // chunk_size
-                chunk_index = 0
-                dzchunkbyteoffset = 0
+                chunk_size = 100000000  # 93 MB
+                chunk_position_before = -1
+                chunk_position_after = -1
 
                 with open(file, 'rb') as file_data:
                     while True:
                         chunk_data = file_data.read(chunk_size)
+                        chunk_length = len(chunk_data)
                         if not chunk_data:
                             break  # Exit the loop if we've reached the end of the file
                         
+                        chunk_position_before = chunk_position_after + 1
+                        chunk_position_after = chunk_position_before + chunk_length - 1
+
+                        # Set the user agent header
+                        headers = {
+                            "User-Agent": ua,
+                            "Accept": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Content-Range": f"bytes {chunk_position_before}-{chunk_position_after}/{file_size}"
+                        }
+
                         upload_data = {
-                            "dzuuid": file_uuid,
-                            "dzchunkindex": chunk_index,
-                            "dztotalfilesize": file_size,
-                            "dzchunksize": chunk_size,
-                            "dztotalchunkcount": total_chunks,
-                            "dzchunkbyteoffset": dzchunkbyteoffset
+                            "maxChunkSize": chunk_size
                         }
 
                         # Prepare the json data to add extra data to the upload
                         form_data = {
-                                    'file': (os.path.basename(file), chunk_data, 'application/octet-stream')
+                                    'files[]': (os.path.basename(file), chunk_data, 'application/octet-stream')
                                 }
 
+                        # Get the upload URL from the site data dictionary
                         upload_url = sites_data_dict[site]["url"]
 
                         # Send the upload request with the form data, headers, and proxies
                         raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
-                        chunk_index += 1
-                        dzchunkbyteoffset += chunk_size
-
-                json_req = raw_req.json()
-
-                name = json_req.get("name", "")
-                dir = json_req.get("dir", "")
+                raw_req = raw_req.json()
+                download_url = raw_req[0].get("url", "")
 
                 # Return successful message with the status, file name, file URL, and site
-                return {"status": "ok", "file_name": file_name, "file_url": f"{download_url_base}{dir}/{name}"}
+                return {"status": "ok", "file_name": file_name, "file_url": download_url}
             else:
                 # Return size error message
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}

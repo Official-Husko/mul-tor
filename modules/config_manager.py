@@ -6,7 +6,7 @@ import os
 from .pretty_print import *
 from .logger import Logger
 
-current_config_version = "1.3.0"
+current_config_version = "1.4.0"
 
 class Config_Manager:
     
@@ -61,6 +61,14 @@ class Config_Manager:
                     "MixDrop": {
                         "email": "",
                         "apiKey": ""
+                    },
+                    "Rapidgator": {
+                        "email": "",
+                        "password": ""
+                    },
+                    "FileStore": {
+                        "username": "",
+                        "password": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]

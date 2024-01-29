@@ -21,6 +21,7 @@ class Keep:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -52,7 +53,7 @@ class Keep:
 
             if calc_size == "OK":
                 with open(file, "rb") as file_upload:
-                    raw_req = requests.put(url=upload_url, data=file_upload, headers=headers, proxies=proxies, stream=True)
+                    raw_req = requests.put(url=upload_url, data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
                     file_upload.close()
 
                 if download_url_base in raw_req.text:

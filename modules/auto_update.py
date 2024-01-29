@@ -49,7 +49,7 @@ class AutoUpdate:
                 print("")
                 decision = amount_answers.get("selection")
                 if decision == "Yes":
-                    r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"}, timeout=5, stream=True)
+                    r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"}, timeout=60, stream=True)
                     with alive_bar(int(int(r.headers.get('content-length')) / 1024 + 1)) as bar:
                         bar.text = f'-> Downloading Update {repo_version}, please wait...'
                         file = open(f"mul-tor-{repo_version}.exe", 'wb')

@@ -7,6 +7,24 @@ from .pretty_print import *
 
 site = "RapidShare"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"RapidShare": {
+    "apiKey": False,
+    "url": "https://api.rapidshare.nu/upload",
+    "api_url": "https://api.rapidshare.nu/",
+    "download_url_base": "https://rapidshare.nu/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class RapidShare:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
@@ -34,4 +52,4 @@ class RapidShare:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

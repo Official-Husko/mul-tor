@@ -24,6 +24,7 @@ class FileUpload:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -62,7 +63,7 @@ class FileUpload:
                 upload_url = sites_data_dict[site]["url"]
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)
+                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 req = raw_req.json()
 

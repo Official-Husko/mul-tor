@@ -22,8 +22,8 @@ class HexUpload:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
-            raw_req = "which one of you maggots ate the fucking request huh?"
             file_blacklist = [".jpeg", ".jpg", ".png"]
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -53,11 +53,11 @@ class HexUpload:
 
             if calc_size == "OK":
                 if file_extension in file_blacklist:
-                    raise Exception("File is blacklisted!")
+                    raise Exception(f"File is blacklisted! {file_blacklist}")
 
                 normal_url = sites_data_dict[site]["api_url"]
 
-                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=50, stream=True)
+                raw_req = requests.get(url=normal_url, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 pattern = r'action\s*=\s*["\'](https?://[^\s"\']+)["\']'
                 match = re.search(pattern, raw_req.text)
@@ -81,11 +81,11 @@ class HexUpload:
                         }
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
-                req = raw_req.json()
+                raw_req = raw_req.json()
 
-                file_code = req[0].get("file_code", "")
+                file_code = raw_req[0].get("file_code", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url_base + file_code}

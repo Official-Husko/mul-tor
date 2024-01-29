@@ -13,6 +13,28 @@ from main import DEBUG
 
 site = "WeTransfer"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"WeTransfer": {
+    "apiKey": False,
+    "url": "{server}",
+    "api_url": "https://wetransfer.com/",
+    "download_url_base": "https://wetransfer.com/downloads/{file_id}/{security_hash}",
+    "announce_url": "https://wetransfer.com/api/v4/transfers/link",
+    "initialize_url": "https://storm-eu-west-1.wetransfer.net/api/v2/batch/preflight",
+    "prepare_blocks_url": "https://storm-eu-west-1.wetransfer.net/api/v2/blocks",
+    "check_status_url": "https://storm-eu-west-1.wetransfer.net/api/v2/batch",
+    "finalize_url": "https://wetransfer.com/api/v4/transfers/{file_id}/finalize",
+    "size_limit": 2,
+    "size_unit": "GB"
+},
+
+"""
+
 class WeTransfer:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

@@ -27,6 +27,7 @@ class OneCloudFile:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -55,16 +56,29 @@ class OneCloudFile:
             if calc_size == "OK":
 
                 chunk_size = 500000000  # 500 MB
+                chunk_position_before = -1
+                chunk_position_after = -1
 
                 with open(file, 'rb') as file_data:
                     while True:
                         chunk_data = file_data.read(chunk_size)
+                        chunk_length = len(chunk_data)
                         if not chunk_data:
                             break  # Exit the loop if we've reached the end of the file
                         
+                        chunk_position_before = chunk_position_after + 1
+                        chunk_position_after = chunk_position_before + chunk_length - 1
+
+                        # Set the user agent header
+                        headers = {
+                            "User-Agent": ua,
+                            "Accept": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Content-Range": f"bytes {chunk_position_before}-{chunk_position_after}/{file_size}"
+                        }
+
                         upload_data = {
-                            "maxChunkSize": chunk_size,
-                            "uploadSource": "file_manager"
+                            "maxChunkSize": chunk_size
                         }
 
                         # Prepare the json data to add extra data to the upload
@@ -76,10 +90,10 @@ class OneCloudFile:
                         upload_url = sites_data_dict[site]["url"]
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
-                req = raw_req.json()
-                download_url = req[0].get("url", "")
+                raw_req = raw_req.json()
+                download_url = raw_req[0].get("url", "")
 
                 # Return successful message with the status, file name, file URL, and site
                 return {"status": "ok", "file_name": file_name, "file_url": download_url}

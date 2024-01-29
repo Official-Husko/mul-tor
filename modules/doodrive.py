@@ -24,6 +24,7 @@ class DooDrive:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -54,9 +55,10 @@ class DooDrive:
             api_key = api_keys.get("apiKey", False)
             api_token = api_keys.get("apiToken", False)
 
+            if api_key in (False, "") or api_token in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
-                if api_key == False and api_token == False:
-                    raise Exception("Missing API Keys?")
                     
                 # Prepare the form data for file upload
                 init_data = {
@@ -66,7 +68,7 @@ class DooDrive:
                     "file_size": file_size
                 }
                 # Send the upload request with the form data, headers, and proxies
-                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies)
+                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies, timeout=300)
 
                 # Parse the response JSON and get the download URL
                 init_resp = init_req.json()
@@ -101,7 +103,7 @@ class DooDrive:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                         req_resp = raw_req.json()
                         status = req_resp.get("status", "")
@@ -118,7 +120,7 @@ class DooDrive:
                     "chunks": total_chunks,
                 }
 
-                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=finalize_url, data=upload_data, headers=headers, proxies=proxies, timeout=300)
 
                 req_resp = raw_req.json()
                 download_url = req_resp.get("data", {}).get("url", "")

@@ -9,6 +9,23 @@ from main import DEBUG
 
 site = "AnonFilesMe"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"AnonFilesMe": {
+    "apiKey": False,
+    "url": "https://anonfiles.me/api/v1/upload",
+    "api_url": "https://anonfiles.me/",
+    "download_url_base": "https://anonfiles.me/",
+    "size_limit": 7,
+    "size_unit": "GB"
+},
+
+"""
+
 class AnonFilesMe:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

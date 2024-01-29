@@ -4,8 +4,6 @@ import json
 class Preset_Manager:
 
     def loader(available, preset_name):
-        print("loader started")
-        print(os.getcwd())
         try:
             with open(f"presets/{preset_name}", "r") as preset_file:
                 preset = json.load(preset_file)

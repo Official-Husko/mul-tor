@@ -9,6 +9,23 @@ from .pretty_print import *
 from main import DEBUG
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
+
+"YourFileStore": {
+    "apiKey": False,
+    "url": "https://yourfilestore.com/upload",
+    "api_url": "https://yourfilestore.com/upload",
+    "download_url_base": "https://yourfilestore.com/download/",
+    "size_limit": 500,
+    "size_unit": "MB"
+},
+
+"""
+
+"""
 This worked perfectly before but they changed something in the uploading system.
 I tried to figure it out for half an hour or more but i was unable to figure it out.
 It says "some error occured" and that's it. Uploading on the site works but it can't be recreated in insomnia.

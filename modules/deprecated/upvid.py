@@ -7,6 +7,24 @@ from .pretty_print import *
 
 site = "UpVid"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"UpVid": {
+    "apiKey": False,
+    "url": "https://api.upvid.cc/upload",
+    "api_url": "https://api.upvid.cc/",
+    "download_url_base": "https://upvid.cc/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+},
+
+"""
+
 class UpVid:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
@@ -34,4 +52,4 @@ class UpVid:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

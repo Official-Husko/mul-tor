@@ -23,6 +23,7 @@
 * Progress Bar
 * Auto Updater
 * Site Presets
+* Over 35+ Sites Supported
 
 <br />
 
@@ -54,12 +55,16 @@ Site | API | API Key Required | Max File Size
 [FileUpload][161] | No | No | 5 GB
 [HexUpload][21] | No | No | 2 GB
 [UserCloud][161] | No | No | 5 GB
-[uDrop][165] | No | No | 10 GB
 [UFile][68] | [Yes][69] | No | 5 GB
 [CatBox][168] | [Yes][169] | No | 200 MB
 [LitterBox][170] | [Yes][171] | No | 1 GB
 [Keep.sh][172] | No | No | 500 MB
 [TempSend][173] | No | No | 2 GB
+[UsersDrive][100] | No | No | 2 GB
+[Rapidgator][174] | [Yes][174] | [Yes][175] | ?
+[WDHO][180] | No | No | 5 GB
+[Filesadmin][181] | No | No | 3 GB
+[CyberFile][182] | No | No | 10 GB
 
 <br />
 
@@ -85,28 +90,27 @@ None Currently :)
   [UploadHaven][115] | No | No | 50 GB | Paid/Invite Only
   [Terminal][116] | No | No | ? | Invite Only
   [UpToBox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
-  [SendGB][119] | No | No | 5 GB | Links are funky and garbage upload system
+  [SendGB][119] | No | No | 5 GB | [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
   [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
   [Qiwi.gg][126] | No | No | ? | Really Complicated system
   [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [SendZcyph][129] | No | No | ? | Sockets stuff
   [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
   [BeeFiles][144] | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
   [SwissTransfer][147] | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
   [UploadBuzz][148] | No | No | ? | Website is down
   [pCloud][149] | [Yes][150] | No | 10 GB | Paid
-  [Wormhole][151] | No | No | 10 GB | Torrent System & Sockets stuff
-  [SendVis][152] | No | No | 2.5 GB | Torrent System & Sockets stuff
-  [Instant.io][153] | No | No | ? | Torrent System & Sockets stuff
-  [SendTresorit][154] | No | No | ? | Torrent System & Sockets stuff
-  [Sharrr][155] | No | No | ? | Torrent System & Sockets stuff
+  [Wormhole][151] | No | No | 10 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendVis][152] | No | No | 2.5 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Instant.io][153] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendTresorit][154] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Sharrr][155] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendZcyph][129] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
   [TransferXL][156] | No | No | 5 GB | Captchas Required
   [WeSendIt][157] | No | No | 2 GB | Can't figure out the upload system
   [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
   [Archive.org][159] | No | No | ∞ | I see no reason to add this
   [TransferNow][163] | No | No | 5 GB | Not worth the hassle
-  [HotDropp][96] | No | No | ? | Stuck on "In Maintenance" message
-  [FileDropper][88] | No | No | ? | Website is down
+  [Bunkrr][178] | [Yes][179] | [Yes][179] | 2GB | [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
 
 </details>
 
@@ -118,6 +122,12 @@ None Currently :)
   Q: Where did the site X go?
 
   A: Check the [Deprecated Sites][164] list.
+
+  Q: Are there any presets?\
+  A: Yes, simply check [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets) here and download the ones you wish to use.
+
+  Q: Can I make my own presets?\
+  A: Yes you can, for that read [this wiki page](https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration).
 
   Q: How can I get help?\
   A: Check the [Wiki][166] for any information that might help you. If you can't find the answer there check out the [issues page][4] and if there is none [open one up][167].
@@ -223,7 +233,7 @@ None Currently :)
 [97]: https://cyberdrop.me/
 [98]: https://transfer.sh/
 [99]: https://k2s.cc/
-[100]: https://rapidgator.net/
+[100]: https://usersdrive.com/
 [101]: https://1fichier.com/
 [102]: https://download.gg/
 [103]: https://torrentfreak.com/file-hosting-icon-anonfiles-throws-in-the-towel-domain-for-sale-230817/
@@ -296,6 +306,15 @@ None Currently :)
 [171]: https://litterbox.catbox.moe/tools.php
 [172]: https://keep.sh/
 [173]: https://tempsend.com/
+[174]: https://rapidgator.net/
+[175]: https://rapidgator.net/article/api/
+[176]: https://filestore.me/
+[177]: https://filestore.me/account/
+[178]: https://app.bunkrr.su/
+[179]: https://app.bunkrr.su/dashboard
+[180]: https://wdho.ru/
+[181]: https://filesadmin.com/
+[182]: https://cyberfile.me/
 
 <br />
 

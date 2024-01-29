@@ -5,6 +5,24 @@ import random
 from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"AnonFiles": {
+    "apiKey": False,
+    "url": "https://api.anonfiles.com/upload",
+    "api_url": "https://api.anonfiles.com/",
+    "download_url_base": "https://anonfiles.com/",
+    "size_limit_human": 20,
+    "size_limit_bytes": 21474836480,
+    "size_unit": "GB"
+}
+
+"""
+
 site = "AnonFiles"
 
 class AnonFiles:
@@ -34,4 +52,4 @@ class AnonFiles:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

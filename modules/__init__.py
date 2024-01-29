@@ -34,10 +34,15 @@ from .bowfile import BowFile
 from .hexupload import HexUpload
 from .usercloud import UserCloud
 from .doodrive import DooDrive
-from .udrop import uDrop
 from .ufile import uFile
 from .downloadgg import DownloadGG
 from .catbox import CatBox
 from .litterbox import LitterBox
 from .keep import Keep
 from .tempsend import TempSend
+from .usersdrive import UsersDrive
+from .rapidgator import Rapidgator
+from .wdho import WDHO
+from .filesadmin import Filesadmin
+from .fastupload import Fastupload
+from .cyberfile import CyberFile

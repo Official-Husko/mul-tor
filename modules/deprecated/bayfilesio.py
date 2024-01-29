@@ -9,6 +9,23 @@ from main import DEBUG
 
 site = "BayFilesIo"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"BayFilesIo": {
+    "apiKey": False,
+    "url": "https://bayfiles.io/api/v1/upload",
+    "api_url": "https://bayfiles.io/",
+    "download_url_base": "https://bayfiles.io/",
+    "size_limit": 7,
+    "size_unit": "GB"
+},
+
+"""
+
 class BayFilesIo:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

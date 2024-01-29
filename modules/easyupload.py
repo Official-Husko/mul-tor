@@ -28,6 +28,7 @@ class EasyUpload:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -53,7 +54,7 @@ class EasyUpload:
             # This will get the actual upload URL from the website
             normal_url = sites_data_dict[site]["api_url"]
 
-            raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=50)
+            raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=300)
 
             pattern = r"https://upload\d+\.easyupload\.io/action\.php"
             match = re.search(pattern, raw_req.text)
@@ -81,7 +82,7 @@ class EasyUpload:
                     "files[]": file_uuid
                 }
                 # Send the upload request with the form data, headers, and proxies
-                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies)
+                init_req = requests.post(url=initialize_url, data=init_data, headers=headers, proxies=proxies, timeout=300)
 
                 # Parse the response JSON and get the download URL
                 match = re.search(pattern, init_req.text)
@@ -120,7 +121,7 @@ class EasyUpload:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.post(url=upload_url, data=upload_data, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                         chunk_index += 1
                         dzchunkbyteoffset += chunk_size

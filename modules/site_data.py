@@ -117,7 +117,7 @@ sites_data_dict = {
     },
     "1CloudFile": {
         "apiKey": False,
-        "url": "https://fs10.1cloudfile.com/ajax/file_upload_handler",
+        "url": "https://1cloudfile.com/ajax/file_upload_handler",
         "api_url": "https://1cloudfile.com/",
         "download_url_base": "https://1cloudfile.com/",
         "size_limit": 5,
@@ -125,7 +125,7 @@ sites_data_dict = {
     },
     "AnonymFile": {
         "apiKey": False,
-        "url": "https://anonymfile.com/api/v1/upload",
+        "url": "https://anonymfile.com/upload",
         "api_url": "https://anonymfile.com/",
         "download_url_base": "https://anonymfile.com/",
         "size_limit": 7,
@@ -141,7 +141,7 @@ sites_data_dict = {
     },
     "ClicknUpload": {
         "apiKey": False,
-        "url": "https://mover04.clicknupload.net/cgi-bin/upload.cgi",
+        "url": "{server}",
         "api_url": "https://clicknupload.click",
         "download_url_base": "https://clicknupload.vip/",
         "size_limit": 2,
@@ -188,14 +188,6 @@ sites_data_dict = {
         "initialize_url": "https://doodrive.com/api/v1/upload",
         "finalize_url": "{server}",
         "size_limit": 2,
-        "size_unit": "GB"
-    },
-    "uDrop": {
-        "apiKey": False,
-        "url": "https://www.udrop.com/ajax/file_upload_handler",
-        "api_url": "https://www.udrop.com/",
-        "download_url_base": "https://www.udrop.com/",
-        "size_limit": 10,
         "size_unit": "GB"
     },
     "uFile": {
@@ -249,6 +241,55 @@ sites_data_dict = {
         "size_limit": 2,
         "size_unit": "GB"
     },
+    "UsersDrive": {
+        "apiKey": False,
+        "url": "{server}",
+        "api_url": "https://usersdrive.com/",
+        "download_url_base": "https://usersdrive.com/{file_id}.html",
+        "size_limit": 2,
+        "size_unit": "GB"
+    },
+    "Rapidgator": {
+        "apiKey": True,
+        "url": "{server}",
+        "api_url": "https://rapidgator.net/",
+        "download_url_base": "https://rapidgator.net/file/",
+        "initialize_url": "https://rapidgator.net/api/v2/user/login",
+        "server_url": "https://rapidgator.net/api/v2/file/upload",
+        "finalize_url": "https://rapidgator.net/api/v2/file/upload_info",
+    },
+    "WDHO": {
+        "apiKey": False,
+        "url": "https://wdho.ru/core/page/ajax/file_upload_handler.ajax.php",
+        "api_url": "https://wdho.ru/",
+        "download_url_base": "https://wdho.ru/",
+        "size_limit": 5,
+        "size_unit": "GB"
+    },
+    "Filesadmin": {
+        "apiKey": False,
+        "url": "https://filesadmin.com/ajax/file_upload_handler",
+        "api_url": "https://filesadmin.com/",
+        "download_url_base": "https://filesadmin.com/",
+        "size_limit": 3,
+        "size_unit": "GB"
+    },
+    "Fastupload": {
+        "apiKey": False,
+        "url": "https://fastupload.io/upload",
+        "api_url": "https://fastupload.io/",
+        "download_url_base": "https://fastupload.io/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
+    "CyberFile": {
+        "apiKey": False,
+        "url": "https://cyberfile.me/ajax/file_upload_handler",
+        "api_url": "https://cyberfile.me/",
+        "download_url_base": "https://cyberfile.me/",
+        "size_limit": 10,
+        "size_unit": "GB"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,
@@ -283,3 +324,16 @@ class Site_Data_CLSS:
         if file_size > size_limit_bytes:
             return "SIZE_ERROR"
         return "OK"
+
+class Hash_Calculator:
+    def cal_hash(file):
+        import hashlib
+        import os
+
+        md5_hash = hashlib.md5()
+        with open(os.path.basename(file), "rb") as file_hc:
+            # Read the file in chunks to handle large files
+            for chunk in iter(lambda: file_hc.read(4096), b""):
+                md5_hash.update(chunk)
+        
+        return md5_hash

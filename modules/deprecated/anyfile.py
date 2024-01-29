@@ -9,6 +9,23 @@ from main import DEBUG
 
 site = "AnyFile"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"AnyFile": {
+    "apiKey": False,
+    "url": "https://anyfile.co/api/v1/upload",
+    "api_url": "https://anyfile.co/",
+    "download_url_base": "https://anyfile.co/",
+    "size_limit": 7,
+    "size_unit": "GB"
+},
+
+"""
+
 class AnyFile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

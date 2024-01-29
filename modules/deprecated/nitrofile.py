@@ -9,6 +9,23 @@ from main import DEBUG
 
 site = "NitroFile"
 
+"""
+Last Checked 26/01/2024
+"""
+
+"""
+
+"NitroFile": {
+    "apiKey": False,
+    "url": "https://nitrofile.cc/api/v1/upload",
+    "api_url": "https://nitrofile.cc/",
+    "download_url_base": "https://nitrofile.cc/",
+    "size_limit": 7,
+    "size_unit": "GB"
+},
+
+"""
+
 class NitroFile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):

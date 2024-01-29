@@ -12,6 +12,10 @@ from main import DEBUG
 site = "FileMail"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
 
 Shitty 2 uploads limit per day. Even the initializing counts as one.
 
@@ -53,4 +57,4 @@ class FileMail:
                 raise Exception("Wrong Response Code. View request body below or in log file.")
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}

@@ -21,6 +21,7 @@ class DownloadGG:
         Raises:
             Exception: If an error occurs during the upload process.
         """
+        raw_req = "None :("
         try:
             # Select a random user agent
             ua = random.choice(user_agents)
@@ -56,7 +57,7 @@ class DownloadGG:
                 upload_url = sites_data_dict[site]["url"]
 
                 # Send the upload request with the form data, headers, and proxies
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 file_id = raw_req.text
                 download_url = download_url_base + file_id.replace("&", "_")

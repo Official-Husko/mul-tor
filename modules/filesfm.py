@@ -12,7 +12,7 @@ site = "FilesFM"
 class FilesFM:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
-        req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             initialize_url = sites_data_dict[site]["initialize_url"]
@@ -29,7 +29,7 @@ class FilesFM:
             headers = {"User-Agent": ua}
             proxies = random.choice(proxy_list) if proxy_list else None
 
-            raw_req = requests.get(url=initialize_url, headers=headers, proxies=proxies)
+            raw_req = requests.get(url=initialize_url, headers=headers, proxies=proxies, timeout=300)
 
             server_response = str(raw_req.text).split(",")
 
@@ -43,10 +43,10 @@ class FilesFM:
                     'Filedata': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
 
-                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 finalize_url = sites_data_dict[site]["finalize_url"].format(upload_id=upload_id)
-                fin_req = requests.get(url=finalize_url, headers=headers, proxies=proxies)
+                fin_req = requests.get(url=finalize_url, headers=headers, proxies=proxies, timeout=300)
 
                 result = fin_req.json()
 
@@ -58,5 +58,5 @@ class FilesFM:
                 return {"status": "size_error", "file_name": file_name, "exception": "SIZE_ERROR", "size_limit": f"{str(size_limit)}"}
                 
         except Exception as e:
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": req}
+            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
 

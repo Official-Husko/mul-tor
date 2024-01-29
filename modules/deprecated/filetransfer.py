@@ -10,9 +10,31 @@ from main import DEBUG
 site = "FileTransfer"
 
 """
+Last Checked 26/01/2024
+"""
+
+"""
+
+"FileTransfer": {
+    "apiKey": False,
+    "url": "{server}",
+    "api_url": "https://filetransfer.io/",
+    "download_url_base": "https://filetransfer.io/data-package/",
+    "server_url": "https://filetransfer.io/api/v1/upload",
+    "initialize_url": "https://filetransfer.io/start-upload",
+    "finalize_url": "{final_url}",
+    "size_limit": 6,
+    "size_unit": "GB"
+},
+
+"""
+
+"""
 
 Throws 415 errors even tho it should all be correct. wasted too much time for something this poorly coded. 
 To whoever made this site and system go fuck yourself and do us all a favor and stop coding things.
+
+~ An edit 3 months later. I was a bit angry yes.
 
 """
 
@@ -116,7 +138,7 @@ class FileTransfer:
                                 }
 
                         # Send the upload request with the form data, headers, and proxies
-                        raw_req = requests.patch(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=50)
+                        raw_req = requests.patch(url=upload_url, files=form_data, headers=headers, proxies=proxies, timeout=300)
 
                         print(raw_req.status_code)
 
@@ -130,7 +152,7 @@ class FileTransfer:
                     "X-Requested-With": "XMLHttpRequest"
                 }
 
-                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=50)
+                raw_req = requests.post(url=upload_url, headers=headers, proxies=proxies, timeout=300)
                 print(raw_req.text)
 
                 upload_resp = raw_req.json()

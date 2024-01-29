@@ -12,7 +12,7 @@ site = "BowFile"
 class BowFile:
     
     def Uploader(file, proxy_list, user_agents, api_keys):
-        raw_req = "which one of you maggots ate the fucking request huh?"
+        raw_req = "None :("
         try:
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
@@ -31,16 +31,17 @@ class BowFile:
             api_key1 = api_keys.get("apiKey1", False)
             api_key2 = api_keys.get("apiKey2", False)
 
+            if api_key1 in (False, "") or api_key2 in (False, ""):
+                raise Exception("Missing API Credentials?")
+
             if calc_size == "OK":
-                if api_key1 == False and api_key2 == False:
-                    raise Exception("Missing API Keys?")
 
                 auth_data = {
                     "key1": api_key1,
                     "key2": api_key2
                 }
 
-                raw_auth = requests.post(url=auth_url, data=auth_data, headers=headers, proxies=proxies)
+                raw_auth = requests.post(url=auth_url, data=auth_data, headers=headers, proxies=proxies, timeout=300)
 
                 auth_resp = raw_auth.json()
                 access_token = auth_resp.get("data", {}).get("access_token", "")
@@ -62,7 +63,7 @@ class BowFile:
                     'upload_file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')
                 }
                 
-                raw_req = requests.post(url=upload_url, data=form_data, files=file_data, headers=headers, proxies=proxies, stream=True)
+                raw_req = requests.post(url=upload_url, data=form_data, files=file_data, headers=headers, proxies=proxies, timeout=300, stream=True)
 
                 response = raw_req.json()
                 download_url = response.get("data", [])[0].get("url", "")
