@@ -3,14 +3,20 @@ import os
 import random
 import string
 import re
-import hashlib
 from time import sleep
 
-from .site_data import Site_Data_CLSS, sites_data_dict
+from .site_data import Site_Data_CLSS, sites_data_dict, Hash_Calculator
 from .pretty_print import *
 from main import DEBUG
 
 site = "Rapidgator"
+
+"""
+I have no idea why these errors occur. It works on single uploas but shits the bed on multiple uploads.
+
+[WinError 267] The directory name is invalid: 'FILENAME.zip'
+[Errno 2] No such file or directory: 'FILENAME.zip'
+"""
 
 class Rapidgator:
     
@@ -56,11 +62,7 @@ class Rapidgator:
 
             if file_size <= max_file_size and space_left > file_size:
 
-                md5_hash = hashlib.md5()
-                with open(os.path.basename(file), "rb") as file_hc:
-                    # Read the file in chunks to handle large files
-                    for chunk in iter(lambda: file_hc.read(4096), b""):
-                        md5_hash.update(chunk)
+                md5_hash = Hash_Calculator.cal_hash(file)
 
                 server_url = sites_data_dict[site]["server_url"]
 
@@ -75,20 +77,20 @@ class Rapidgator:
 
                 raw_req = raw_req.json()
 
-                upload_id = raw_req.get("response", {}).get("upload", {}).get("upload_id", "No_UploadID")
-                upload_url = raw_req.get("response", {}).get("upload", {}).get("url", "No_UploadURL")
-                state = raw_req.get("response", {}).get("upload", {}).get("state", 99)
-                status = raw_req.get("status", "terrible")
+                status = raw_req.get("status", 418)
                 details = raw_req.get("details", "No_Details")
 
                 if not status == 200:
-                    try:
-                        raise Exception(details)
-                    except Exception as e:
-                        raise Exception("Shit failed spectacularly. Please report this. " + str(e))
-                elif state == 2:
+                    raise Exception(details)
+                
+                state = raw_req.get("response", {}).get("upload", {}).get("state", 99)
+
+                if state == 2:
                     download_url = raw_req.get("response", {}).get("upload", {}).get("file", {}).get("url", "No_FileURL")
                     return {"status": "ok", "file_name": file_name, "file_url": download_url}
+
+                upload_id = raw_req.get("response", {}).get("upload", {}).get("upload_id", "No_UploadID")
+                upload_url = raw_req.get("response", {}).get("upload", {}).get("url", "No_UploadURL")
 
                 form_data = {
                             'file': (os.path.basename(file), open(str(file), 'rb'), 'application/octet-stream')

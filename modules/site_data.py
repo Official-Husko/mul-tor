@@ -324,3 +324,16 @@ class Site_Data_CLSS:
         if file_size > size_limit_bytes:
             return "SIZE_ERROR"
         return "OK"
+
+class Hash_Calculator:
+    def cal_hash(file):
+        import hashlib
+        import os
+
+        md5_hash = hashlib.md5()
+        with open(os.path.basename(file), "rb") as file_hc:
+            # Read the file in chunks to handle large files
+            for chunk in iter(lambda: file_hc.read(4096), b""):
+                md5_hash.update(chunk)
+        
+        return md5_hash
