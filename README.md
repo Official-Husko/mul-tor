@@ -55,7 +55,6 @@ Site | API | API Key Required | Max File Size
 [FileUpload][161] | No | No | 5 GB
 [HexUpload][21] | No | No | 2 GB
 [UserCloud][161] | No | No | 5 GB
-[uDrop][165] | No | No | 10 GB
 [UFile][68] | [Yes][69] | No | 5 GB
 [CatBox][168] | [Yes][169] | No | 200 MB
 [LitterBox][170] | [Yes][171] | No | 1 GB
@@ -63,9 +62,9 @@ Site | API | API Key Required | Max File Size
 [TempSend][173] | No | No | 2 GB
 [UsersDrive][100] | No | No | 2 GB
 [Rapidgator][174] | [Yes][174] | [Yes][175] | ?
-[Filestore.me][176] | No | [Yes][177] | ?
 [WDHO][180] | No | No | 5 GB
 [Filesadmin][181] | No | No | 3 GB
+[CyberFile][182] | No | No | 10 GB
 
 <br />
 
@@ -315,6 +314,7 @@ None Currently :)
 [179]: https://app.bunkrr.su/dashboard
 [180]: https://wdho.ru/
 [181]: https://filesadmin.com/
+[182]: https://cyberfile.me/
 
 <br />
 
