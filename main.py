@@ -24,7 +24,7 @@ SKIP_SITE_CHECK = True
 #
 ###
 
-version = "1.4.1"
+version = "1.4.2"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -251,9 +251,12 @@ class Main:
                                 formatted_links_file.close()
                         
                         elif status == "error":
-                            print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                            error_str = f"An error occurred while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
-                            Logger.log_event(error_str, extra)
+                            if site in ["Transfer"]:
+                                print(f"{error} {colored(site, 'yellow')} fucked up again while uploading the file {colored(file_name, 'light_blue')}. Don't Report this! Its a known issue they need to fix.")
+                            else:
+                                print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
+                                error_str = f"An error occurred while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
+                                Logger.log_event(error_str, extra)
                             
                         elif status == "size_error":
                             print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
