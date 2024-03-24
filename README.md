@@ -65,6 +65,7 @@ Site | API | API Key Required | Max File Size
 [WDHO][180] | No | No | 5 GB
 [Filesadmin][181] | No | No | 3 GB
 [CyberFile][182] | No | No | 10 GB
+[Buzzheavier][183] | [Yes][184] | No | ∞
 
 <br />
 
@@ -315,6 +316,8 @@ None Currently :)
 [180]: https://wdho.ru/
 [181]: https://filesadmin.com/
 [182]: https://cyberfile.me/
+[183]: https://buzzheavier.com/
+[184]: https://buzzheavier.com/api.html
 
 <br />
 
