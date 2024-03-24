@@ -290,6 +290,12 @@ sites_data_dict = {
         "size_limit": 10,
         "size_unit": "GB"
     },
+    "Buzzheavier": {
+        "apiKey": False,
+        "url": "https://w.buzzheavier.com/f/",
+        "api_url": "https://buzzheavier.com/",
+        "download_url_base": "https://w.buzzheavier.com/f/"
+    },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",
         "apiKey": False,

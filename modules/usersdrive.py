@@ -35,7 +35,7 @@ class UsersDrive:
 
                 raw_req = requests.get(url=normal_url, headers={"User-Agent": ua}, proxies=proxies, timeout=300)
 
-                pattern = r'https://(\S+)\.userdrive\.me/cgi-bin/upload\.cgi\?upload_type=file'
+                pattern = r'https://(\S+)\.userdrive\.(me|org)/cgi-bin/upload\.cgi\?upload_type=file'
                 match = re.search(pattern, raw_req.text)
 
                 if match:
@@ -67,3 +67,12 @@ class UsersDrive:
         except Exception as e:
             return {"status": "error", "file_name": file_name, "exception": str(e), "extra": f"{status} {raw_req}"}
 
+
+"""
+Here i will store encountered server addresses for regex purposes.
+
+https://dns3.userdrive.org/cgi-bin/upload.cgi?upload_type=file
+
+
+
+"""

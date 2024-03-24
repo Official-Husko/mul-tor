@@ -10,7 +10,7 @@ from main import DEBUG
 site = "Krakenfiles"
 
 """
-Last Checked 26/01/2024
+Last Checked 24/03/2024
 """
 
 # This version is currently not in use because the API docs are outdated. Following the API rules results in a 500 error.
