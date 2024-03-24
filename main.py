@@ -24,7 +24,7 @@ SKIP_SITE_CHECK = True
 #
 ###
 
-version = "1.4.2"
+version = "1.5.0"
 owd = os.getcwd()
 platform = sys.platform
 
