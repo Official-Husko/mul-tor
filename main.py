@@ -252,7 +252,7 @@ class Main:
                                 formatted_links_file.close()
                         
                         elif status == "error":
-                            if site in ["Transfer"]:
+                            if site in ["Transfer", "Keep"]:
                                 print(f"{error} {colored(site, 'yellow')} fucked up again while uploading the file {colored(file_name, 'light_blue')}. Don't Report this! Its a known issue they need to fix.")
                             else:
                                 print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
