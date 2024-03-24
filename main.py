@@ -225,7 +225,8 @@ class Main:
                         "WDHO": WDHO,
                         "Filesadmin": Filesadmin,
                         "Fastupload": Fastupload,
-                        "CyberFile": CyberFile
+                        "CyberFile": CyberFile,
+                        "Buzzheavier": Buzzheavier
                     }
 
                     if site in uploader_classes:
