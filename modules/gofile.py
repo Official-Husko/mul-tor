@@ -6,9 +6,9 @@ from .site_data import sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "GoFile"
+site = "Gofile"
 
-class GoFile:
+class Gofile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         raw_req = "None :("

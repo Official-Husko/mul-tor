@@ -6,9 +6,9 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from .logger import Logger
 
-site = "PixelDrain"
+site = "Pixeldrain"
 
-class PixelDrain:
+class Pixeldrain:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         try:

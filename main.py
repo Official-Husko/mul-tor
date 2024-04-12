@@ -190,23 +190,23 @@ class Main:
                     }
 
                     uploader_classes = {
-                        "PixelDrain": PixelDrain,
-                        "GoFile": GoFile,
+                        "Pixeldrain": Pixeldrain,
+                        "Gofile": Gofile,
                         "Oshi": Oshi,
                         "FileBin": FileBin,
                         "Delafil": Delafil,
                         "Files.dp.ua": Files_dp_ua,
-                        "FilesFM": FilesFM,
+                        "FilesFm": FilesFm,
                         "Krakenfiles": Krakenfiles,
-                        "Transfer": Transfer,
+                        "Transfer.sh": Transfer_sh,
                         "TmpFiles": TmpFiles,
-                        "MixDrop": MixDrop,
+                        "Mixdrop": Mixdrop,
                         "1Fichier": OneFichier,
                         "Fileio": Fileio,
                         "EasyUpload": EasyUpload,
                         "AnonTransfer": AnonTransfer,
                         "1CloudFile": OneCloudFile,
-                        "AnonymFile": AnonymFile,
+                        "Anonymfile": Anonymfile,
                         "FileSi": FileSi,
                         "FileUpload": FileUpload,
                         "ClicknUpload": ClicknUpload,
@@ -215,8 +215,8 @@ class Main:
                         "UserCloud": UserCloud,
                         "DooDrive": DooDrive,
                         "uFile": uFile,
-                        "DownloadGG": DownloadGG,
-                        "CatBox": CatBox,
+                        "Download.gg": Download_gg,
+                        "Catbox": Catbox,
                         "LitterBox": LitterBox,
                         "Keep": Keep,
                         "TempSend": TempSend,
@@ -252,7 +252,7 @@ class Main:
                                 formatted_links_file.close()
                         
                         elif status == "error":
-                            if site in ["Transfer", "Keep"]:
+                            if site in ["Transfer_sh", "Keep"]:
                                 print(f"{error} {colored(site, 'yellow')} fucked up again while uploading the file {colored(file_name, 'light_blue')}. Don't Report this! Its a known issue they need to fix.")
                             else:
                                 print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
@@ -301,35 +301,7 @@ TODO: Add presets system
 TODO: Quack
 TODO: Simplify Code. I think this is possible and should be done in order to maintain a clean and easy to read code.
 
-these are here for later...
-https://uplodea.com/en
-https://fastupload.io/
-https://filepost.io/
-https://workupload.com/
-https://dropbox.com/features/share
-https://uploadnow.io/en
-https://uploadify.net/
-https://4shared.com/
-https://zipshare.com/
-https://usaupload.com/
-https://fileroy.com/
-https://upfiles.com/
-https://file-up.org/
-https://mediafire.com/developers/
-https://dropsend.com/
-https://surgesend.com/
-https://filesharing.com/
-https://file.guru/en
-https://uploady.io/
-https://bestfile.io/en
-https://megaup.net/faq.html
-https://mirrored.to/
-https://similarsites.com/site/download.gg
-https://workupload.com/
 
-"""
-
-"""
 Here you can also find some buried credits.
 
 Arrow Icon from Kirill Kazachek on https://flaticon.com/authors/kirill-kazachek

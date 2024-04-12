@@ -1,12 +1,12 @@
 sites_data_dict = {
-    "GoFile": {
+    "Gofile": {
         "apiKey": False,
         "url": "https://{server}.gofile.io/uploadFile",
         "api_url": "https://gofile.io/api/",
         "download_url_base": "https://gofile.io/d/",
         "server_url": "https://api.gofile.io/getServer"
     },
-    "PixelDrain": {
+    "Pixeldrain": {
         "apiKey": False,
         "url": "https://pixeldrain.com/api/file/{file_name}",
         "api_url": "https://pixeldrain.com/api/",
@@ -36,7 +36,7 @@ sites_data_dict = {
         "size_limit": 100,
         "size_unit": "GB"
     },
-    "FilesFM": {
+    "FilesFm": {
         "apiKey": False,
         "url": "https://free.files.fm/save_file.php?up_id={upload_id}&ignore_user_abort=1&skip_update=1&key={upload_key}",
         "api_url": "https://free.files.fm/save_file.php",
@@ -55,7 +55,7 @@ sites_data_dict = {
         "size_limit": 1,
         "size_unit": "GB"
     },
-    "Transfer": {
+    "Transfer_sh": {
         "apiKey": False,
         "url": "https://transfer.sh/{file_name}",
         "api_url": "https://transfer.sh/",
@@ -71,11 +71,11 @@ sites_data_dict = {
         "size_limit": 100,
         "size_unit": "MB"
     },
-    "MixDrop": {
+    "Mixdrop": {
         "apiKey": True,
-        "url": "https://ul.MixDrop.ag/api",
-        "api_url": "https://ul.MixDrop.ag/api",
-        "download_url_base": "https://MixDrop.ag/f/",
+        "url": "https://ul.Mixdrop.ag/api",
+        "api_url": "https://ul.Mixdrop.ag/api",
+        "download_url_base": "https://Mixdrop.ag/f/",
         "size_limit": 10,
         "size_unit": "GB"
     },
@@ -123,7 +123,7 @@ sites_data_dict = {
         "size_limit": 5,
         "size_unit": "GB"
     },
-    "AnonymFile": {
+    "Anonymfile": {
         "apiKey": False,
         "url": "https://anonymfile.com/upload",
         "api_url": "https://anonymfile.com/",
@@ -201,7 +201,7 @@ sites_data_dict = {
         "size_limit": 5,
         "size_unit": "GB"
     },
-    "DownloadGG": {
+    "Download_gg": {
         "apiKey": False,
         "url": "https://download.gg/server/upload.php",
         "api_url": "https://download.gg/",
@@ -209,7 +209,7 @@ sites_data_dict = {
         "size_limit": 25,
         "size_unit": "GB"
     },
-    "CatBox": {
+    "Catbox": {
         "apiKey": False,
         "url": "https://catbox.moe/user/api.php",
         "api_url": "https://catbox.moe/",

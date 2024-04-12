@@ -58,7 +58,7 @@ class Config_Manager:
                         "apiKey": "",
                         "apiToken": ""
                     },
-                    "MixDrop": {
+                    "Mixdrop": {
                         "email": "",
                         "apiKey": ""
                     },

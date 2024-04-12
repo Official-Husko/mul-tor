@@ -8,9 +8,9 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "AnonymFile"
+site = "Anonymfile"
 
-class AnonymFile:
+class Anonymfile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         raw_req = "None :("

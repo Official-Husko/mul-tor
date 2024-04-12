@@ -7,17 +7,17 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "AnonymFile"
+site = "Anonymfile"
 
 """
 Last Checked 24/03/2024
-This is the API version of AnonymFile. They broke the API a while ago so i replaced it with the non-api variant for now.
+This is the API version of Anonymfile. They broke the API a while ago so i replaced it with the non-api variant for now.
 
 """
 
 """
 
-    "AnonymFile": {
+    "Anonymfile": {
         "apiKey": False,
         "url": "https://anonymfile.com/api/v1/upload",
         "api_url": "https://anonymfile.com/",
@@ -28,7 +28,7 @@ This is the API version of AnonymFile. They broke the API a while ago so i repla
 
 """
 
-class AnonymFile:
+class Anonymfile:
     
      def Uploader(file, proxy_list, user_agents, api_keys):
         raw_req = "None :("
