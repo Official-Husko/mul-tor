@@ -30,8 +30,8 @@
 ### Currently supported sites:
 Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
-[GoFile][7] | [Yes][8] | No | ∞
-[PixelDrain][1] | [Yes][2] | No | 20 GB
+[Gofile][7] | [Yes][8] | No | ∞
+[Pixeldrain][1] | [Yes][2] | No | 20 GB
 [BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
 [Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
 [Download.gg][102] | No | No | 25 GB
@@ -40,15 +40,15 @@ Site | API | API Key Required | Max File Size
 [Files.dp.ua][108] | No | No | 100 GB
 [Files.fm][45] | No | No | 5 GB
 [Krakenfiles][124] | No | No | 1 GB
-[Transfer.sh][98] | No | No | ∞
+[Transfer_sh.sh][98] | No | No | ∞
 [/tmp/files][117] | [Yes][118] | No | 100 MB
-[MixDrop][29] | [Yes][30] | [Yes][30] | ∞
+[Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
 [1Fichier][31] | [Yes][32] | No | 300 GB
 [Oshi][9] | No | No | 5 GB
 [File.io][70] | No | No | 2 GB
 [EasyUpload][72] | No | No | 10 GB
 [AnonTransfer][127] | No | No | 5 GB
-[AnonymFile][134] | [Yes][135] | No | 7 GB
+[Anonymfile][134] | [Yes][135] | No | 7 GB
 [File.si][145] | [Yes][146] | No | 7 GB
 [1CloudFile][133] | No | No | 5 GB
 [ClicknUpload][160] | No | No | 2 GB
@@ -56,7 +56,7 @@ Site | API | API Key Required | Max File Size
 [HexUpload][21] | No | No | 2 GB
 [UserCloud][161] | No | No | 5 GB
 [UFile][68] | [Yes][69] | No | 5 GB
-[CatBox][168] | [Yes][169] | No | 200 MB
+[Catbox][168] | [Yes][169] | No | 200 MB
 [LitterBox][170] | [Yes][171] | No | 1 GB
 [Keep.sh][172] | No | No | 500 MB
 [TempSend][173] | No | No | 2 GB
@@ -184,8 +184,8 @@ None Currently :)
 [26]: https://sendspace.com/
 [27]: https://sendspace.com/dev_method.html
 [28]: https://sendspace.com/dev_apikeys.html
-[29]: https://MixDrop.ag/
-[30]: https://MixDrop.ag/api/
+[29]: https://Mixdrop.ag/
+[30]: https://Mixdrop.ag/api/
 [31]: https://1fichier.com/
 [32]: https://1fichier.com/api.html
 [33]: https://uptobox.com/

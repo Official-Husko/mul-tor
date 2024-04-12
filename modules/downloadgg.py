@@ -6,9 +6,9 @@ from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "DownloadGG"
+site = "Download.gg"
 
-class DownloadGG:
+class Download_gg:
      def Uploader(file, proxy_list, user_agents, api_keys):
         """
         Uploads a file to a specified site using random user agents and proxies.
