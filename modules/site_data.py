@@ -292,9 +292,9 @@ sites_data_dict = {
     },
     "Buzzheavier": {
         "apiKey": False,
-        "url": "https://w.buzzheavier.com/f/",
+        "url": "https://w.buzzheavier.com/",
         "api_url": "https://buzzheavier.com/",
-        "download_url_base": "https://w.buzzheavier.com/f/"
+        "download_url_base": "https://buzzheavier.com/f/"
     },
     "Oshi": {
         "comment": "Keep this one as low as possible. Its really a slow piece of shit.",

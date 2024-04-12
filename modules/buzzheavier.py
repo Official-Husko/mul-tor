@@ -26,13 +26,14 @@ class Buzzheavier:
             # Select a random user agent
             ua = random.choice(user_agents)
             upload_url = sites_data_dict[site]["url"]
+            download_url_base = sites_data_dict[site]["download_url_base"]
 
             # Get the file size and name
             file_name = os.path.basename(file)
 
             # Set the user agent header
             headers = {
-                "User-Agent": "curl/8.4.0",
+                "User-Agent": ua,
                 "Accept": "*/*",
                 "Content-Length": str(os.path.getsize(file))
             }
@@ -45,26 +46,20 @@ class Buzzheavier:
 
             # Send the upload request with the form data, headers, and proxies
             with open(file, "rb") as file_upload:
-                raw_req = requests.put(url=f"{upload_url}{file_name}", data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
+                raw_req = requests.put(url=f"{upload_url}{file_name}?expiry=10368000", data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
                 file_upload.close()
-            if raw_req.status_code == 200:
+            if raw_req.status_code == 201:
 
                 try:
                     raw_req = raw_req.json()
-                    download_url = raw_req.get("url")
+                    download_url = raw_req.get("id")
 
                 except Exception as e:
                     return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.text}
 
-                return {"status": "ok", "file_name": file_name, "file_url": download_url}
+                return {"status": "ok", "file_name": file_name, "file_url": f"{download_url_base}{download_url}"}
             else:
                 raise Exception(raw_req.status_code)
-
-            file_id = raw_req.text
-            download_url = download_url_base + file_id.replace("&", "_")
-
-            # Return successful message with the status, file name, file URL, and site
-            return {"status": "ok", "file_name": file_name, "file_url": download_url}
 
         except Exception as e:
             # Return error message
