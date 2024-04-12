@@ -17,14 +17,14 @@ else:
 
 ###
 # Things in this part are meant for debugging and toggling certaint things.
-use_test_file = True
+use_test_file = False
 test_small_file = True
 test_large_file = False
 SKIP_SITE_CHECK = True
 #
 ###
 
-version = "1.5.0"
+version = "1.5.1"
 owd = os.getcwd()
 platform = sys.platform
 
