@@ -62,7 +62,7 @@ class AutoUpdate:
                     if os.path.exists("delete-exe.bat"):
                         os.remove("delete-exe.bat")
                     with open("delete-exe.bat", "a") as bat_creator:
-                        bat_content = f'TASKKILL -F /IM Mul-Tor.exe\ntimeout 3\nDEL .\\Mul-Tor.exe\nren .\\mul-tor-{repo_version}.exe Mul-Tor.exe.exe\nDEL .\\delete-exe.bat'
+                        bat_content = f'TASKKILL -F /IM Mul-Tor.exe\ntimeout 3\nDEL .\\Mul-Tor.exe\nren .\\mul-tor-{repo_version}.exe Mul-Tor.exe\nDEL .\\delete-exe.bat'
                         bat_creator.write(bat_content)
                         bat_creator.close()
                     os.startfile(r".\\delete-exe.bat")
