@@ -65,10 +65,6 @@ class Config_Manager:
                     "Rapidgator": {
                         "email": "",
                         "password": ""
-                    },
-                    "FileStore": {
-                        "username": "",
-                        "password": ""
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
