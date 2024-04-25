@@ -17,9 +17,10 @@ else:
 
 ###
 # Things in this part are meant for debugging and toggling certaint things.
-use_test_file = False
-test_small_file = True
-test_large_file = False
+use_test_file = True
+test_small_file = False
+test_large_file = True
+test_very_large_file = False
 SKIP_SITE_CHECK = True
 #
 ###
@@ -128,8 +129,12 @@ class Main:
         if DEBUG == True and use_test_file == True:
             if test_small_file == True:
                 files_list = [f"{owd}\\test.png"]
-            else:
+            elif test_large_file == True:
                 files_list = [f"{owd}\\big_game.zip"]
+            elif test_very_large_file == True:
+                files_list = [f"{owd}\\very_big_game.7z"]
+            else:
+                print(colored("Something fucked up! Please report this on github. Test_File_Error", "red"))
 
         else:
             amount_question = [
