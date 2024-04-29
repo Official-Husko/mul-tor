@@ -1,66 +1,66 @@
-import requests
+import urllib3
 import os
 import random
 
-from .site_data import Site_Data_CLSS, sites_data_dict
 from .pretty_print import *
 from main import DEBUG
 
-site = "Buzzheavier"
 
 class Buzzheavier:
-     def Uploader(file, proxy_list, user_agents, api_keys):
-        """
-        Uploads a file to a specified site using random user agents and proxies.
-        Args:
-            file (str): The path to the file to be uploaded.
-            proxy_list (list): A list of proxy URLs.
-            user_agents (list): A list of user agent strings.
-        Returns:
-            dict: A dictionary containing the status, file name, file URL, and site.
-        Raises:
-            Exception: If an error occurs during the upload process.
-        """
-        raw_req = "None :("
+    def __init__(self, file, proxy_list, user_agent, api_key):
+        self.file = file
+        self.proxy = random.choice(proxy_list) if proxy_list else None
+        self.user_agent = user_agent
+        self.file_name = os.path.basename(file)
+
+        # Below is the website specific data
+        self.site = "Buzzheavier"
+        self.apiKey_req = False
+        self.site_url = "https://buzzheavier.com/"
+        self.upload_url = "https://w.buzzheavier.com/"
+        self.download_url_base = "https://buzzheavier.com/f/"
+
+        self.headers = {
+            "User-Agent": user_agent,
+            "Accept": "*/*",
+            "Content-Length": str(os.path.getsize(file))
+        }
+
+        self.http = urllib3.PoolManager()
+
+        self.Uploader()
+
+
+    def Uploader(self):
         try:
-            # Select a random user agent
-            ua = random.choice(user_agents)
-            upload_url = sites_data_dict[site]["url"]
-            download_url_base = sites_data_dict[site]["download_url_base"]
+            with open(self.file, "rb") as file_upload:
+                full_url = f"{self.upload_url}{self.file_name}?expiry=10368000"
 
-            # Get the file size and name
-            file_name = os.path.basename(file)
+                file_contents = file_upload.read()
 
-            # Set the user agent header
-            headers = {
-                "User-Agent": ua,
-                "Accept": "*/*",
-                "Content-Length": str(os.path.getsize(file))
-            }
+                print(type(file_contents))
 
-            # Truncate the file name if it is too long
-            file_name = (file_name[:240] + '..') if len(file_name) > 240 else file_name
+                response = self.http.request(
+                    "PUT",
+                    full_url,
+                    body=file_contents,
+                    headers=self.headers,
+                    retries=3,
+                    timeout=300,
+                    redirect=False
+                )
 
-            # Select a random proxy, if available
-            proxies = random.choice(proxy_list) if proxy_list else None
-
-            # Send the upload request with the form data, headers, and proxies
-            with open(file, "rb") as file_upload:
-                raw_req = requests.put(url=f"{upload_url}{file_name}?expiry=10368000", data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
-                file_upload.close()
-            if raw_req.status_code == 201:
-
+                if not response.status == 201:
+                    raise Exception(response.status)
+                    
                 try:
-                    raw_req = raw_req.json()
-                    download_url = raw_req.get("id")
-
+                    response_json = response.json()
+                    file_id = response_json.get("id")
+                    return {"status": "ok", "file_name": self.file_name, "file_url": f"{self.download_url_base}{file_id}"}
                 except Exception as e:
-                    return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req.text}
-
-                return {"status": "ok", "file_name": file_name, "file_url": f"{download_url_base}{download_url}"}
-            else:
-                raise Exception(raw_req.status_code)
+                    return {"status": "error", "file_name": self.file_name, "exception": str(e), "extra": f"Failed to get json data. Code: {response.status} | {response.data}"}    
 
         except Exception as e:
             # Return error message
-            return {"status": "error", "file_name": file_name, "exception": str(e), "extra": raw_req}
+            return {"status": "error", "file_name": self.file_name, "exception": str(e), "extra": f"Upload Failed. Code fucked up."}
+    

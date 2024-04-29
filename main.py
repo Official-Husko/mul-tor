@@ -18,8 +18,8 @@ else:
 ###
 # Things in this part are meant for debugging and toggling certaint things.
 use_test_file = True
-test_small_file = False
-test_large_file = True
+test_small_file = True
+test_large_file = False
 test_very_large_file = False
 SKIP_SITE_CHECK = True
 #
@@ -228,8 +228,15 @@ class Main:
                     }
 
                     if site in uploader_classes:
-                        api_key = config.get("api_keys", {}).get(site) if sites_data_dict.get(site, "").get("apiKey") == True else None
-                        output = uploader_classes.get(site, "No_Site").Uploader(file, proxy_list, user_agents_list, api_key)
+                        api_key = config.get("api_keys", {}).get(site, None) if sites_data_dict.get(site, "").get("apiKey") == True else None
+
+                        site_instance = uploader_classes.get(site, "No_Site")(file, proxy_list, user_agents_list, api_key)
+                        output = site_instance.Uploader()          
+
+
+                        print(output)
+
+                        # output = uploader_classes.get(site, "No_Site").Uploader(file, proxy_list, user_agents_list, api_key)
 
                         status = output.get("status", "404 status not found")
                         file_name = output.get("file_name", "oopsie_daisie.fish")
