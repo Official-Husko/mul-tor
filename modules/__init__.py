@@ -1,5 +1,4 @@
 # Here are the main program files
-from .user_agents import *
 from .pretty_print import *
 from .availability_checker import *
 from .site_data import *

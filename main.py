@@ -28,6 +28,7 @@ SKIP_SITE_CHECK = True
 version = "1.5.1"
 owd = os.getcwd()
 platform = sys.platform
+USER_AGENT = [f"mul-tor/{version} (by Official Husko on GitHub)"]
 
 if platform == "win32":
     from ctypes import windll
@@ -86,16 +87,8 @@ class Main:
             print("")
         else:
             proxy_list = []
-        
-        if random_ua_enabled == True:
-            if os.path.exists("user_agents.json"):
-                ua_list = UserAgentManager.Reader()
-            else:
-                ua_list = UserAgentManager.Scraper()
-        else:
-            ua_list = [f"mul-tor/{version} (by Official Husko on GitHub)"]
 
-        available = Availability_Checker.Evaluate(config, proxy_list, ua_list)
+        available = Availability_Checker.Evaluate(config, proxy_list)
         if DEBUG == True:
             print(available)
 
