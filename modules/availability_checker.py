@@ -1,21 +1,33 @@
 from time import sleep
 import random
+import json
 import urllib3
 from termcolor import colored
 
+from main import DEBUG, SKIP_SITE_CHECK, USER_AGENT
 from .site_data import sites_data_dict
 from .logger import Logger
-from .pretty_print import *
-from main import DEBUG, SKIP_SITE_CHECK, USER_AGENT
+from .pretty_print import error
 
 available_sites = []
 ping_sites = []
 
 
-class Availability_Checker:
+class AvailabilityChecker:
+
+    def __init__(self, config, proxy_list):
+        self.config = json.loads(config)
+        self.proxy_list = proxy_list
+        
+
+
+
+
+
+
     def Evaluate(config, proxy_list):
         blacklist = []
-        for blacklisted_site in config["blacklist"]:
+        for blacklisted_site in config.get("blacklist", []):
             blacklist.append(blacklisted_site.lower())
         for site in sites_data_dict:
             if DEBUG:
@@ -34,7 +46,7 @@ class Availability_Checker:
                 if DEBUG and SKIP_SITE_CHECK:
                     available_sites.append(site)
                 else:
-                    ping = requests.get(url, headers={"User-Agent": ua}, proxies=proxies, timeout=5)
+                    ping = requests.get(url, headers={"User-Agent": USER_AGENT}, proxies=proxies, timeout=5)
                 
                     if ping.status_code == 200:
                         available_sites.append(site)
@@ -65,5 +77,5 @@ class Availability_Checker:
         print(f"{colored(len(available_sites), 'yellow')} {colored('Available Sites                ', 'green')}")
         
         print("")
-        
+
         return available_sites
