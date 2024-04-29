@@ -1,3 +1,11 @@
+> [!IMPORTANT]  
+> Mul-Tor is being rewritten. Until 2.0 Release there will only be critical updates if needed.
+> This tool still works without any major issues so you can keep using it without worrying about anything.
+
+> [!NOTE]  
+> Progress for the rewrite can be tracked [here](https://github.com/users/Official-Husko/projects/2/views/2) and [here](https://github.com/Official-Husko/mul-tor/tree/oop-rewrite).
+
+
 # Mul-Tor
 ## Your tool for easy file uploading and sharing.
 
@@ -322,4 +330,6 @@ None Currently :)
 <br />
 
 #### Disclaimer
-*I am not in any way affiliated with or working with these sites. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*
+
+> [!CAUTION]  
+> *I am not in any way affiliated and or working with these sites. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*
