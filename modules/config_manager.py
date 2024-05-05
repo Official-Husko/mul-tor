@@ -1,16 +1,24 @@
+# Import Basic
 import json
-from termcolor import colored
 from time import sleep
 import os
 
-from .pretty_print import *
+# Import third party
+from termcolor import colored
+
+# Import custom modules
+from .pretty_print import info, error
 from .logger import Logger
 
 current_config_version = "1.4.0"
 
 class Config_Manager:
     
-    def Checker():
+    def __init__(self):
+        pass
+
+
+    def checker(self):
         if os.path.exists("config.json"):
             with open("config.json", "r") as cfg_file:
                 config = json.load(cfg_file)
@@ -35,7 +43,7 @@ class Config_Manager:
             config = Config_Manager.Writer()
             return config
     
-    def Writer():
+    def writer(self):
         try:
             template = {
                 "version": current_config_version,

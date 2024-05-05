@@ -1,3 +1,5 @@
+from time import sleep
+
 if __name__ == '__main__':
     try:
         startup = Main.startup()

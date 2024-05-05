@@ -54,8 +54,8 @@ class Main:
             print(f"{colored('Platform:', 'green')} {self.platform}")
             print("")
 
-        # Check if a config exists else create it
-        config = Config_Manager.Checker()
+        # Run config system
+        config_instance = Config_Manager
         
         proxies_enabled = config.get("useProxies", False)
         check_for_updates_enabled = config.get("checkForUpdates", True)
