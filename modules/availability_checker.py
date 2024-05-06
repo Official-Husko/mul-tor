@@ -1,10 +1,10 @@
 from time import sleep
 import random
 import json
-import urllib3
+import requests
 from termcolor import colored
 
-from main import DEBUG, SKIP_SITE_CHECK, USER_AGENT
+from .setup import USER_AGENT
 from .site_data import sites_data_dict
 from .logger import Logger
 from .pretty_print import error

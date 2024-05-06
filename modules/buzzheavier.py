@@ -1,21 +1,25 @@
-import urllib3
+# Import Standard Packages
 import os
 import random
 
-from .pretty_print import *
+# Import Third Party Packages
+import requests
+
+# Import Custom Modules
 from main import DEBUG
 
 
 class Buzzheavier:
-    def __init__(self, file, proxy_list, user_agent, api_key):
+    def __init__(self, file: str, proxy_list: list, user_agent: str, api_key: list):
         self.file = file
         self.proxy = random.choice(proxy_list) if proxy_list else None
         self.user_agent = user_agent
         self.file_name = os.path.basename(file)
+        self.api_key = api_key
 
         # Below is the website specific data
         self.site = "Buzzheavier"
-        self.apiKey_req = False
+        self.api_key_required = False
         self.site_url = "https://buzzheavier.com/"
         self.upload_url = "https://w.buzzheavier.com/"
         self.download_url_base = "https://buzzheavier.com/f/"
@@ -26,12 +30,7 @@ class Buzzheavier:
             "Content-Length": str(os.path.getsize(file))
         }
 
-        self.http = urllib3.PoolManager()
-
-        self.Uploader()
-
-
-    def Uploader(self):
+    def uploader(self):
         try:
             with open(self.file, "rb") as file_upload:
                 full_url = f"{self.upload_url}{self.file_name}?expiry=10368000"
@@ -40,14 +39,12 @@ class Buzzheavier:
 
                 print(type(file_contents))
 
-                response = self.http.request(
-                    "PUT",
+                response = requests.put(
                     full_url,
-                    body=file_contents,
+                    data=file_contents,
                     headers=self.headers,
-                    retries=3,
-                    timeout=300,
-                    redirect=False
+                    proxies=self.proxy,
+                    timeout=300
                 )
 
                 if not response.status == 201:
