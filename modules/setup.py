@@ -11,7 +11,7 @@ import plyer
 from alive_progress import alive_bar
 
 # Import custom modules
-from .config_manager import Config_Manager
+from .Config_Manager import ConfigManager
 from .auto_update import AutoUpdate
 from .proxy_scraper import ProxyScraper
 from .logger import Logger
@@ -55,7 +55,7 @@ class Main:
             print("")
 
         # Run config system
-        config_instance = Config_Manager
+        config_instance = ConfigManager
         
         proxies_enabled = config.get("useProxies", False)
         check_for_updates_enabled = config.get("checkForUpdates", True)
@@ -210,24 +210,6 @@ class Main:
                                 with open("file_links_formatted.txt", "a") as formatted_links_file:
                                     formatted_links_file.writelines(f"{link_format.format(status=status, file_name=file_name, file_url=file_url, site_name=site, date_and_time=datetime.now())}\n")
                                 formatted_links_file.close()
-                        
-                        elif status == "error":
-                            if site in ["Transfer_sh", "Keep"]:
-                                print(f"{error} {colored(site, 'yellow')} fucked up again while uploading the file {colored(file_name, 'light_blue')}. Don't Report this! Its a known issue they need to fix.")
-                            else:
-                                print(f"{error} An error occurred while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                                error_str = f"An error occurred while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
-                                Logger.log_event(error_str, extra)
-                            
-                        elif status == "size_error":
-                            print(f"{error} File size of {colored(file_name, 'light_blue')} to big for {colored(site, 'yellow')}! Compress it to fit the max size of {colored(size_limit, 'yellow')}")
-                            error_str = f"File size of {file_name} to big for {site}! Compress it to fit the max size of {size_limit}"
-                            Logger.log_event(error_str, extra)    
-                        
-                        else:
-                            print(f"{major_error} An unknown error occured while uploading the file {colored(file_name, 'light_blue')} to {colored(site, 'yellow')}! Please report this. Exception: {colored(exception_str, 'red')}")
-                            error_str = f"An unknown error occured while uploading the file {file_name} to {site}! Please report this. Exception: {exception_str}"
-                            Logger.log_event(error_str, extra)
                     else:
                         touch_grass = False
                         feel_woman_touch = False

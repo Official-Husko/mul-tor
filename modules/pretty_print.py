@@ -1,7 +1,10 @@
 from termcolor import colored
 
-major_error = str(colored(f"[{colored('!!!', 'red')}]"))
-warning = str(colored(f"[{colored('!', 'yellow')}]"))
-error = str(colored(f"[{colored('!', 'red')}]"))
-info = str(colored(f"[{colored('i', 'light_blue')}]"))
-ok = str(colored(f"[{colored('+', 'green')}]"))
+class PrettyPrint:
+    def __init__(self):
+        self.major = str(colored(f"[{colored('!!!', 'red')}]"))
+        self.error = str(colored(f"[{colored('!', 'red')}]"))
+        self.warning = str(colored(f"[{colored('!', 'yellow')}]"))
+        self.info = str(colored(f"[{colored('i', 'light_blue')}]"))
+        self.ok = str(colored(f"[{colored('+', 'green')}]"))
+        self.debug = str(colored(f"[{colored('dbg', 'blue')}]"))
