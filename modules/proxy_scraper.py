@@ -19,7 +19,11 @@ class ProxyScraper():
     """Fetch a fresh list of proxies for usage during runtime.
     """
     
-    def Scraper():
+    def __init__(self):
+        self.proxy_source_list = proxy_source_list
+        self.proxy_list = self._scraper()
+
+    def _scraper(self):
         try:
             proxy_list = []
             for source in proxy_source_list:

@@ -1,21 +1,25 @@
-import requests
-import random
-from termcolor import colored
-import inquirer
+# Import Standard Libraries
 import os
 from time import sleep
+
+# Import Third-Party Libraries
+import requests
+from termcolor import colored
+import inquirer
 from alive_progress import alive_bar
 
+# Import Local Libraries
 from main import version
 from .logger import Logger
 from .pretty_print import error, ok
 
 class AutoUpdate:
-    
-    def Checker():
-        req = "which one of you maggots ate the fucking request huh?"
+
+    def __init__(self):
+        self.repository_url: str = "https://api.github.com/repos/Official-Husko/mul-tor/releases/latest"
+
+    def _checker(self):
         try:
-            url = "https://api.github.com/repos/Official-Husko/mul-tor/releases/latest"
             
             headers = {
                 "User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)", 
@@ -23,7 +27,7 @@ class AutoUpdate:
                 "X-GitHub-Api-Version": "2022-11-28"
             }
             
-            req = requests.get(url, headers=headers).json()
+            req = requests.get(self.repository_url, headers=headers).json()
             repo_version = req.get("tag_name").replace("v", "")
             download_link = req["assets"][0]["browser_download_url"]
             
@@ -50,18 +54,18 @@ class AutoUpdate:
                 decision = amount_answers.get("selection")
                 if decision == "Yes":
                     r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"}, timeout=60, stream=True)
-                    with alive_bar(int(int(r.headers.get('content-length')) / 1024 + 1)) as bar:
-                        bar.text = f'-> Downloading Update {repo_version}, please wait...'
+                    with alive_bar(int(int(r.headers.get('content-length')) / 1024 + 1)) as progress_bar:
+                        progress_bar.text = f'-> Downloading Update {repo_version}, please wait...'
                         file = open(f"mul-tor-{repo_version}.exe", 'wb')
                         for chunk in r.iter_content(chunk_size=1024):
                             if chunk:
                                 file.write(chunk)
                                 file.flush()
-                                bar()
+                                progress_bar()
                     print(f"{ok} Update successfully downloaded! The program will now close and delete the old exe.")
                     if os.path.exists("delete-exe.bat"):
                         os.remove("delete-exe.bat")
-                    with open("delete-exe.bat", "a") as bat_creator:
+                    with open("delete-exe.bat", "a", encoding="utf-8") as bat_creator:
                         bat_content = f'TASKKILL -F /IM Mul-Tor.exe\ntimeout 3\nDEL .\\Mul-Tor.exe\nren .\\mul-tor-{repo_version}.exe Mul-Tor.exe\nDEL .\\delete-exe.bat'
                         bat_creator.write(bat_content)
                         bat_creator.close()
@@ -70,7 +74,7 @@ class AutoUpdate:
                     exit(0)
                 elif decision == "No":
                     if not os.path.exists("outdated"):
-                        with open("outdated", "a") as mark_outdated:
+                        with open("outdated", "a", encoding="utf-8") as mark_outdated:
                             mark_outdated.close()
             elif str(version) >= repo_version:
                 try:

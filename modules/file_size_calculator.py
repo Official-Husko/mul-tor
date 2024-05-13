@@ -9,7 +9,7 @@ class FileSizeCalculator:
         size_unit (str): The unit of the size limit. e.g. GB
     """
 
-    def __init__(self, site_name: str, file_size: int, size_limit: int, size_unit: str):
+    def __init__(self, site_name: str, file_size: int, size_limit_int: int, size_limit_str: str):
         """
         Initializes the FileSizeCalculator object.
 
@@ -21,10 +21,14 @@ class FileSizeCalculator:
         """
         self.site_name = site_name
         self.file_size = file_size
-        self.size_limit = size_limit
-        self.size_unit = size_unit
+        self.size_limit_int = size_limit_int
+        self.size_unit_str = size_limit_str
 
-        self.status = self._calculate_file_size()
+        # Temporary variables
+        self.byte_units: dict = self._unit_declaration()
+        self.size_limit_bytes: int = 0
+
+        self.status: str = self._calculate_file_size()
 
     def _unit_declaration(self):
         """
@@ -49,10 +53,8 @@ class FileSizeCalculator:
         Returns:
             str: The status of the file size compared to the limit. OK or SIZE_ERROR.
         """
-        byte_units = self._unit_declaration()
+        self.size_limit_bytes = self.size_limit_int * self.byte_units.get(self.size_unit_str.upper(), 1)
 
-        size_limit_bytes = self.size_limit * byte_units.get(self.size_unit.upper(), 1)
-
-        if self.file_size > size_limit_bytes:
+        if self.file_size > self.size_limit_bytes:
             return "SIZE_ERROR"
         return "OK"

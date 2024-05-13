@@ -10,7 +10,7 @@ from main import DEBUG
 
 
 class Buzzheavier:
-    def __init__(self, file: str, proxy_list: list, user_agent: str, api_key: list):
+    def __init__(self, file: str, user_agent: str, proxy_list: list[str]=None, api_key: list=None) -> None:
         self.file = file
         self.proxy = random.choice(proxy_list) if proxy_list else None
         self.user_agent = user_agent
@@ -18,26 +18,24 @@ class Buzzheavier:
         self.api_key = api_key
 
         # Below is the website specific data
-        self.site = "Buzzheavier"
-        self.api_key_required = False
-        self.site_url = "https://buzzheavier.com/"
-        self.upload_url = "https://w.buzzheavier.com/"
-        self.download_url_base = "https://buzzheavier.com/f/"
+        self.site: str = "Buzzheavier"
+        self.api_key_required: bool = False
+        self.site_url: str = "https://buzzheavier.com/"
+        self.upload_url: str = "https://w.buzzheavier.com/"
+        self.download_url_base: str = "https://buzzheavier.com/f/"
 
-        self.headers = {
+        self.headers: dict = {
             "User-Agent": user_agent,
             "Accept": "*/*",
             "Content-Length": str(os.path.getsize(file))
         }
 
-    def uploader(self):
+    def uploader(self) -> dict:
         try:
             with open(self.file, "rb") as file_upload:
                 full_url = f"{self.upload_url}{self.file_name}?expiry=10368000"
 
                 file_contents = file_upload.read()
-
-                print(type(file_contents))
 
                 response = requests.put(
                     full_url,

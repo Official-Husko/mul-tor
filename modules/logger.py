@@ -20,7 +20,7 @@ class Logger:
         self.extra_info = extra
         self.severity = severity
         self.site = site
-        self.exception_str = None
+        self.exception_str: str = None
         self.size_limit = size_limit
 
         # OS Specific for logging

@@ -1,9 +1,16 @@
+# Import Standard Libraries
 import json
 from time import sleep
 import os
+
+# Import Third-Party Libraries
 from termcolor import colored
-from .pretty_print import info, error  # Assuming pretty_print is in the same directory
+
+# Import Local Libraries
+from .pretty_print import info, error  # FIXME: Update to new pretty print code structure
 from .logger import Logger
+
+# TODO: probably should use jsonc instead of normal jsons: pip install jsonc-parser https://pypi.org/project/jsonc-parser/
 
 class ConfigManager:
     """
@@ -94,7 +101,19 @@ class ConfigManager:
                         "password": ""
                     }
                 },
-                "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
+                "blacklist": [
+                    "SomeSiteName", 
+                    "CheapGoFileCopy", 
+                    "HotSinglesInYourArea"
+                ],
+                "proxySources": [
+                    "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
+                    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
+                    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
+                    "https://raw.githubusercontent.com/Volodichev/proxy-list/main/http.txt",
+                    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
+                    "https://raw.githubusercontent.com/roma8ok/proxy-list/main/proxy-list-http.txt"
+                ]
             }
     
     def _save_config(self):

@@ -1,16 +1,17 @@
+# Import Standard Libraries
 from time import sleep
 import random
 import json
+
+# Import Third-Party Libraries
 import requests
 from termcolor import colored
 
+# Import Local Libraries
 from .setup import USER_AGENT
 from .site_data import sites_data_dict
 from .logger import Logger
 from .pretty_print import error
-
-available_sites = []
-ping_sites = []
 
 
 class AvailabilityChecker:
@@ -18,16 +19,15 @@ class AvailabilityChecker:
     def __init__(self, config, proxy_list):
         self.config = json.loads(config)
         self.proxy_list = proxy_list
+        self.available_sites: list[str] = []
+        self.ping_sites: list[str] = []
         
+    def _blacklist_check(self):
+        pass
 
-
-
-
-
-
-    def Evaluate(config, proxy_list):
+    def _check(self):
         blacklist = []
-        for blacklisted_site in config.get("blacklist", []):
+        for blacklisted_site in self.config.get("blacklist", []):
             blacklist.append(blacklisted_site.lower())
         for site in sites_data_dict:
             if DEBUG:
@@ -41,7 +41,7 @@ class AvailabilityChecker:
         for site in ping_sites:
             try:
                 url = sites_data_dict[site]["api_url"]
-                proxies = random.choice(proxy_list) if proxy_list else None
+                proxies = random.choice(self.proxy_list) if self.proxy_list else None
                 
                 if DEBUG and SKIP_SITE_CHECK:
                     available_sites.append(site)
