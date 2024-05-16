@@ -7,7 +7,7 @@ import os
 from termcolor import colored
 
 # Import Local Libraries
-from .pretty_print import info, error  # FIXME: Update to new pretty print code structure
+from .pretty_print import PrettyPrint
 from .logger import Logger
 
 # TODO: probably should use jsonc instead of normal jsons: pip install jsonc-parser https://pypi.org/project/jsonc-parser/
@@ -23,7 +23,7 @@ class ConfigManager:
         config (dict): The current configuration settings.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializes the ConfigManager object.
         """
@@ -32,7 +32,9 @@ class ConfigManager:
         self.default_config = self._default_config()
         self.config = self._load_config()
 
-    def _load_config(self):
+        self.pretty_print_instance = PrettyPrint()
+
+    def _load_config(self) -> dict:
         """
         Loads the configuration from the file, handles versioning, and migration if needed.
 
@@ -46,26 +48,26 @@ class ConfigManager:
             config_version = config.get("version", "0.0.0")
 
             if config_version < self.latest_config_version:
-                print(colored(f"{info} You are using an outdated config version! Trying to migrate config to new version.", "green"))
+                print(colored(f"{self.pretty_print_instance.info} You are using an outdated config version! Trying to migrate config to new version.", "green"))
                 try:
                     self._migrate_config()
                 except Exception as e:
                     error_str = f"An error occurred during the migration of the config! Please report this. Exception: {e}"
-                    print(colored(f"{error} {error_str}", 'red'))
+                    print(colored(f"{self.pretty_print_instance.error} {error_str}", 'red'))
                     Logger.log_event(error_str)
                     sleep(5)
-                    print(colored(f"{info} Old one will be backed up and new one will be created.", "red"))
+                    print(colored(f"{self.pretty_print_instance.info} Old one will be backed up and new one will be created.", "red"))
                     config = self._create_default_config()
             else:
                 return config
         else:
             self._save_config()
-            print(colored(f"{info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values."), "green")
+            print(colored(f"{self.pretty_print_instance.info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values."), "green")
             print("")
             sleep(5)
             return self._default_config()
 
-    def _default_config(self):
+    def _default_config(self) -> dict:
         """
         Returns the default configuration settings.
 
@@ -106,17 +108,22 @@ class ConfigManager:
                     "CheapGoFileCopy", 
                     "HotSinglesInYourArea"
                 ],
-                "proxySources": [
-                    "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
-                    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
-                    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
-                    "https://raw.githubusercontent.com/Volodichev/proxy-list/main/http.txt",
-                    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
-                    "https://raw.githubusercontent.com/roma8ok/proxy-list/main/proxy-list-http.txt"
-                ]
+                "proxySources": {
+                    "http": [
+                        "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
+                        "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
+                        "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
+                        "https://raw.githubusercontent.com/Volodichev/proxy-list/main/http.txt",
+                        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
+                        "https://raw.githubusercontent.com/roma8ok/proxy-list/main/proxy-list-http.txt"
+                    ],
+                    "https": [],
+                    "socks4": [],
+                    "socks5": []
+                }
             }
     
-    def _save_config(self):
+    def _save_config(self) -> str:
         """
         Saves the default configuration to the file.
 
@@ -130,7 +137,7 @@ class ConfigManager:
         except Exception as e:
             return f"An error occurred during the writing of the config file! Please report this. Exception: {e}"
 
-    def _migrate_config(self):
+    def _migrate_config(self) -> dict:
         """
         Migrates the config to the latest version by adding any missing keys.
 
