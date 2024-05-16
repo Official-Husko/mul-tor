@@ -15,14 +15,9 @@ from .Config_Manager import ConfigManager
 from .auto_update import AutoUpdate
 from .proxy_scraper import ProxyScraper
 from .logger import Logger
-from .pretty_print import error, ok, major_error
+from .pretty_print import PrettyPrint
 from .availability_checker import AvailabilityChecker
-
-
-# Check if the files exist
-if os.path.exists(".DEBUG"):
-    DEBUG = True
-
+from .storage import __dev_debug__ as DEBUG
 
 class Main:
 
@@ -33,6 +28,7 @@ class Main:
         self.user_agent = f"mul-tor/{self.version}- (by Official Husko on GitHub)" 
         self.version_for_logo = colored(f"v{self.version}", "cyan")
         self.config = None
+        self.current_working_directory: str = os.getcwd()
 
         self.logo = f"""
             {colored(f'''
@@ -45,6 +41,15 @@ class Main:
                                                 {self.version_for_logo} | by {colored("Official-Husko", "yellow")}''', "red")}
         """
     
+    def _check_read_write_permissions(self):
+        return os.access(self.current_working_directory, os.W_OK) and os.access(self.current_working_directory, os.R_OK)
+
+    def _file_selection(self):
+        pass
+
+    def _preset_selection(self):
+        pass
+
     def startup(self):
         if self.platform == "win32":
             os.system("cls")

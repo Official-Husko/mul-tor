@@ -1,7 +1,7 @@
 from termcolor import colored
 
 class PrettyPrint:
-    def __init__(self):
+    def __init__(self) -> None:
         self.major = str(colored(f"[{colored('!!!', 'red')}]"))
         self.error = str(colored(f"[{colored('!', 'red')}]"))
         self.warning = str(colored(f"[{colored('!', 'yellow')}]"))
