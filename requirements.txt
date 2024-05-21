@@ -13,7 +13,7 @@ pypiwin32==223
 python-editor==1.0.4
 pywin32==306
 readchar==4.0.5
-requests==2.31.0
+requests==2.32.0
 six==1.16.0
 termcolor==2.3.0
 urllib3==2.0.7
