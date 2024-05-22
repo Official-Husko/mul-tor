@@ -8,7 +8,7 @@ on:
     - oop-rewrite
 
 jobs:
-  build:
+  PyLint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
