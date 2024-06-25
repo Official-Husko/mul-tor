@@ -16,6 +16,6 @@ requests==2.32.2
 runs==1.2.2
 six==1.16.0
 termcolor==2.4.0
-urllib3==2.2.1
+urllib3==2.2.2
 wcwidth==0.2.13
 xmod==1.8.1

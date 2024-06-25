@@ -23,3 +23,6 @@ preset_sorter.py
 preset_sorter.json
 .DEBUG
 /test_files
+*.zstd
+/modules/old_scripts/
+/modules/deprecated/

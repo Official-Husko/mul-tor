@@ -8,10 +8,12 @@ import requests
 from termcolor import colored
 
 # Import Local Libraries
-from .setup import USER_AGENT
 from .site_data import sites_data_dict
 from .logger import Logger
-from .pretty_print import error
+from .pretty_print import PrettyPrint
+from .storage import __dev_debug__ as DEBUG
+from .storage import __user_agent__ as USER_AGENT
+
 
 
 class AvailabilityChecker:
@@ -21,11 +23,19 @@ class AvailabilityChecker:
         self.proxy_list = proxy_list
         self.available_sites: list[str] = []
         self.ping_sites: list[str] = []
+
+        self.pretty_print_instance = PrettyPrint()
         
-    def _blacklist_check(self):
-        pass
+    def _check_skip_site_config(self) -> bool:
+        return self.config.get("skip_site_check", False)
+
+    def _blacklist_check(self, site: str):
+        # return bool if site is in available sites. this is to filter out blacklisted sites.
+        return site in self.available_sites
 
     def _check(self):
+
+
         blacklist = []
         for blacklisted_site in self.config.get("blacklist", []):
             blacklist.append(blacklisted_site.lower())
@@ -33,12 +43,12 @@ class AvailabilityChecker:
             if DEBUG:
                 print(f"{colored('Checking:', 'green')} {site}")
             if not site.lower() in blacklist:
-                ping_sites.append(site)
+                self.ping_sites.append(site)
             else:
                 pass
-        print(f"{colored('Checking', 'green')} {colored(len(ping_sites), 'yellow')} {colored('supported sites...', 'green')}", end='\r')
-        
-        for site in ping_sites:
+        print(f"{colored('Checking', 'green')} {colored(len(self.ping_sites), 'yellow')} {colored('supported sites...', 'green')}", end='\r')
+
+        for site in self.ping_sites:
             try:
                 url = sites_data_dict[site]["api_url"]
                 proxies = random.choice(self.proxy_list) if self.proxy_list else None
