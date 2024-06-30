@@ -46,7 +46,7 @@ class Buzzheavier:
 
             # Send the upload request with the form data, headers, and proxies
             with open(file, "rb") as file_upload:
-                raw_req = requests.put(url=f"{upload_url}{file_name}?expiry=10368000", data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
+                raw_req = requests.put(url=f"{upload_url}{file_name}", data=file_upload, headers=headers, proxies=proxies, timeout=300, stream=True)
                 file_upload.close()
             if raw_req.status_code == 201:
 
