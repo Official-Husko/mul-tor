@@ -6,7 +6,7 @@ import os
 from .pretty_print import *
 from .logger import Logger
 
-current_config_version = "1.4.0"
+current_config_version = "1.5.0"
 
 class Config_Manager:
     
@@ -65,6 +65,9 @@ class Config_Manager:
                     "Rapidgator": {
                         "email": "",
                         "password": ""
+                    },
+                    "Pixeldrain": {
+                        "ApiKey": "",
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]

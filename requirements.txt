@@ -18,3 +18,4 @@ six==1.16.0
 termcolor==2.3.0
 urllib3==2.2.2
 wcwidth==0.2.8
+setuptools==70.1.1
