@@ -9,20 +9,56 @@ import inquirer
 from alive_progress import alive_bar
 
 # Import Local Libraries
-from main import version
+from .storage import __version__ as VERSION
+from .storage import __user_agent__ as USER_AGENT
 from .logger import Logger
-from .pretty_print import error, ok
 
-class AutoUpdate:
 
-    def __init__(self):
+class AutoUpdateChecker:
+
+    def __init__(self) -> None:
+        """
+        Initializes the AutoUpdateChecker class.
+
+        This constructor sets the initial values for the repository URL, user agent, and tool version.
+        The repository URL is set to the GitHub API endpoint for the latest releases of the mul-tor repository.
+        The user agent is set to the value of the USER_AGENT constant from the storage module.
+        The tool version is set to the value of the VERSION constant from the storage module.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
+
         self.repository_url: str = "https://api.github.com/repos/Official-Husko/mul-tor/releases/latest"
+        self.user_agent: str = USER_AGENT
+        self.tool_version: str = VERSION
+
+    def _fetch_repo_details(self) -> dict:
+        headers = {
+            "User-Agent": self.user_agent, 
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28"
+        }
+        
+        response = requests.get(self.repository_url, headers=headers, timeout=15)
+
+        if not response.status_code == 200:
+            raise Exception(response.status_code)
+
+        return response
+
+    def _extract_repo_details(self, request_response: dict):
+
+        return request_response.get("tag_name", "0.0.1")
 
     def _checker(self):
         try:
             
             headers = {
-                "User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)", 
+                "User-Agent":f"mul-tor/{VERSION} (by Official Husko on GitHub)", 
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28"
             }
@@ -31,7 +67,7 @@ class AutoUpdate:
             repo_version = req.get("tag_name").replace("v", "")
             download_link = req["assets"][0]["browser_download_url"]
             
-            if str(version) < repo_version:
+            if str(VERSION) < repo_version:
                 print(colored("UPDATE AVAILABLE!      ", "red", attrs=["blink"]))
                 
                 body = req.get("body")
@@ -53,7 +89,7 @@ class AutoUpdate:
                 print("")
                 decision = amount_answers.get("selection")
                 if decision == "Yes":
-                    r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{version} (by Official Husko on GitHub)"}, timeout=60, stream=True)
+                    r = requests.get(download_link, headers={"User-Agent":f"mul-tor/{VERSION} (by Official Husko on GitHub)"}, timeout=60, stream=True)
                     with alive_bar(int(int(r.headers.get('content-length')) / 1024 + 1)) as progress_bar:
                         progress_bar.text = f'-> Downloading Update {repo_version}, please wait...'
                         file = open(f"mul-tor-{repo_version}.exe", 'wb')
@@ -76,7 +112,7 @@ class AutoUpdate:
                     if not os.path.exists("outdated"):
                         with open("outdated", "a", encoding="utf-8") as mark_outdated:
                             mark_outdated.close()
-            elif str(version) >= repo_version:
+            elif str(VERSION) >= repo_version:
                 try:
                     os.remove("outdated")
                 except Exception:

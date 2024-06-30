@@ -8,7 +8,7 @@ import psutil
 from termcolor import colored
 
 # Import Local Libraries
-from .utils/storage import __version__ as version
+from .storage import __version__ as version
 from .pretty_print import PrettyPrint
 
 class Logger:

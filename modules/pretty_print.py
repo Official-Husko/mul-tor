@@ -1,6 +1,10 @@
 from termcolor import colored
 
 class PrettyPrint:
+    """
+    Initialize the PrettyPrint object by assigning colored strings to different attributes.
+    """
+    
     def __init__(self) -> None:
         self.major = str(colored(f"[{colored('!!!', 'red')}]"))
         self.error = str(colored(f"[{colored('!', 'red')}]"))
