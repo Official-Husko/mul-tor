@@ -1,1 +1,0 @@
-conda activate ".\.env" && pyinstaller --hidden-import "plyer.platforms.win.filechooser" --onefile --icon "icon.ico" --console --name "Mul-Tor" --upx-dir "Z:\Projects\Python\### UPX ###" --add-data="Z:\Projects\Python\mul-tor\.env\Lib\site-packages\grapheme\data\*;grapheme/data/" main.py
