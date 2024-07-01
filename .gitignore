@@ -23,3 +23,6 @@ possible_sites.txt
 preset_sorter.py
 preset_sorter.json
 very_big_game.7z
+.DEBUG
+test_files/test.png
+/.vscode/*

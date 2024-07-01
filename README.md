@@ -39,7 +39,7 @@
 Site | API | API Key Required | Max File Size
 --- | --- | --- | ---
 [Gofile][7] | [Yes][8] | No | ∞
-[Pixeldrain][1] | [Yes][2] | No | 20 GB
+[Pixeldrain][1] | [Yes][2] | [Yes][5] | 20 GB
 [BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
 [Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
 [Download.gg][102] | No | No | 25 GB
@@ -48,7 +48,7 @@ Site | API | API Key Required | Max File Size
 [Files.dp.ua][108] | No | No | 100 GB
 [Files.fm][45] | No | No | 5 GB
 [Krakenfiles][124] | No | No | 1 GB
-[Transfer_sh.sh][98] | No | No | ∞
+[Transfer.sh][98] | No | No | ∞
 [/tmp/files][117] | [Yes][118] | No | 100 MB
 [Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
 [1Fichier][31] | [Yes][32] | No | 300 GB
@@ -74,13 +74,6 @@ Site | API | API Key Required | Max File Size
 [Filesadmin][181] | No | No | 3 GB
 [CyberFile][182] | No | No | 10 GB
 [Buzzheavier][183] | [Yes][184] | No | ∞
-
-<br />
-
-### Planned Sites:
-Site | API | API Key Required | Max File Size
---- | --- | --- | ---
-None Currently :)
 
 <br />
 
@@ -177,6 +170,7 @@ None Currently :)
 [2]: https://pixeldrain.com/api
 [3]: https://github.com/Official-Husko/mul-tor#rejected-sites
 [4]: https://github.com/Official-Husko/mul-tor/issues
+[5]: https://pixeldrain.com/user/api_keys
 [7]: https://gofile.io/
 [8]: https://gofile.io/api
 [9]: https://oshi.at/

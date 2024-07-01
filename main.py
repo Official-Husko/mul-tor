@@ -17,14 +17,15 @@ else:
 
 ###
 # Things in this part are meant for debugging and toggling certaint things.
-use_test_file = False
+use_test_file = True
 test_small_file = True
 test_large_file = False
+test_very_large_file = False
 SKIP_SITE_CHECK = True
 #
 ###
 
-version = "1.5.1"
+version = "1.5.2"
 owd = os.getcwd()
 platform = sys.platform
 
@@ -127,9 +128,13 @@ class Main:
 
         if DEBUG == True and use_test_file == True:
             if test_small_file == True:
-                files_list = [f"{owd}\\test.png"]
+                files_list = [f"{os.path.join(owd, 'test.png')}"]
+            elif test_large_file == True:
+                files_list = [f"{os.path.join(owd, 'big_game.7z')}"]
+            elif test_very_large_file == True:
+                files_list = [f"{os.path.join(owd, 'very_big_game.7z')}"]
             else:
-                files_list = [f"{owd}\\big_game.zip"]
+                print(colored("Something fucked up! Please report this on github. Test_File_Error", "red"))
 
         else:
             amount_question = [

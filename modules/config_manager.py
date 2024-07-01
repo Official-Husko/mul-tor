@@ -6,7 +6,7 @@ import os
 from .pretty_print import *
 from .logger import Logger
 
-current_config_version = "1.4.0"
+current_config_version = "1.5.0"
 
 class Config_Manager:
     
@@ -66,16 +66,15 @@ class Config_Manager:
                         "email": "",
                         "password": ""
                     },
-                    "FileStore": {
-                        "username": "",
-                        "password": ""
+                    "Pixeldrain": {
+                        "apiKey": "",
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
             }
             with open("config.json", "w") as cfg_file:
                 json.dump(template, cfg_file, indent=6)
-            print(colored(f"{info} New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values."), "green")
+            print(f'{info} {colored("New config file generated! Configure it and restart the program or wait 5 seconds and the program will continue with the default values.", "green")}')
             print("")
             sleep(5)
             return template

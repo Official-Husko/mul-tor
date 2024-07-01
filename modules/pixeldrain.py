@@ -25,8 +25,18 @@ class Pixeldrain:
             upload_url = sites_data_dict[site]["url"].format(file_name=file_name)
             
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
+
+            api_key = api_keys.get("apiKey", False)
+
+            if api_key in (False, ""):
+                raise Exception("Missing API Credentials?")
+
+            headers = {
+                "User-Agent": ua, 
+                "Content-Type": "application/octet-stream",
+                "Cookie": f"pd_auth_key={api_key}"
+            }
             
-            headers = {"User-Agent": ua, "Content-Type": "application/octet-stream"}
             proxy = random.choice(proxy_list) if proxy_list else None
 
             if calc_size == "OK":
