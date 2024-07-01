@@ -67,7 +67,7 @@ class Config_Manager:
                         "password": ""
                     },
                     "Pixeldrain": {
-                        "ApiKey": "",
+                        "apiKey": "",
                     }
                 },
                 "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"]
