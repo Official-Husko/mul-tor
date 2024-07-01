@@ -26,7 +26,11 @@ class Pixeldrain:
             
             calc_size = Site_Data_CLSS.size_unit_calc(site, file_size)
             
+            print(api_keys)
+
             api_key = api_keys.get("apiKey", False)
+
+            print(api_key)
 
             if api_key in (False, ""):
                 raise Exception("Missing API Credentials?")
