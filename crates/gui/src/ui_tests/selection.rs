@@ -111,10 +111,17 @@ fn every_provider_shows_what_is_recorded_about_whether_it_works() {
     let home = quiet_home();
     let harness = harness(home.path());
 
-    // Four are marked degraded for what 1.x reported; nothing has been seen working.
-    assert_eq!(harness.query_all_by_label("degraded").count(), 4);
-    assert_eq!(harness.query_all_by_label("unverified").count(), 33);
-    assert!(harness.query_by_label("working").is_none());
+    // One word per provider, the one the registry records for it.
+    let registry = mul_tor_core::Registry::builtin();
+    for word in ["unverified", "working", "degraded", "broken"] {
+        let recorded = registry
+            .iter()
+            .filter(|s| s.info().reliability.label() == word)
+            .count();
+        assert_eq!(harness.query_all_by_label(word).count(), recorded, "{word}");
+    }
+    // Something has been seen working, and nothing is marked broken yet.
+    assert!(harness.query_all_by_label("working").count() > 0);
     assert!(harness.query_by_label("broken").is_none());
 }
 

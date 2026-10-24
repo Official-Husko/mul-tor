@@ -11,6 +11,7 @@ mod common;
 mod chunked;
 mod fileio;
 mod filesfm;
+mod form_post;
 mod forms;
 mod gofile;
 mod jqfu;

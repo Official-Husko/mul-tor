@@ -11,11 +11,13 @@ and sharing: pick the files, pick the hosts, get all the links.
 
 ## Status
 
-* All 37 providers of the Python version are ported.
+* All 37 providers of the Python version are ported, and providers that take
+  anonymous uploads are being added on top of them.
 * Every uploader is tested against a local mock server that checks the exact
-  HTTP requests it sends (field names, headers, chunk boundaries). **They have not
-  been re-verified against the live services**; the protocols come from the 2024
-  Python code, and file hosts change often. If a provider fails, `mul-tor logs` shows
+  HTTP requests it sends (field names, headers, chunk boundaries). **The ported
+  ones have not been re-verified against the live services**; the protocols come
+  from the 2024 Python code, and file hosts change often. The newer ones marked
+  `working` in `mul-tor providers` were uploaded to for real on the date shown. If a provider fails, `mul-tor logs` shows
   the details; please [open an issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 * Every provider records what is known about it: `unverified` (nobody has tried
   it against the live service; the default), `working` (seen working, with a
@@ -166,10 +168,11 @@ Mul-Tor does not support yet are reported rather than silently dropped.
 ## Supported providers
 
 Regenerate with `mul-tor providers --format markdown`. Limits are the ones the Python
-version enforced.
+version enforced, or the ones the host publishes for the providers added since.
 
 Provider | API | Account | Max file size
 --- | --- | --- | ---
+[0x0.st](https://0x0.st/) | [Yes](https://0x0.st/) | No | 512 MB
 [1CloudFile](https://1cloudfile.com/) | No | No | 5 GB
 [1Fichier](https://1fichier.com/) | [Yes](https://1fichier.com/api.html) | No | 300 GB
 [AnonTransfer](https://anontransfer.com/) | No | No | 5 GB
@@ -182,6 +185,7 @@ Provider | API | Account | Max file size
 [Delafil](https://delafil.se/) | No | No | 6 GB
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
 [Download.gg](https://download.gg/) | No | No | 25 GB
+[EasySend](https://easysend.co/) | [Yes](https://easysend.co/developer-api) | No | 1 GB
 [EasyUpload](https://easyupload.io/) | No | No | 10 GB
 [Fastupload](https://fastupload.io/) | No | No | 10 GB
 [File.io](https://file.io/) | No | No | 2 GB
@@ -199,14 +203,20 @@ Provider | API | Account | Max file size
 [Mixdrop](https://mixdrop.ag/) | [Yes](https://mixdrop.ag/api/) | [Yes](https://mixdrop.ag/api/) | 10 GB
 [Oshi](https://oshi.at/) | No | No | 5 GB
 [Pixeldrain](https://pixeldrain.com/) | [Yes](https://pixeldrain.com/api) | [Yes](https://pixeldrain.com/user/api_keys) | 20 GB
+[Qu.ax](https://qu.ax/) | No | No | 256 MB
 [Rapidgator](https://rapidgator.net/) | [Yes](https://rapidgator.net/article/api/) | [Yes](https://rapidgator.net/article/api/) | ∞
+[Temp.sh](https://temp.sh/) | [Yes](https://temp.sh/) | No | 4 GB
+[TempFile.org](https://tempfile.org/) | [Yes](https://tempfile.org/api) | No | 100 MB
 [TempSend](https://tempsend.com/) | No | No | 2 GB
+[tfLink](https://tmpfile.link/) | [Yes](https://tmpfile.link/) | No | 100 MB
 [TmpFiles](https://tmpfiles.org/) | [Yes](https://tmpfiles.org/api) | No | 100 MB
 [Transfer.sh](https://transfer.sh/) | No | No | 10 GB
 [uFile](https://ufile.io/) | [Yes](https://ufile.io/blog/?filter=api) | No | 5 GB
+[Uguu](https://uguu.se/) | [Yes](https://uguu.se/api) | No | 128 MB
 [UserCloud](https://userscloud.com/) | No | No | 5 GB
 [UsersDrive](https://usersdrive.com/) | No | No | 2 GB
 [WDHO](https://wdho.ru/) | No | No | 5 GB
+[X0.at](https://x0.at/) | [Yes](https://x0.at/) | No | 1 GB
 
 ### Rejected providers
 <details>

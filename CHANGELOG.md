@@ -31,6 +31,10 @@ Mul-Tor is rewritten in Rust.
 * Credentials for providers that need an account; those providers are hidden until set.
 * `docs/ADDING_PROVIDERS.md` and a test harness that checks each provider's exact HTTP
   requests against a local mock server.
+* Providers that take anonymous uploads, no account needed: 0x0.st, EasySend, Qu.ax,
+  Temp.sh, TempFile.org, tfLink, Uguu and X0.at. All but 0x0.st (not reachable from the
+  machine they were tried on) were uploaded to for real and are marked `working`.
+* A provider can list the only file types it takes (Qu.ax), next to the list it refuses.
 
 ### Changed
 * All 37 providers were ported. Providers sharing a protocol now share code (XFileSharing,
