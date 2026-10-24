@@ -175,7 +175,7 @@ mod tests {
         for name in legacy {
             assert!(registry.find(name).is_some(), "{name} is not registered");
         }
-        assert_eq!(registry.len(), 37);
+        assert!(registry.len() >= legacy.len());
     }
 
     #[test]

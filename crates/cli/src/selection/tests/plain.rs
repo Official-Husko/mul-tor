@@ -1,6 +1,6 @@
 //! Requests without a preset.
 
-use mul_tor_core::{Config, Credentials};
+use mul_tor_core::{Auth, Config, Credentials, Registry};
 
 use super::*;
 
@@ -93,7 +93,12 @@ fn all_excludes_blacklisted_and_credentialless_providers() {
     assert!(!picked.contains(&"Oshi"));
     assert!(!picked.contains(&"BowFile"));
     assert!(picked.contains(&"Gofile"));
-    assert_eq!(picked.len(), 37 - 1 - 5);
+    // Everything but the blacklisted Oshi and the providers that need an account.
+    let usable = Registry::builtin()
+        .iter()
+        .filter(|s| s.info().auth != Auth::Required && s.info().name != "Oshi")
+        .count();
+    assert_eq!(picked.len(), usable);
 }
 #[test]
 fn a_named_blacklisted_provider_is_skipped_with_a_note() {

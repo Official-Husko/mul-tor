@@ -126,12 +126,16 @@ fn the_all_button_ticks_only_what_can_work_right_now() {
     harness.get_by_label("All").click();
     harness.run();
 
+    let usable = mul_tor_core::Registry::builtin()
+        .iter()
+        .filter(|s| s.info().auth != mul_tor_core::Auth::Required)
+        .count();
     let selected = &harness.state().model.selected;
     assert_eq!(
         selected.len(),
-        32,
-        "37 providers, 5 of them need an account"
+        usable,
+        "every provider that does not need an account"
     );
     assert!(selected.contains("catbox") && !selected.contains("pixeldrain"));
-    harness.get_by_label_contains("32 selected");
+    harness.get_by_label_contains(&format!("{usable} selected"));
 }

@@ -65,5 +65,8 @@ fn informational_commands_work_offline() {
     }
     let providers = env.run(None, &["providers", "--format", "json"]);
     let parsed: serde_json::Value = serde_json::from_str(&stdout(&providers)).unwrap();
-    assert_eq!(parsed.as_array().unwrap().len(), 37);
+    assert_eq!(
+        parsed.as_array().unwrap().len(),
+        mul_tor_core::Registry::builtin().len()
+    );
 }

@@ -113,7 +113,7 @@ mod tests {
     fn the_table_lists_every_provider() {
         let registry = Registry::builtin();
         let table = providers_table(&all_infos(&registry));
-        assert_eq!(table.lines().count(), 38); // header + 37 providers
+        assert_eq!(table.lines().count(), registry.len() + 1); // header + one row each
         assert!(
             table.contains("Pixeldrain") && table.contains("20 GB") && table.contains("required")
         );
@@ -137,7 +137,7 @@ mod tests {
         let registry = Registry::builtin();
         let json = providers_json(&all_infos(&registry));
         let list = json.as_array().unwrap();
-        assert_eq!(list.len(), 37);
+        assert_eq!(list.len(), registry.len());
         let pixeldrain = list.iter().find(|s| s["name"] == "Pixeldrain").unwrap();
         assert_eq!(pixeldrain["account"], "required");
         assert_eq!(pixeldrain["credentials"][0], "apiKey");

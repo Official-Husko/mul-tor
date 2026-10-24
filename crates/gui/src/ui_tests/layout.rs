@@ -23,8 +23,11 @@ fn the_main_sections_are_there() {
         harness.get_by_label(label);
     }
     harness.get_by_label_contains("Upload 0 files to 0 providers");
-    // All 37 providers are listed (none blacklisted by default).
-    assert_eq!(harness.state().rows.len(), 37);
+    // Every provider is listed (none blacklisted by default).
+    assert_eq!(
+        harness.state().rows.len(),
+        mul_tor_core::Registry::builtin().len()
+    );
 }
 
 #[test]
