@@ -48,6 +48,9 @@ pub type UrlRewrite = Arc<dyn Fn(&str) -> String + Send + Sync>;
 #[derive(Clone)]
 pub struct Http {
     client: Client,
+    /// The same settings, but HTTP/1.1 only: an upgrade to a WebSocket does not
+    /// exist in HTTP/2.
+    upgradable: Client,
     rewrite: Option<UrlRewrite>,
     user_agent: String,
 }
@@ -65,6 +68,12 @@ impl Http {
         self.client
             .get(self.target(url.as_ref()))
             .timeout(API_TIMEOUT)
+    }
+
+    /// GET that may be upgraded to a WebSocket. It goes over HTTP/1.1 and has no
+    /// total timeout, which would cut short an upload that keeps the connection open.
+    pub fn get_for_upgrade(&self, url: impl AsRef<str>) -> RequestBuilder {
+        self.upgradable.get(self.target(url.as_ref()))
     }
 
     pub fn post(&self, url: impl AsRef<str>) -> RequestBuilder {
@@ -143,37 +152,49 @@ impl HttpFactory {
             .choose(&mut rng)
             .cloned()
             .unwrap_or_else(default_user_agent);
+        // One proxy for the whole upload, whichever client a request uses.
+        let proxy = match &self.proxy {
+            ProxyMode::Fixed(url) => Some(url.clone()),
+            ProxyMode::Pool(pool) => pool.choose(&mut rng).cloned(),
+            ProxyMode::System | ProxyMode::Direct => None,
+        };
 
+        Ok(Http {
+            client: self.build(&user_agent, proxy.as_deref(), false)?,
+            upgradable: self.build(&user_agent, proxy.as_deref(), true)?,
+            rewrite: self.rewrite.clone(),
+            user_agent,
+        })
+    }
+
+    fn build(
+        &self,
+        user_agent: &str,
+        proxy: Option<&str>,
+        http1_only: bool,
+    ) -> Result<Client, reqwest::Error> {
         // Deliberately no `read_timeout`/`timeout` here. In reqwest the read
         // timeout starts when the request starts and covers the wait for the
         // response headers, so it would abort any upload that takes longer
         // than the timeout to send. Stalled connections are caught by TCP
         // keepalive instead; small API calls set their own timeout.
         let mut builder = Client::builder()
-            .user_agent(&user_agent)
+            .user_agent(user_agent)
             .connect_timeout(CONNECT_TIMEOUT)
             .tcp_keepalive(Some(Duration::from_secs(60)))
             // `User-Agent`, not `user-agent`: HTTP/1 header names are case-
             // insensitive, but the Python client sent them title-cased and some
             // of these old hosts have only ever seen that.
             .http1_title_case_headers();
-
-        match &self.proxy {
-            ProxyMode::System => {}
-            ProxyMode::Direct => builder = builder.no_proxy(),
-            ProxyMode::Fixed(url) => builder = builder.proxy(Proxy::all(url)?),
-            ProxyMode::Pool(pool) => {
-                if let Some(url) = pool.choose(&mut rng) {
-                    builder = builder.proxy(Proxy::all(url)?);
-                }
-            }
+        if http1_only {
+            builder = builder.http1_only();
         }
-
-        Ok(Http {
-            client: builder.build()?,
-            rewrite: self.rewrite.clone(),
-            user_agent,
-        })
+        match (&self.proxy, proxy) {
+            (ProxyMode::Direct, _) => builder = builder.no_proxy(),
+            (_, Some(url)) => builder = builder.proxy(Proxy::all(url)?),
+            _ => {}
+        }
+        builder.build()
     }
 }
 
@@ -186,45 +207,4 @@ fn install_crypto_provider() {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn client_builds_for_every_proxy_mode() {
-        for mode in [
-            ProxyMode::System,
-            ProxyMode::Direct,
-            ProxyMode::Fixed("socks5h://127.0.0.1:9050".into()),
-            ProxyMode::Pool(vec!["http://127.0.0.1:8080".into()]),
-            ProxyMode::Pool(vec![]),
-        ] {
-            HttpFactory::new().with_proxy(mode).client().unwrap();
-        }
-    }
-
-    #[test]
-    fn invalid_proxy_url_is_an_error_not_a_panic() {
-        let result = HttpFactory::new()
-            .with_proxy(ProxyMode::Fixed("not a url".into()))
-            .client();
-        assert!(result.is_err());
-    }
-
-    #[test]
-    fn user_agent_comes_from_the_configured_list() {
-        let http = HttpFactory::new()
-            .with_user_agents(vec!["UA/1".into()])
-            .client()
-            .unwrap();
-        assert_eq!(http.user_agent(), "UA/1");
-    }
-
-    #[test]
-    fn empty_user_agent_list_keeps_the_default() {
-        let http = HttpFactory::new()
-            .with_user_agents(vec![])
-            .client()
-            .unwrap();
-        assert!(http.user_agent().starts_with("mul-tor/"));
-    }
-}
+mod tests;
