@@ -21,6 +21,7 @@ Only test against hosts and accounts you are allowed to use.
 
 | The host…                                                  | Use                                             |
 |------------------------------------------------------------|-------------------------------------------------|
+| takes one multipart `POST` and answers with the link (in the body or a JSON field) | add an entry to `providers/form_post.rs` — data only |
 | runs XFileSharing (upload form `file_0`, JSON `file_code`) | add an entry to `providers/xfs.rs` — data only  |
 | runs jQuery File Upload with `Content-Range` chunks        | add an entry to `providers/jqfu.rs` — data only |
 | uses Dropzone-style chunks (`dzuuid`, `dzchunkindex`…)     | write a file that calls `providers/dropzone.rs` |
@@ -79,6 +80,7 @@ before any request is made, so `upload` never has to:
 
 * `.max_size(..)` — larger files fail with a clear message
 * `.blocked_extensions(&[".exe"])` — lower-case, with the dot
+* `.allowed_extensions(&[".zip", ".7z"])` — the only types it takes, same format
 * `.requires(&[CredentialField::new("apiKey", "API key", true)])` — the provider is
   hidden until the user configures it; read values with `cx.credential("apiKey")?`
   (use a `const` for the field list, as in `pixeldrain.rs`)

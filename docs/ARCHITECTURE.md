@@ -17,7 +17,7 @@ whole egui/wgpu stack and is built with `cargo build -p mul-tor-gui`.
 | Module | Holds |
 |---|---|
 | `provider/` | the `Provider` trait, `ProviderInfo` (limits, credentials, recorded reliability), the offline pre-checks, the registry |
-| `providers/` | one file per provider, plus the shared protocols (`xfs`, `jqfu`, `dropzone`) |
+| `providers/` | one file per provider, plus the shared protocols (`form_post`, `xfs`, `jqfu`, `dropzone`) |
 | `upload/` | the local file, the request context (streams file data with progress), chunking, URL and random helpers |
 | `engine/` | plans the jobs, runs them with bounded parallelism, isolates crashes, reports `Event`s |
 | `net/` | the HTTP client factory, reply parsing, proxy and user-agent lists, reachability probes, update checks |
