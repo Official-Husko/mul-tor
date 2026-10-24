@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::{Error, Result};
 use crate::paths::AppDirs;
-use crate::site::{Auth, Credentials, SiteInfo, normalize_name};
+use crate::provider::{Auth, Credentials, ProviderInfo, normalize_name};
 
 /// Current layout of `config.toml`.
 pub const CONFIG_VERSION: u32 = 2;
@@ -16,7 +16,7 @@ pub const CONFIG_VERSION: u32 = 2;
 #[serde(default)]
 #[derive(Default)]
 pub struct PresetSettings {
-    /// Pre-select the sites of `name` instead of asking.
+    /// Pre-select the providers of `name` instead of asking.
     pub auto_load: bool,
     /// Preset file name, identifier or title (`f95`, `f95.json`, `husko.f95`).
     pub name: String,
@@ -29,7 +29,7 @@ pub struct PresetSettings {
 pub struct Config {
     pub version: u32,
     pub check_for_updates: bool,
-    /// Ping every site before listing it and hide the ones that do not answer.
+    /// Ping every provider before listing it and hide the ones that do not answer.
     pub check_availability: bool,
     /// Route uploads through a random proxy from a freshly scraped public list.
     pub use_proxies: bool,
@@ -43,10 +43,10 @@ pub struct Config {
     pub parallel_uploads: usize,
     /// Where `file_links.txt` goes. Default: the current directory (CLI).
     pub links_dir: Option<PathBuf>,
-    /// Sites that are never offered. Matched like site names.
+    /// Providers that are never offered. Matched like provider names.
     pub blacklist: Vec<String>,
     pub preset: PresetSettings,
-    /// Per-site credentials, keyed by site name.
+    /// Per-provider credentials, keyed by provider name.
     pub credentials: BTreeMap<String, Credentials>,
 }
 
@@ -70,9 +70,9 @@ impl Default for Config {
 }
 
 impl Config {
-    /// Credentials stored for `site` (empty if none).
-    pub fn credentials_for(&self, site: &SiteInfo) -> Credentials {
-        let id = site.id();
+    /// Credentials stored for `provider` (empty if none).
+    pub fn credentials_for(&self, provider: &ProviderInfo) -> Credentials {
+        let id = provider.id();
         self.credentials
             .iter()
             .find(|(name, _)| normalize_name(name) == id)
@@ -80,17 +80,18 @@ impl Config {
             .unwrap_or_default()
     }
 
-    /// Store credentials for `site`, replacing any entry spelled differently.
-    pub fn set_credentials(&mut self, site: &SiteInfo, credentials: Credentials) {
-        let id = site.id();
+    /// Store credentials for `provider`, replacing any entry spelled differently.
+    pub fn set_credentials(&mut self, provider: &ProviderInfo, credentials: Credentials) {
+        let id = provider.id();
         self.credentials
             .retain(|name, _| normalize_name(name) != id);
         if !credentials.is_empty() {
-            self.credentials.insert(site.name.to_string(), credentials);
+            self.credentials
+                .insert(provider.name.to_string(), credentials);
         }
     }
 
-    /// All credentials by site id, ready for the engine.
+    /// All credentials by provider id, ready for the engine.
     pub fn credentials_by_id(&self) -> BTreeMap<String, Credentials> {
         self.credentials
             .iter()
@@ -98,19 +99,20 @@ impl Config {
             .collect()
     }
 
-    /// Does `site` need credentials that are not filled in?
-    pub fn lacks_credentials(&self, site: &SiteInfo) -> bool {
-        if site.auth != Auth::Required {
+    /// Does `provider` need credentials that are not filled in?
+    pub fn lacks_credentials(&self, provider: &ProviderInfo) -> bool {
+        if provider.auth != Auth::Required {
             return false;
         }
-        let credentials = self.credentials_for(site);
-        site.credentials
+        let credentials = self.credentials_for(provider);
+        provider
+            .credentials
             .iter()
             .any(|field| credentials.get(field.key).is_none())
     }
 
-    pub fn is_blacklisted(&self, site: &SiteInfo) -> bool {
-        self.blacklist.iter().any(|entry| site.matches(entry))
+    pub fn is_blacklisted(&self, provider: &ProviderInfo) -> bool {
+        self.blacklist.iter().any(|entry| provider.matches(entry))
     }
 
     /// Parallelism clamped to something sensible.
@@ -155,8 +157,11 @@ impl Config {
         }
 
         /// The placeholder entries the Python tool wrote into every new config.
-        const PLACEHOLDER_BLACKLIST: [&str; 3] =
-            ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"];
+        const PLACEHOLDER_BLACKLIST: [&str; 3] = [
+            "SomeProviderName",
+            "CheapGoFileCopy",
+            "HotSinglesInYourArea",
+        ];
 
         let legacy: Legacy = serde_json::from_str(text).map_err(|e| Error::Config {
             path: origin.to_path_buf(),
@@ -186,7 +191,7 @@ impl Config {
             credentials: legacy
                 .api_keys
                 .into_iter()
-                .map(|(site, fields)| (site, fields.into_iter().collect::<Credentials>()))
+                .map(|(provider, fields)| (provider, fields.into_iter().collect::<Credentials>()))
                 .filter(|(_, creds)| !creds.is_empty())
                 .collect(),
             ..defaults
@@ -343,7 +348,7 @@ mod tests {
             "DooDrive": {"apiKey": "", "apiToken": ""},
             "Pixeldrain": {"apiKey": "pd"}
         },
-        "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea", "Oshi"]
+        "blacklist": ["SomeProviderName", "CheapGoFileCopy", "HotSinglesInYourArea", "Oshi"]
     }"#;
 
     #[test]
@@ -368,14 +373,15 @@ mod tests {
         let mut creds = Credentials::default();
         creds.set("apiKey", "k");
         config.credentials.insert("pixeldrain".into(), creds);
-        let info = SiteInfo::new("Pixeldrain", "https://p", "https://p").max_size(SizeLimit::gb(1));
+        let info =
+            ProviderInfo::new("Pixeldrain", "https://p", "https://p").max_size(SizeLimit::gb(1));
         assert_eq!(config.credentials_for(&info).get("apiKey"), Some("k"));
         assert!(config.credentials_by_id().contains_key("pixeldrain"));
     }
 
     #[test]
     fn set_credentials_replaces_differently_spelled_entries() {
-        let info = SiteInfo::new("BowFile", "https://b", "https://b");
+        let info = ProviderInfo::new("BowFile", "https://b", "https://b");
         let mut config = Config::default();
         config
             .credentials
@@ -404,7 +410,7 @@ mod tests {
         assert!(config.lacks_credentials(pixeldrain.info()));
         assert!(
             !config.lacks_credentials(oshi.info()),
-            "anonymous sites never lack any"
+            "anonymous providers never lack any"
         );
 
         let mut creds = Credentials::default();
@@ -425,8 +431,8 @@ mod tests {
             blacklist: vec!["transfer_sh".into()],
             ..Config::default()
         };
-        assert!(config.is_blacklisted(&SiteInfo::new("Transfer.sh", "https://t", "https://t")));
-        assert!(!config.is_blacklisted(&SiteInfo::new("Oshi", "https://o", "https://o")));
+        assert!(config.is_blacklisted(&ProviderInfo::new("Transfer.sh", "https://t", "https://t")));
+        assert!(!config.is_blacklisted(&ProviderInfo::new("Oshi", "https://o", "https://o")));
     }
 
     #[test]

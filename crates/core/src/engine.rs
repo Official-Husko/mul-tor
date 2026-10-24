@@ -1,4 +1,4 @@
-//! Runs uploads: every file to every selected site, reporting as it goes.
+//! Runs uploads: every file to every selected provider, reporting as it goes.
 //!
 //! The engine is the one piece the CLI and the GUI share. It knows nothing
 //! about terminals or windows; it reports through an [`EventSink`] callback.
@@ -16,10 +16,10 @@ use crate::error::UploadError;
 use crate::http::HttpFactory;
 use crate::linklog::{LinkEntry, LinkLog};
 use crate::progress::{Progress, ProgressSnapshot};
-use crate::site::{Credentials, Site};
+use crate::provider::{Credentials, Provider};
 use crate::upload::{LocalFile, UploadContext, UploadedFile};
 
-/// Position of a job in the run: files in the order given, sites in the order given.
+/// Position of a job in the run: files in the order given, providers in the order given.
 pub type JobId = usize;
 
 /// How often progress is sampled and reported.
@@ -29,7 +29,7 @@ const PROGRESS_INTERVAL: Duration = Duration::from_millis(150);
 pub struct JobOutcome {
     pub job: JobId,
     pub file_name: String,
-    pub site: &'static str,
+    pub provider: &'static str,
     pub result: Result<UploadedFile, UploadError>,
 }
 
@@ -45,7 +45,7 @@ pub enum Event {
     Queued {
         job: JobId,
         file_name: String,
-        site: &'static str,
+        provider: &'static str,
         size: u64,
     },
     Started {
@@ -80,7 +80,7 @@ impl Engine {
         }
     }
 
-    /// Credentials by site id (see [`crate::Config::credentials_by_id`]).
+    /// Credentials by provider id (see [`crate::Config::credentials_by_id`]).
     pub fn with_credentials(mut self, credentials: BTreeMap<String, Credentials>) -> Self {
         self.credentials = Arc::new(credentials);
         self
@@ -98,20 +98,20 @@ impl Engine {
         self
     }
 
-    /// Upload each of `files` to each of `sites`.
+    /// Upload each of `files` to each of `providers`.
     ///
-    /// Jobs start in file-major order (all sites for the first file, then the
+    /// Jobs start in file-major order (all providers for the first file, then the
     /// second file, …), at most `parallelism` at a time. Cancelling `cancel`
     /// aborts running jobs and marks the ones not yet started as cancelled.
     /// Returns every job's outcome in job order.
     pub async fn run(
         &self,
         files: Vec<PathBuf>,
-        sites: Vec<Arc<dyn Site>>,
+        providers: Vec<Arc<dyn Provider>>,
         sink: EventSink,
         cancel: CancellationToken,
     ) -> Vec<Arc<JobOutcome>> {
-        let jobs = self.plan(files, &sites, &sink).await;
+        let jobs = self.plan(files, &providers, &sink).await;
 
         let permits = Arc::new(Semaphore::new(self.parallel));
         let mut running = Vec::with_capacity(jobs.len());
@@ -131,7 +131,7 @@ impl Engine {
             let engine = self.clone();
             let sink = sink.clone();
             let cancel = cancel.clone();
-            let identity = (job.id, job.file_name.clone(), job.site.info().name);
+            let identity = (job.id, job.file_name.clone(), job.provider.info().name);
             let handle = tokio::spawn(async move {
                 let outcome = engine.run_job(job, &sink, &cancel).await;
                 drop(permit);
@@ -140,7 +140,7 @@ impl Engine {
             running.push((identity, handle));
         }
 
-        for ((job, file_name, site), handle) in running {
+        for ((job, file_name, provider), handle) in running {
             outcomes.push(match handle.await {
                 Ok(outcome) => outcome,
                 // An uploader panicked. Report it as a failed job instead of
@@ -149,7 +149,7 @@ impl Engine {
                     let outcome = Arc::new(JobOutcome {
                         job,
                         file_name,
-                        site,
+                        provider,
                         result: Err(UploadError::unexpected(format!(
                             "internal error: the uploader crashed ({error})"
                         ))),
@@ -167,10 +167,10 @@ impl Engine {
     async fn plan(
         &self,
         files: Vec<PathBuf>,
-        sites: &[Arc<dyn Site>],
+        providers: &[Arc<dyn Provider>],
         sink: &EventSink,
     ) -> Vec<Job> {
-        let mut jobs = Vec::with_capacity(files.len() * sites.len());
+        let mut jobs = Vec::with_capacity(files.len() * providers.len());
         for path in files {
             let local = match LocalFile::open(&path).await {
                 Ok(file) => Ok(Arc::new(file)),
@@ -186,19 +186,19 @@ impl Engine {
                     0,
                 ),
             };
-            for site in sites {
+            for provider in providers {
                 let id = jobs.len();
                 sink(Event::Queued {
                     job: id,
                     file_name: file_name.clone(),
-                    site: site.info().name,
+                    provider: provider.info().name,
                     size,
                 });
                 jobs.push(Job {
                     id,
                     file: local.clone(),
                     file_name: file_name.clone(),
-                    site: site.clone(),
+                    provider: provider.clone(),
                 });
             }
         }
@@ -217,13 +217,13 @@ impl Engine {
         sink(Event::Started { job: job.id });
         let result = self.execute(&job, sink, cancel).await;
 
-        let info = job.site.info();
+        let info = job.provider.info();
         match &result {
             Ok(uploaded) => {
                 if let Some(log) = &self.link_log {
                     let entry = LinkEntry {
                         when: Local::now(),
-                        site: info.name,
+                        provider: info.name,
                         file_name: &job.file_name,
                         url: &uploaded.url,
                     };
@@ -235,7 +235,7 @@ impl Engine {
             Err(UploadError::Cancelled) => {}
             Err(error) => {
                 tracing::warn!(
-                    site = info.name,
+                    provider = info.name,
                     file = %job.file_name,
                     %error,
                     raw = error.raw().unwrap_or(""),
@@ -255,7 +255,7 @@ impl Engine {
         let file = job.file.as_ref().map_err(|(kind, message)| {
             UploadError::Io(std::io::Error::new(*kind, message.clone()))
         })?;
-        let info = job.site.info();
+        let info = job.provider.info();
         let credentials = self
             .credentials
             .get(&info.id())
@@ -292,7 +292,7 @@ impl Engine {
         let result = tokio::select! {
             biased;
             _ = cancel.cancelled() => Err(UploadError::Cancelled),
-            result = job.site.upload(&cx) => result,
+            result = job.provider.upload(&cx) => result,
             _ = report => unreachable!("the progress reporter never finishes"),
         };
 
@@ -310,7 +310,7 @@ struct Job {
     /// `Err` if the file could not be opened: kind and message.
     file: Result<Arc<LocalFile>, (std::io::ErrorKind, String)>,
     file_name: String,
-    site: Arc<dyn Site>,
+    provider: Arc<dyn Provider>,
 }
 
 fn finish(
@@ -321,7 +321,7 @@ fn finish(
     let outcome = Arc::new(JobOutcome {
         job: job.id,
         file_name: job.file_name.clone(),
-        site: job.site.info().name,
+        provider: job.provider.info().name,
         result,
     });
     sink(Event::Finished(outcome.clone()));

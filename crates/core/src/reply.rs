@@ -1,7 +1,7 @@
 //! A fully-read HTTP response plus the small parsing helpers uploaders need.
 //!
 //! Reading the body eagerly is fine here: everything that comes back from a
-//! site is a short JSON/HTML/text reply, never file data.
+//! provider is a short JSON/HTML/text reply, never file data.
 
 use std::sync::LazyLock;
 
@@ -148,7 +148,7 @@ pub(crate) fn embedded_json(text: &str) -> Option<Value> {
     })
 }
 
-/// CSRF token from a `<meta name="csrf-token" content="…">` tag (Laravel sites).
+/// CSRF token from a `<meta name="csrf-token" content="…">` tag (Laravel providers).
 pub(crate) fn csrf_meta(html: &str) -> Option<String> {
     static META: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r#"<meta\s+name="csrf-token"\s+content="([^"]*)""#).unwrap());

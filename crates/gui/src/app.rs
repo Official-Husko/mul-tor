@@ -9,7 +9,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::{Context as _, Result};
 use mul_tor_core::update::Release;
-use mul_tor_core::{AppDirs, Config, ConfigStore, PresetLibrary, Registry, Site};
+use mul_tor_core::{AppDirs, Config, ConfigStore, PresetLibrary, Provider, Registry};
 use tokio_util::sync::CancellationToken;
 
 use crate::model::Model;
@@ -25,10 +25,10 @@ pub enum Action {
     PickFolder,
     ClearFiles,
     RemoveFile(usize),
-    ToggleSite { id: String, on: bool },
+    ToggleProvider { id: String, on: bool },
     SetFilter(String),
-    SelectAllSites,
-    SelectNoSites,
+    SelectAllProviders,
+    SelectNoProviders,
     ApplyPreset(Option<String>),
     CheckAvailability,
     Start,
@@ -41,10 +41,10 @@ pub enum Action {
     CloseSettings,
 }
 
-/// A site as displayed: its normalised id plus the uploader.
-pub struct SiteRow {
+/// A provider as displayed: its normalised id plus the uploader.
+pub struct ProviderRow {
     pub id: String,
-    pub site: Arc<dyn Site>,
+    pub provider: Arc<dyn Provider>,
 }
 
 pub struct Notice {
@@ -66,7 +66,7 @@ pub struct Settings {
     pub tab: SettingsTab,
     /// Edited copy of the config; applied on save.
     pub draft: Config,
-    /// Text being edited per `(site id, credential key)`.
+    /// Text being edited per `(provider id, credential key)`.
     pub buffers: BTreeMap<(String, String), String>,
     pub reveal_secrets: bool,
 }
@@ -80,7 +80,7 @@ pub struct MulTorApp {
     pub config: Config,
     pub registry: Registry,
     pub presets: PresetLibrary,
-    pub rows: Vec<SiteRow>,
+    pub rows: Vec<ProviderRow>,
     pub model: Model,
     pub settings: Settings,
     pub notice: Option<Notice>,
@@ -140,23 +140,23 @@ impl MulTorApp {
         Ok(app)
     }
 
-    /// The sites shown in the list: everything not on the blacklist.
+    /// The providers shown in the list: everything not on the blacklist.
     pub fn rebuild_rows(&mut self) {
         self.rows = self
             .registry
             .iter()
-            .filter(|site| !self.config.is_blacklisted(site.info()))
-            .map(|site| SiteRow {
-                id: site.info().id(),
-                site: site.clone(),
+            .filter(|provider| !self.config.is_blacklisted(provider.info()))
+            .map(|provider| ProviderRow {
+                id: provider.info().id(),
+                provider: provider.clone(),
             })
             .collect();
         let known: Vec<String> = self.rows.iter().map(|r| r.id.clone()).collect();
         self.model.selected.retain(|id| known.contains(id));
     }
 
-    pub fn lacks_credentials(&self, site: &Arc<dyn Site>) -> bool {
-        self.config.lacks_credentials(site.info())
+    pub fn lacks_credentials(&self, provider: &Arc<dyn Provider>) -> bool {
+        self.config.lacks_credentials(provider.info())
     }
 
     pub fn show_notice(&mut self, level: Level, text: impl Into<String>) {
@@ -226,17 +226,17 @@ impl MulTorApp {
 
     fn check_availability(&mut self) {
         self.model.checking = true;
-        let sites = self
+        let providers = self
             .rows
             .iter()
-            .map(|r| (r.id.clone(), r.site.clone()))
+            .map(|r| (r.id.clone(), r.provider.clone()))
             .collect();
         tasks::check_availability(
             self.rt.handle(),
             &self.bus,
             self.config.clone(),
             self.dirs.clone(),
-            sites,
+            providers,
         );
     }
 
@@ -252,12 +252,16 @@ impl MulTorApp {
         let resolved = preset.resolve(&self.registry);
         let mut skipped = Vec::new();
         let mut ids = Vec::new();
-        for site in &resolved.sites {
-            let Some(row) = self.rows.iter().find(|r| Arc::ptr_eq(&r.site, site)) else {
+        for provider in &resolved.providers {
+            let Some(row) = self
+                .rows
+                .iter()
+                .find(|r| Arc::ptr_eq(&r.provider, provider))
+            else {
                 continue; // blacklisted
             };
-            if self.config.lacks_credentials(site.info()) {
-                skipped.push(site.info().name);
+            if self.config.lacks_credentials(provider.info()) {
+                skipped.push(provider.info().name);
             } else {
                 ids.push(row.id.clone());
             }
@@ -287,11 +291,11 @@ impl MulTorApp {
         if !self.model.can_start() {
             return;
         }
-        let sites: Vec<Arc<dyn Site>> = self
+        let providers: Vec<Arc<dyn Provider>> = self
             .rows
             .iter()
             .filter(|row| self.model.selected.contains(&row.id))
-            .map(|row| row.site.clone())
+            .map(|row| row.provider.clone())
             .collect();
         let files = self.model.files.iter().map(|f| f.path.clone()).collect();
         let link_format = self
@@ -308,7 +312,7 @@ impl MulTorApp {
             &self.bus,
             RunRequest {
                 files,
-                sites,
+                providers,
                 config: self.config.clone(),
                 dirs: self.dirs.clone(),
                 link_format,
@@ -321,7 +325,7 @@ impl MulTorApp {
     pub fn open_settings(&mut self) {
         let mut buffers = BTreeMap::new();
         for row in &self.rows {
-            let info = row.site.info();
+            let info = row.provider.info();
             let current = self.config.credentials_for(info);
             for field in info.credentials {
                 buffers.insert(
@@ -341,7 +345,7 @@ impl MulTorApp {
     fn save_settings(&mut self) {
         let mut config = self.settings.draft.clone();
         for row in &self.rows {
-            let info = row.site.info();
+            let info = row.provider.info();
             if info.credentials.is_empty() {
                 continue;
             }
@@ -381,21 +385,23 @@ impl MulTorApp {
             Action::PickFolder => tasks::pick(self.rt.handle(), &self.bus, true),
             Action::ClearFiles => self.model.files.clear(),
             Action::RemoveFile(index) => self.model.remove_file(index),
-            Action::ToggleSite { id, on } => self.model.toggle_site(&id, on),
-            Action::SetFilter(filter) => self.model.site_filter = filter,
-            Action::SelectAllSites => {
+            Action::ToggleProvider { id, on } => self.model.toggle_provider(&id, on),
+            Action::SetFilter(filter) => self.model.provider_filter = filter,
+            Action::SelectAllProviders => {
                 let ids: Vec<String> = self
                     .rows
                     .iter()
-                    .filter(|r| !self.lacks_credentials(&r.site))
-                    .filter(|r| crate::model::matches_filter(&*r.site, &self.model.site_filter))
+                    .filter(|r| !self.lacks_credentials(&r.provider))
+                    .filter(|r| {
+                        crate::model::matches_filter(&*r.provider, &self.model.provider_filter)
+                    })
                     .map(|r| r.id.clone())
                     .collect();
                 for id in ids {
-                    self.model.toggle_site(&id, true);
+                    self.model.toggle_provider(&id, true);
                 }
             }
-            Action::SelectNoSites => self.model.selected.clear(),
+            Action::SelectNoProviders => self.model.selected.clear(),
             Action::ApplyPreset(stem) => self.apply_preset(stem),
             Action::CheckAvailability => self.check_availability(),
             Action::Start => self.start(),

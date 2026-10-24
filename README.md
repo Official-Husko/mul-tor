@@ -1,6 +1,6 @@
 # Mul-Tor
 
-**Upload a file to many file-hosting sites at once.** Built for backups, archiving
+**Upload a file to many file-hosting providers at once.** Built for backups, archiving
 and sharing: pick the files, pick the hosts, get all the links.
 
 > [!NOTE]
@@ -11,21 +11,21 @@ and sharing: pick the files, pick the hosts, get all the links.
 
 ## Status
 
-* All 37 sites of the Python version are ported.
+* All 37 providers of the Python version are ported.
 * Every uploader is tested against a local mock server that checks the exact
   HTTP requests it sends (field names, headers, chunk boundaries). **They have not
   been re-verified against the live services**; the protocols come from the 2024
-  Python code, and file hosts change often. If a site fails, `runtime.log` has
+  Python code, and file hosts change often. If a provider fails, `runtime.log` has
   the details; please [open an issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
-* New sites are being added; see [docs/ADDING_SITES.md](docs/ADDING_SITES.md).
+* New providers are being added; see [docs/ADDING_PROVIDERS.md](docs/ADDING_PROVIDERS.md).
 
 ## Features
 
 * Interactive guided mode, plus a scriptable `upload` command (`--json`, exit codes)
 * Several uploads at once (`--parallel`), with a progress bar for every upload
-* Site presets (a list of sites + a link format for a forum or community)
+* Provider presets (a list of providers + a link format for a forum or community)
 * Optional random user agent, public proxy pool, or your own proxy (HTTP/SOCKS, so Tor works)
-* Checks which sites are reachable before offering them
+* Checks which providers are reachable before offering them
 * Writes every link to `file_links.txt` (and a BBCode-style version for presets)
 * Notifies you about new releases (it never installs anything by itself)
 
@@ -47,7 +47,7 @@ are possible (for example with the `*-unknown-linux-musl` targets).
 ## Using the graphical version
 
 `mul-tor-gui` is the same engine in a window (egui, rendered with wgpu): drop files
-on it, tick sites or pick a preset, press Upload. Every upload gets its own
+on it, tick providers or pick a preset, press Upload. Every upload gets its own
 progress bar and, once finished, a link you can copy or open. Settings (including
 your accounts) are edited in the window and saved to the same `config.toml`.
 
@@ -64,20 +64,20 @@ none of this.
 ## Using the command line
 
 ```sh
-mul-tor                                   # guided mode: pick files, pick sites
-mul-tor sites                             # what is supported, limits, accounts
-mul-tor upload backup.7z -s pixeldrain -s gofile
+mul-tor                                   # guided mode: pick files, pick providers
+mul-tor providers                         # what is supported, limits, accounts
+mul-tor upload backup.7z -p pixeldrain -p gofile
 mul-tor upload ./release --preset f95 --parallel 3
 mul-tor upload photos/ -r --all --json    # one JSON object per upload, for scripts
-mul-tor check                             # which sites answer right now?
+mul-tor check                             # which providers answer right now?
 ```
 
 * A folder contributes the files directly inside it; add `-r` for sub-folders.
-* `--site` names are forgiving: `Transfer.sh`, `transfer_sh` and `transfersh` are the same.
+* `--provider` names are forgiving: `Transfer.sh`, `transfer_sh` and `transfersh` are the same.
 * Exit code `0` = everything uploaded, `1` = at least one upload failed,
   `2` = bad usage or configuration, `130` = cancelled with Ctrl-C.
 * Failures are explained on screen and logged in `runtime.log`, including a
-  trimmed copy of what the site replied.
+  trimmed copy of what the provider replied.
 
 ## Configuration
 
@@ -85,14 +85,14 @@ Settings live in `config.toml`; `mul-tor config path` prints where. The first ru
 creates a fully commented one. To keep everything in one folder (a portable
 install), use `--home DIR` or set `MUL_TOR_HOME`.
 
-Sites that need an account are hidden until you fill in their credentials:
+Providers that need an account are hidden until you fill in their credentials:
 
 ```toml
 [credentials.Pixeldrain]
 apiKey = "..."
 ```
 
-`mul-tor sites` shows which sites need one, and the table below links to where
+`mul-tor providers` shows which providers need one, and the table below links to where
 you get the keys. **The file contains secrets and is created readable only by you
 on Linux/macOS.**
 
@@ -107,18 +107,18 @@ on Linux/macOS.**
 
 ## Presets
 
-A preset lists the sites a forum or community accepts and how to format the links
+A preset lists the providers a forum or community accepts and how to format the links
 for a post. `mul-tor presets` lists them; `mul-tor upload ... --preset f95` uses one.
 The bundled ones are in [presets/](presets/); the format is documented in
-[presets/template.json5](presets/template.json5). Sites a preset names that
+[presets/template.json5](presets/template.json5). Providers a preset names that
 Mul-Tor does not support yet are reported rather than silently dropped.
 
-## Supported sites
+## Supported providers
 
-Regenerate with `mul-tor sites --format markdown`. Limits are the ones the Python
+Regenerate with `mul-tor providers --format markdown`. Limits are the ones the Python
 version enforced.
 
-Site | API | Account | Max file size
+Provider | API | Account | Max file size
 --- | --- | --- | ---
 [1CloudFile](https://1cloudfile.com/) | No | No | 5 GB
 [1Fichier](https://1fichier.com/) | [Yes](https://1fichier.com/api.html) | No | 300 GB
@@ -158,10 +158,10 @@ Site | API | Account | Max file size
 [UsersDrive](https://usersdrive.com/) | No | No | 2 GB
 [WDHO](https://wdho.ru/) | No | No | 5 GB
 
-### Rejected sites
+### Rejected providers
 <details>
 
-  Site | API | Account | Max File Size | Reason
+  Provider | API | Account | Max File Size | Reason
   --- | --- | --- | --- | ---
   [DropMeFiles](https://dropmefiles.com/) | No | No | 50 GB | Terrible Uploading System
   [Up2Share](https://up2sha.re/) | No | No | 1 GB | Terrible Uploading System
@@ -202,8 +202,8 @@ Site | API | Account | Max file size
 ### FAQ
 <details>
   <summary>Open FAQ</summary>
-  Q: Where did the site X go?\
-  A: Check the [rejected sites](#rejected-sites) list. Sites that were dropped from the Python version are in its git history (tag `1.5.2`).
+  Q: Where did the provider X go?\
+  A: Check the [rejected providers](#rejected-providers) list. Providers that were dropped from the Python version are in its git history (tag `1.5.2`).
 
   Q: Are there any presets?\
   A: Yes: `f95` and `cs-rin-ru` are built in (`mul-tor presets`). More can be dropped into the `presets` folder next to your `config.toml`; community ones may be collected in [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets).
@@ -215,21 +215,21 @@ Site | API | Account | Max file size
   A: Run `mul-tor --help`, check the [Wiki](https://github.com/Official-Husko/mul-tor/wiki) (parts of it still describe 1.x) and the log file `runtime.log` in the config folder. If that does not help, check out the [issues page](https://github.com/Official-Husko/mul-tor/issues) and if there is none [open one up](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
   Q: How do I get the API key?\
-  A: In the Account column of the table above, the "Yes" of the site you want links to the page where you create the key. Then put it in `config.toml` (see Configuration).
+  A: In the Account column of the table above, the "Yes" of the provider you want links to the page where you create the key. Then put it in `config.toml` (see Configuration).
 
-  Q: I want to request a site.\
-  A: Please first check the [rejected sites](https://github.com/Official-Husko/mul-tor#rejected-sites) and [issues page](https://github.com/Official-Husko/mul-tor/issues) to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
+  Q: I want to request a provider.\
+  A: Please first check the [rejected providers](https://github.com/Official-Husko/mul-tor#rejected-providers) and [issues page](https://github.com/Official-Husko/mul-tor/issues) to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
-  Q: What about rejected sites?\
-  A: I will check the sites every once in a while to see if the issues I mentioned have been resolved. If you know the issue has been resolved or why I encountered an issue feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
+  Q: What about rejected providers?\
+  A: I will check the providers every once in a while to see if the issues I mentioned have been resolved. If you know the issue has been resolved or why I encountered an issue feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
   Q: Why is it called Mul-Tor?\
   A: I have no idea.
 
-  Q: What if I need one of the rejected sites?\
+  Q: What if I need one of the rejected providers?\
   A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose) if there isn't one already so that I can check it again.
 
-  Q: Certain sites offer an API but you didn't use it. Why?\
+  Q: Certain providers offer an API but you didn't use it. Why?\
   A: Because anonymous uploads need no accounts or sign-ups. Account support is added where it unlocks something (bigger files, longer storage).
 
   Q: Somebody else already has the issue I'm having. What do I do?\
@@ -249,10 +249,10 @@ cargo build --workspace
 cargo test --workspace --features mul-tor/test-hooks
 ```
 
-`test-hooks` lets the end-to-end tests redirect every site to a local mock server;
+`test-hooks` lets the end-to-end tests redirect every provider to a local mock server;
 it is never part of a release build.
 
 ## Disclaimer
 
 > [!CAUTION]
-> *I am not in any way affiliated and or working with these sites. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*
+> *I am not in any way affiliated and or working with these providers. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*

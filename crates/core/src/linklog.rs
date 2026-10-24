@@ -49,7 +49,7 @@ pub fn format_template(template: &str, values: &[(&str, &str)]) -> String {
 #[derive(Clone, Debug)]
 pub struct LinkEntry<'a> {
     pub when: DateTime<Local>,
-    pub site: &'a str,
+    pub provider: &'a str,
     pub file_name: &'a str,
     pub url: &'a str,
 }
@@ -60,14 +60,16 @@ impl LinkEntry<'_> {
         format!(
             "{} | {} | {} - {}",
             self.when.format("%Y-%m-%d %H:%M:%S%.6f"),
-            self.site,
+            self.provider,
             self.file_name,
             self.url
         )
     }
 
     /// Apply a preset's link template. Available fields: `status`,
-    /// `file_name`, `file_url`, `site_name`, `date_and_time`.
+    /// `file_name`, `file_url`, `provider_name`, `date_and_time`.
+    /// `site_name` is the older spelling of `provider_name` and still works,
+    /// because shared preset files use it.
     pub fn formatted(&self, template: &str) -> String {
         let when = self.when.format("%Y-%m-%d %H:%M:%S%.6f").to_string();
         format_template(
@@ -76,7 +78,8 @@ impl LinkEntry<'_> {
                 ("status", "ok"),
                 ("file_name", self.file_name),
                 ("file_url", self.url),
-                ("site_name", self.site),
+                ("provider_name", self.provider),
+                ("site_name", self.provider),
                 ("date_and_time", &when),
             ],
         )
@@ -137,10 +140,24 @@ mod tests {
     #[test]
     fn placeholders_are_substituted() {
         let out = format_template(
-            "[URL='{file_url}']{site_name}[/URL]",
-            &[("file_url", "https://x/y"), ("site_name", "Pixeldrain")],
+            "[URL='{file_url}']{provider_name}[/URL]",
+            &[("file_url", "https://x/y"), ("provider_name", "Pixeldrain")],
         );
         assert_eq!(out, "[URL='https://x/y']Pixeldrain[/URL]");
+    }
+
+    #[test]
+    fn the_legacy_site_name_placeholder_still_works() {
+        let entry = LinkEntry {
+            when: chrono::Local.with_ymd_and_hms(2024, 1, 2, 3, 4, 5).unwrap(),
+            provider: "Pixeldrain",
+            file_name: "a.7z",
+            url: "https://x/y",
+        };
+        assert_eq!(
+            entry.formatted("{site_name}|{provider_name}"),
+            "Pixeldrain|Pixeldrain"
+        );
     }
 
     #[test]
@@ -166,7 +183,7 @@ mod tests {
     fn entry() -> LinkEntry<'static> {
         LinkEntry {
             when: Local.with_ymd_and_hms(2024, 5, 1, 12, 30, 45).unwrap(),
-            site: "Pixeldrain",
+            provider: "Pixeldrain",
             file_name: "a.zip",
             url: "https://pixeldrain.com/u/1",
         }
@@ -184,7 +201,7 @@ mod tests {
     fn log_appends_plain_and_formatted_lines() {
         let tmp = tempfile::tempdir().unwrap();
         let log = LinkLog::new(tmp.path().join("out"))
-            .with_template(Some("[URL='{file_url}']{site_name}[/URL]".into()));
+            .with_template(Some("[URL='{file_url}']{provider_name}[/URL]".into()));
         log.record(&entry()).unwrap();
         log.record(&entry()).unwrap();
 

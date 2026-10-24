@@ -36,8 +36,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      # `test-hooks` lets the end-to-end tests redirect every site to a local
-      # mock server. Nothing in the suite talks to the real sites.
+      # `test-hooks` lets the end-to-end tests redirect every provider to a local
+      # mock server. Nothing in the suite talks to the real providers.
       - run: cargo test --workspace --locked --features mul-tor/test-hooks
 
   msrv:

@@ -1,7 +1,7 @@
 //! File-size limits and byte formatting.
 //!
 //! Limits use binary multiples (1 GB = 1024³ bytes). That is what the Python
-//! version enforced, so the numbers carried over from its site table keep their
+//! version enforced, so the numbers carried over from its provider table keep their
 //! meaning.
 
 use std::fmt;
@@ -31,7 +31,7 @@ impl SizeUnit {
     }
 }
 
-/// The largest file a site accepts, kept in the unit the site advertises so it
+/// The largest file a provider accepts, kept in the unit the provider advertises so it
 /// can be shown to the user unchanged ("20 GB").
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SizeLimit {

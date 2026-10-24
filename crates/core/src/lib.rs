@@ -1,4 +1,4 @@
-//! Core of Mul-Tor: upload a file to many hosting sites at once.
+//! Core of Mul-Tor: upload a file to many hosting providers at once.
 //!
 //! This crate has no user interface. The `mul-tor` CLI and `mul-tor-gui`
 //! binaries are thin front-ends over it.
@@ -13,11 +13,11 @@ pub mod linklog;
 pub mod paths;
 pub mod preset;
 pub mod progress;
+pub mod provider;
+pub mod providers;
 pub mod proxies;
 mod reply;
 pub mod setup;
-pub mod site;
-pub mod sites;
 pub mod size;
 pub mod update;
 pub mod upload;
@@ -31,6 +31,8 @@ pub use linklog::{LinkEntry, LinkLog};
 pub use paths::AppDirs;
 pub use preset::{Preset, PresetLibrary};
 pub use progress::{Progress, ProgressSnapshot};
-pub use site::{Auth, CredentialField, Credentials, Registry, Site, SiteInfo, normalize_name};
+pub use provider::{
+    Auth, CredentialField, Credentials, Provider, ProviderInfo, Registry, normalize_name,
+};
 pub use size::{SizeLimit, format_bytes};
 pub use upload::{LocalFile, UploadContext, UploadedFile};

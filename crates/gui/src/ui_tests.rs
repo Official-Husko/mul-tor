@@ -1,5 +1,5 @@
 //! Headless tests of the real window: the actual `eframe::App::ui` runs inside
-//! a kittest harness, with an in-process server standing in for the sites.
+//! a kittest harness, with an in-process server standing in for the providers.
 
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -99,7 +99,7 @@ fn the_main_sections_are_there() {
     for label in [
         "Mul-Tor",
         "Files",
-        "Sites",
+        "Providers",
         "Add files…",
         "Add folder…",
         "Settings",
@@ -108,13 +108,13 @@ fn the_main_sections_are_there() {
     ] {
         harness.get_by_label(label);
     }
-    harness.get_by_label_contains("Upload 0 files to 0 sites");
-    // All 37 sites are listed (none blacklisted by default).
+    harness.get_by_label_contains("Upload 0 files to 0 providers");
+    // All 37 providers are listed (none blacklisted by default).
     assert_eq!(harness.state().rows.len(), 37);
 }
 
 #[test]
-fn sites_that_need_an_account_cannot_be_ticked_until_configured() {
+fn providers_that_need_an_account_cannot_be_ticked_until_configured() {
     let home = quiet_home();
     let harness = harness(home.path());
 
@@ -129,7 +129,7 @@ fn sites_that_need_an_account_cannot_be_ticked_until_configured() {
 }
 
 #[test]
-fn ticking_a_site_and_adding_a_file_enables_the_upload_button() {
+fn ticking_a_provider_and_adding_a_file_enables_the_upload_button() {
     let home = quiet_home();
     let mut harness = harness(home.path());
     let file = sample_file(home.path(), "a.txt");
@@ -138,14 +138,14 @@ fn ticking_a_site_and_adding_a_file_enables_the_upload_button() {
     harness.run();
     harness.get_by_label_contains("a.txt");
     assert!(is_disabled(
-        harness.get_by_label_contains("Upload 1 file to 0 sites")
+        harness.get_by_label_contains("Upload 1 file to 0 providers")
     ));
 
     harness.get_by_label("Catbox").click();
     harness.run();
     assert!(harness.state().model.selected.contains("catbox"));
     assert!(!is_disabled(
-        harness.get_by_label_contains("Upload 1 file to 1 site")
+        harness.get_by_label_contains("Upload 1 file to 1 provider")
     ));
 
     harness.get_by_label("Catbox").click(); // untick again
@@ -154,17 +154,17 @@ fn ticking_a_site_and_adding_a_file_enables_the_upload_button() {
 }
 
 #[test]
-fn the_search_box_filters_the_site_list() {
+fn the_search_box_filters_the_provider_list() {
     let home = quiet_home();
     let mut harness = harness(home.path());
-    harness.state_mut().model.site_filter = "cat".into();
+    harness.state_mut().model.provider_filter = "cat".into();
     harness.run();
     assert!(harness.query_by_label("Catbox").is_some());
     assert!(harness.query_by_label("Gofile").is_none());
 }
 
 #[test]
-fn a_preset_ticks_its_usable_sites_and_explains_what_it_skipped() {
+fn a_preset_ticks_its_usable_providers_and_explains_what_it_skipped() {
     let home = quiet_home();
     let mut harness = harness(home.path());
 
@@ -183,7 +183,7 @@ fn a_preset_ticks_its_usable_sites_and_explains_what_it_skipped() {
     let notice = harness
         .state()
         .current_notice()
-        .expect("a note about the skipped sites");
+        .expect("a note about the skipped providers");
     assert!(notice.text.contains("Pixeldrain"), "{}", notice.text);
 }
 
@@ -216,7 +216,7 @@ fn files_dropped_on_the_window_are_added() {
 }
 
 #[test]
-fn credentials_entered_in_settings_are_saved_and_unlock_the_site() {
+fn credentials_entered_in_settings_are_saved_and_unlock_the_provider() {
     let home = quiet_home();
     let mut harness = harness(home.path());
 
@@ -296,7 +296,7 @@ async fn a_full_upload_shows_the_link_and_writes_the_link_file() {
         harness.run();
 
         harness
-            .get_by_label_contains("Upload 1 file to 1 site")
+            .get_by_label_contains("Upload 1 file to 1 provider")
             .click();
         harness.run_steps(3);
         wait_until(&mut harness, "the upload to finish", |app| {
@@ -338,11 +338,11 @@ async fn the_cancel_button_stops_an_upload_that_never_finishes() {
         let mut harness = harness(&home_path);
         harness.state_mut().url_rewrite = Some(redirect_to(base));
         harness.state_mut().add_paths(&[file]);
-        harness.state_mut().model.toggle_site("catbox", true);
+        harness.state_mut().model.toggle_provider("catbox", true);
         harness.run();
 
         harness
-            .get_by_label_contains("Upload 1 file to 1 site")
+            .get_by_label_contains("Upload 1 file to 1 provider")
             .click();
         harness.run_steps(3);
         wait_until(&mut harness, "the upload to start", |app| {

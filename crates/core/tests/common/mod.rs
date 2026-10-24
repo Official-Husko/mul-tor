@@ -3,7 +3,7 @@
 //!
 //! Uploaders talk to their real `https://host/path` URLs. [`Mock::rewrite`]
 //! maps those onto `http://127.0.0.1:PORT/host/path`, so a handler can tell
-//! sites apart by `host` and nothing ever leaves the machine.
+//! providers apart by `host` and nothing ever leaves the machine.
 
 #![allow(dead_code)]
 
@@ -14,7 +14,7 @@ use axum::body::{Body, to_bytes};
 use axum::http::{HeaderMap, HeaderName, HeaderValue, Request, Response, StatusCode};
 use mul_tor_core::http::UrlRewrite;
 use mul_tor_core::{
-    Credentials, HttpFactory, LocalFile, Progress, ProxyMode, Site, UploadContext, UploadError,
+    Credentials, HttpFactory, LocalFile, Progress, Provider, ProxyMode, UploadContext, UploadError,
     UploadedFile,
 };
 
@@ -399,7 +399,7 @@ pub fn creds(pairs: &[(&str, &str)]) -> Credentials {
     pairs.iter().copied().collect()
 }
 
-pub async fn run(site: &dyn Site, mock: &Mock, config: RunConfig) -> Run {
+pub async fn run(provider: &dyn Provider, mock: &Mock, config: RunConfig) -> Run {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join(&config.name);
     std::fs::write(&path, &config.content).unwrap();
@@ -417,7 +417,7 @@ pub async fn run(site: &dyn Site, mock: &Mock, config: RunConfig) -> Run {
         credentials: &config.credentials,
         progress: &progress,
     };
-    let result = site.upload(&cx).await;
+    let result = provider.upload(&cx).await;
     Run {
         result,
         progress,
@@ -426,13 +426,13 @@ pub async fn run(site: &dyn Site, mock: &Mock, config: RunConfig) -> Run {
 }
 
 /// Shorthand: run with default content and no credentials.
-pub async fn run_default(site: &dyn Site, mock: &Mock) -> Run {
-    run(site, mock, RunConfig::default()).await
+pub async fn run_default(provider: &dyn Provider, mock: &Mock) -> Run {
+    run(provider, mock, RunConfig::default()).await
 }
 
-pub fn builtin(name: &str) -> std::sync::Arc<dyn Site> {
+pub fn builtin(name: &str) -> std::sync::Arc<dyn Provider> {
     mul_tor_core::Registry::builtin()
         .find(name)
-        .unwrap_or_else(|| panic!("site `{name}` is not registered"))
+        .unwrap_or_else(|| panic!("provider `{name}` is not registered"))
         .clone()
 }

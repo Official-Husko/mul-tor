@@ -1,8 +1,8 @@
 //! End-to-end tests: run the real `mul-tor` binary against a local mock server.
 //!
 //! Needs the `test-hooks` feature, which lets `MUL_TOR_TEST_BASE_URL` redirect
-//! every site to localhost. Without the hook these tests would talk to the real
-//! sites, so the whole file is compiled out unless it is enabled:
+//! every provider to localhost. Without the hook these tests would talk to the real
+//! providers, so the whole file is compiled out unless it is enabled:
 //!
 //!     cargo test -p mul-tor --features test-hooks
 #![cfg(feature = "test-hooks")]
@@ -15,7 +15,7 @@ use axum::Router;
 use axum::body::{Body, to_bytes};
 use axum::http::{Request, Response, StatusCode};
 
-/// A tiny site stand-in: Catbox works, LitterBox fails, everything else is 404.
+/// A tiny provider stand-in: Catbox works, LitterBox fails, everything else is 404.
 struct Mock {
     base: String,
     requests: Arc<Mutex<Vec<(String, String)>>>, // (host, path)
@@ -45,7 +45,7 @@ impl Mock {
                         (200, format!("https://files.catbox.moe/file{n}.bin"))
                     }
                     "litterbox.catbox.moe" => (500, "litterbox is down".to_string()),
-                    _ => (404, "no such site".to_string()),
+                    _ => (404, "no such provider".to_string()),
                 };
                 Response::builder()
                     .status(StatusCode::from_u16(status).unwrap())
@@ -169,23 +169,23 @@ async fn json_mode_prints_one_object_per_upload_and_sets_the_exit_code() {
         vec![
             "upload".into(),
             path_arg(&file),
-            "--site".into(),
+            "--provider".into(),
             "catbox,litterbox".into(),
             "--json".into(),
         ],
     )
     .await;
 
-    assert_eq!(code(&output), 1, "one site failed: {}", stderr(&output));
+    assert_eq!(code(&output), 1, "one provider failed: {}", stderr(&output));
     let lines: Vec<serde_json::Value> = stdout(&output)
         .lines()
         .map(|l| serde_json::from_str(l).unwrap_or_else(|e| panic!("not JSON: {l:?} ({e})")))
         .collect();
     assert_eq!(lines.len(), 2, "{}", stdout(&output));
-    assert_eq!(lines[0]["site"], "Catbox");
+    assert_eq!(lines[0]["provider"], "Catbox");
     assert_eq!(lines[0]["status"], "ok");
     assert_eq!(lines[0]["url"], "https://files.catbox.moe/file1.bin");
-    assert_eq!(lines[1]["site"], "LitterBox");
+    assert_eq!(lines[1]["provider"], "LitterBox");
     assert_eq!(lines[1]["status"], "error");
     assert_eq!(lines[1]["kind"], "protocol");
 
@@ -207,7 +207,7 @@ async fn human_output_reports_links_and_a_summary() {
         vec![
             "upload".into(),
             path_arg(&file),
-            "-s".into(),
+            "-p".into(),
             "catbox".into(),
         ],
     )
@@ -234,7 +234,7 @@ async fn a_failing_upload_is_explained_and_logged() {
         vec![
             "upload".into(),
             path_arg(&file),
-            "-s".into(),
+            "-p".into(),
             "litterbox".into(),
         ],
     )
@@ -264,7 +264,7 @@ async fn missing_credentials_fail_the_job_before_any_request() {
     let output = run(
         &env,
         &mock,
-        args(&["upload", &path_arg(&file), "-s", "pixeldrain", "--json"]),
+        args(&["upload", &path_arg(&file), "-p", "pixeldrain", "--json"]),
     )
     .await;
 
@@ -276,7 +276,7 @@ async fn missing_credentials_fail_the_job_before_any_request() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn unknown_sites_are_a_usage_error() {
+async fn unknown_providers_are_a_usage_error() {
     let env = Arc::new(Env::new());
     let mock = Arc::new(Mock::start().await);
     let file = env.file("a.txt", "hello");
@@ -284,13 +284,13 @@ async fn unknown_sites_are_a_usage_error() {
     let output = run(
         &env,
         &mock,
-        args(&["upload", &path_arg(&file), "-s", "catbox,nonesuch"]),
+        args(&["upload", &path_arg(&file), "-p", "catbox,nonesuch"]),
     )
     .await;
 
     assert_eq!(code(&output), 2);
     assert!(
-        stderr(&output).contains("unknown site: nonesuch"),
+        stderr(&output).contains("unknown provider: nonesuch"),
         "{}",
         stderr(&output)
     );
@@ -317,7 +317,7 @@ async fn folders_expand_and_a_missing_path_fails_the_run_but_not_the_rest() {
             "upload",
             &path_arg(&pics),
             &path_arg(&missing),
-            "-s",
+            "-p",
             "catbox",
             "--json",
             "-j",
@@ -347,7 +347,7 @@ async fn folders_expand_and_a_missing_path_fails_the_run_but_not_the_rest() {
     let recursive = run(
         &env,
         &mock,
-        args(&["upload", &path_arg(&pics), "-s", "catbox", "--json", "-r"]),
+        args(&["upload", &path_arg(&pics), "-p", "catbox", "--json", "-r"]),
     )
     .await;
     assert_eq!(code(&recursive), 0);
@@ -355,14 +355,14 @@ async fn folders_expand_and_a_missing_path_fails_the_run_but_not_the_rest() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn a_preset_selects_its_sites_and_writes_formatted_links() {
+async fn a_preset_selects_its_providers_and_writes_formatted_links() {
     let env = Arc::new(Env::new());
     let mock = Arc::new(Mock::start().await);
     std::fs::create_dir_all(env.home().join("presets")).unwrap();
     std::fs::write(
         env.home().join("presets/mini.json"),
         r#"{"identifier": "me.mini", "name": "Mini", "sites": ["Catbox", "SomethingElse"],
-            "link-format": "[URL='{file_url}']{site_name}[/URL]"}"#,
+            "link-format": "[URL='{file_url}']{provider_name}[/URL]"}"#,
     )
     .unwrap();
     let file = env.file("a.txt", "hello");
@@ -399,7 +399,7 @@ async fn links_can_go_elsewhere_or_nowhere() {
         args(&[
             "upload",
             &path_arg(&file),
-            "-s",
+            "-p",
             "catbox",
             "--links-dir",
             &path_arg(&elsewhere),
@@ -415,7 +415,7 @@ async fn links_can_go_elsewhere_or_nowhere() {
         args(&[
             "upload",
             &path_arg(&file),
-            "-s",
+            "-p",
             "catbox",
             "--no-save-links",
         ]),
@@ -475,9 +475,9 @@ fn interactive_mode_refuses_to_run_without_a_terminal() {
 fn informational_commands_work_offline() {
     let env = Env::new();
     for command in [
-        &["sites"][..],
-        &["sites", "--format", "markdown"],
-        &["sites", "--format", "json"],
+        &["providers"][..],
+        &["providers", "--format", "markdown"],
+        &["providers", "--format", "json"],
         &["presets"],
         &["config", "path"],
     ] {
@@ -485,7 +485,7 @@ fn informational_commands_work_offline() {
         assert_eq!(code(&output), 0, "{command:?}: {}", stderr(&output));
         assert!(!stdout(&output).is_empty(), "{command:?}");
     }
-    let sites = env.run(None, &["sites", "--format", "json"]);
-    let parsed: serde_json::Value = serde_json::from_str(&stdout(&sites)).unwrap();
+    let providers = env.run(None, &["providers", "--format", "json"]);
+    let parsed: serde_json::Value = serde_json::from_str(&stdout(&providers)).unwrap();
     assert_eq!(parsed.as_array().unwrap().len(), 37);
 }

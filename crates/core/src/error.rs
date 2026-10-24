@@ -3,7 +3,7 @@ use std::path::PathBuf;
 /// Why a single upload did not produce a link.
 #[derive(Debug, thiserror::Error)]
 pub enum UploadError {
-    #[error("file is larger than the {limit} this site accepts")]
+    #[error("file is larger than the {limit} this provider accepts")]
     TooLarge { limit: String },
 
     #[error("file is empty")]
@@ -12,7 +12,7 @@ pub enum UploadError {
     #[error("missing credential `{0}` (set it in the config file)")]
     MissingCredential(&'static str),
 
-    #[error("this site does not accept the file: {0}")]
+    #[error("this provider does not accept the file: {0}")]
     Rejected(String),
 
     #[error("network error: {0}")]
@@ -21,9 +21,9 @@ pub enum UploadError {
     #[error("could not read the file: {0}")]
     Io(#[from] std::io::Error),
 
-    /// The site answered, but not in the way the uploader expects. `raw` keeps
+    /// The provider answered, but not in the way the uploader expects. `raw` keeps
     /// a truncated copy of the response for the log.
-    #[error("unexpected response from the site: {message}")]
+    #[error("unexpected response from the provider: {message}")]
     Protocol {
         message: String,
         raw: Option<String>,

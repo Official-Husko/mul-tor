@@ -1,6 +1,6 @@
 [package]
 name = "mul-tor-core"
-description = "Core library of Mul-Tor: site uploaders, upload engine, config and presets"
+description = "Core library of Mul-Tor: provider uploaders, upload engine, config and presets"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

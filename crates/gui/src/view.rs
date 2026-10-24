@@ -28,7 +28,7 @@ impl MulTorApp {
             .default_size(300.0)
             .min_size(200.0)
             .show(ui, |ui| self.files(ui, &mut actions));
-        egui::CentralPanel::default().show(ui, |ui| self.sites(ui, &mut actions));
+        egui::CentralPanel::default().show(ui, |ui| self.providers(ui, &mut actions));
 
         let ctx = ui.ctx().clone();
         self.settings_window(&ctx, &mut actions);
@@ -123,16 +123,16 @@ impl MulTorApp {
             });
     }
 
-    fn sites(&self, ui: &mut Ui, actions: &mut Actions) {
+    fn providers(&self, ui: &mut Ui, actions: &mut Actions) {
         ui.horizontal(|ui| {
-            ui.heading("Sites");
+            ui.heading("Providers");
             ui.label(RichText::new(format!("{} selected", self.model.selected.len())).weak());
         });
         ui.horizontal_wrapped(|ui| {
-            let mut filter = self.model.site_filter.clone();
+            let mut filter = self.model.provider_filter.clone();
             let response = ui.add(
                 egui::TextEdit::singleline(&mut filter)
-                    .hint_text("Search sites")
+                    .hint_text("Search providers")
                     .desired_width(160.0),
             );
             if response.changed() {
@@ -177,20 +177,20 @@ impl MulTorApp {
 
             if ui
                 .button("All")
-                .on_hover_text("Tick every site shown")
+                .on_hover_text("Tick every provider shown")
                 .clicked()
             {
-                actions.push(Action::SelectAllSites);
+                actions.push(Action::SelectAllProviders);
             }
             if ui.button("None").clicked() {
-                actions.push(Action::SelectNoSites);
+                actions.push(Action::SelectNoProviders);
             }
             if ui
                 .add_enabled(
                     !self.model.checking,
                     egui::Button::new("Check availability"),
                 )
-                .on_hover_text("Ping every site and mark the ones that do not answer")
+                .on_hover_text("Ping every provider and mark the ones that do not answer")
                 .clicked()
             {
                 actions.push(Action::CheckAvailability);
@@ -204,18 +204,18 @@ impl MulTorApp {
         ScrollArea::vertical()
             .auto_shrink([false, false])
             .show(ui, |ui| {
-                egui::Grid::new("sites")
+                egui::Grid::new("providers")
                     .num_columns(5)
                     .striped(true)
                     .min_col_width(96.0)
                     .spacing([18.0, 6.0])
                     .show(ui, |ui| {
                         for row in &self.rows {
-                            if !matches_filter(&*row.site, &self.model.site_filter) {
+                            if !matches_filter(&*row.provider, &self.model.provider_filter) {
                                 continue;
                             }
-                            let info = row.site.info();
-                            let lacks = self.lacks_credentials(&row.site);
+                            let info = row.provider.info();
+                            let lacks = self.lacks_credentials(&row.provider);
 
                             let mut on = self.model.selected.contains(&row.id);
                             let changed = ui
@@ -223,7 +223,7 @@ impl MulTorApp {
                                 .inner
                                 .changed();
                             if changed {
-                                actions.push(Action::ToggleSite {
+                                actions.push(Action::ToggleProvider {
                                     id: row.id.clone(),
                                     on,
                                 });
@@ -277,21 +277,21 @@ impl MulTorApp {
         ui.set_min_height(ui.available_height());
         let model = &self.model;
         let files = model.files.len();
-        let sites = model.selected.len();
+        let providers = model.selected.len();
 
         ui.horizontal(|ui| {
             match model.run {
                 RunState::Idle => {
                     let label = format!(
-                        "Upload {files} file{} to {sites} site{}",
+                        "Upload {files} file{} to {providers} provider{}",
                         if files == 1 { "" } else { "s" },
-                        if sites == 1 { "" } else { "s" },
+                        if providers == 1 { "" } else { "s" },
                     );
                     let button =
                         egui::Button::new(RichText::new(label).strong()).fill(theme::ACCENT);
                     if ui
                         .add_enabled(model.can_start(), button)
-                        .on_disabled_hover_text("Add files and tick at least one site")
+                        .on_disabled_hover_text("Add files and tick at least one provider")
                         .clicked()
                     {
                         actions.push(Action::Start);
@@ -396,7 +396,7 @@ impl MulTorApp {
                                 ui.add(egui::Label::new(&job.file).truncate())
                                     .on_hover_text(&job.file);
                             });
-                            ui.label(RichText::new(job.site).strong());
+                            ui.label(RichText::new(job.provider).strong());
 
                             match &job.state {
                                 JobState::Queued => {
@@ -510,10 +510,10 @@ impl MulTorApp {
                 ui.checkbox(&mut draft.save_links, "file_links.txt");
                 ui.end_row();
 
-                ui.label("Check sites at startup");
+                ui.label("Check providers at startup");
                 ui.checkbox(
                     &mut draft.check_availability,
-                    "mark sites that do not answer",
+                    "mark providers that do not answer",
                 );
                 ui.end_row();
 
@@ -554,7 +554,8 @@ impl MulTorApp {
 
     fn settings_accounts(&mut self, ui: &mut Ui) {
         ui.label(
-            RichText::new("Sites that need an account. Leave blank to keep them hidden.").weak(),
+            RichText::new("Providers that need an account. Leave blank to keep them hidden.")
+                .weak(),
         );
         ui.checkbox(&mut self.settings.reveal_secrets, "Show secrets");
         ui.add_space(4.0);
@@ -562,7 +563,7 @@ impl MulTorApp {
         let reveal = self.settings.reveal_secrets;
         ScrollArea::vertical().max_height(340.0).show(ui, |ui| {
             for row in &self.rows {
-                let info = row.site.info();
+                let info = row.provider.info();
                 if info.credentials.is_empty() {
                     continue;
                 }

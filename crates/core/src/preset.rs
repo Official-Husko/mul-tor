@@ -1,4 +1,4 @@
-//! Presets: named lists of sites (plus a link template) for a target forum or
+//! Presets: named lists of providers (plus a link template) for a target forum or
 //! community, so one choice selects everything that place accepts.
 
 use std::path::Path;
@@ -7,7 +7,7 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 
 use crate::error::{Error, Result};
-use crate::site::{Registry, Site, normalize_name};
+use crate::provider::{Provider, Registry, normalize_name};
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
@@ -23,17 +23,19 @@ pub struct Preset {
     pub source_url: String,
     #[serde(rename = "repo-url")]
     pub repo_url: String,
-    /// Site names, matched loosely against the registry.
-    pub sites: Vec<String>,
+    /// Provider names, matched loosely against the registry. Preset files
+    /// from the Python versions call this `sites`, and still work.
+    #[serde(alias = "sites")]
+    pub providers: Vec<String>,
     /// Template for the formatted link file; see [`crate::linklog`].
     #[serde(rename = "link-format")]
     pub link_format: String,
 }
 
-/// A preset matched against the sites this build supports.
+/// A preset matched against the providers this build supports.
 #[derive(Clone)]
 pub struct ResolvedPreset {
-    pub sites: Vec<Arc<dyn Site>>,
+    pub providers: Vec<Arc<dyn Provider>>,
     /// Names the preset lists that Mul-Tor has no uploader for.
     pub unsupported: Vec<String>,
 }
@@ -47,8 +49,11 @@ impl Preset {
     }
 
     pub fn resolve(&self, registry: &Registry) -> ResolvedPreset {
-        let (sites, unsupported) = registry.resolve(self.sites.iter().map(String::as_str));
-        ResolvedPreset { sites, unsupported }
+        let (providers, unsupported) = registry.resolve(self.providers.iter().map(String::as_str));
+        ResolvedPreset {
+            providers,
+            unsupported,
+        }
     }
 
     /// Does `query` (file name, identifier or title) refer to this preset?
@@ -179,7 +184,7 @@ mod tests {
             "{:?}",
             resolved.unsupported
         );
-        let names: Vec<_> = resolved.sites.iter().map(|s| s.info().name).collect();
+        let names: Vec<_> = resolved.providers.iter().map(|s| s.info().name).collect();
         assert!(names.contains(&"Pixeldrain") && names.contains(&"Download.gg"));
     }
 
@@ -191,8 +196,16 @@ mod tests {
             .resolve(&Registry::builtin());
         assert!(resolved.unsupported.iter().any(|n| n == "MEGA"));
         // Differently-cased legacy spellings still resolve.
-        let names: Vec<_> = resolved.sites.iter().map(|s| s.info().name).collect();
+        let names: Vec<_> = resolved.providers.iter().map(|s| s.info().name).collect();
         assert!(names.contains(&"BowFile") && names.contains(&"UserCloud"));
+    }
+
+    #[test]
+    fn the_legacy_sites_key_and_the_providers_key_are_equivalent() {
+        let legacy = Preset::parse(r#"{"name": "A", "sites": ["Oshi"]}"#, "legacy").unwrap();
+        let current = Preset::parse(r#"{"name": "A", "providers": ["Oshi"]}"#, "new").unwrap();
+        assert_eq!(legacy.providers, ["Oshi"]);
+        assert_eq!(legacy, current);
     }
 
     #[test]

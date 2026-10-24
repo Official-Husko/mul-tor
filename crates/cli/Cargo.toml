@@ -1,6 +1,6 @@
 [package]
 name = "mul-tor"
-description = "Upload files to many hosting sites at once (command-line interface)"
+description = "Upload files to many hosting providers at once (command-line interface)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -11,7 +11,7 @@ authors.workspace = true
 workspace = true
 
 [features]
-# Lets the integration tests point every site at a local mock server through
+# Lets the integration tests point every provider at a local mock server through
 # the MUL_TOR_TEST_BASE_URL environment variable. Never enabled in releases.
 test-hooks = []
 

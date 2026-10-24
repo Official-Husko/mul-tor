@@ -1,4 +1,4 @@
-//! Everything a command needs to run: settings, sites, presets, and how to
+//! Everything a command needs to run: settings, providers, presets, and how to
 //! build the HTTP layer from them.
 
 use std::path::Path;
@@ -7,8 +7,8 @@ use std::sync::Arc;
 use anyhow::Result;
 use console::style;
 use mul_tor_core::{
-    AppDirs, Config, ConfigOrigin, ConfigStore, HttpFactory, PresetLibrary, Registry, Site,
-    SiteInfo, setup,
+    AppDirs, Config, ConfigOrigin, ConfigStore, HttpFactory, PresetLibrary, Provider, ProviderInfo,
+    Registry, setup,
 };
 
 pub struct App {
@@ -59,18 +59,18 @@ impl App {
         })
     }
 
-    /// Sites that may be offered at all (not blacklisted).
-    pub fn eligible_sites(&self) -> Vec<Arc<dyn Site>> {
+    /// Providers that may be offered at all (not blacklisted).
+    pub fn eligible_providers(&self) -> Vec<Arc<dyn Provider>> {
         self.registry
             .iter()
-            .filter(|site| !self.config.is_blacklisted(site.info()))
+            .filter(|provider| !self.config.is_blacklisted(provider.info()))
             .cloned()
             .collect()
     }
 
-    /// Does `site` need credentials that are not filled in?
-    pub fn lacks_credentials(&self, site: &SiteInfo) -> bool {
-        self.config.lacks_credentials(site)
+    /// Does `provider` need credentials that are not filled in?
+    pub fn lacks_credentials(&self, provider: &ProviderInfo) -> bool {
+        self.config.lacks_credentials(provider)
     }
 
     /// The HTTP layer as configured: user agents, proxy.
@@ -100,7 +100,7 @@ impl App {
 }
 
 /// With the `test-hooks` feature, `MUL_TOR_TEST_BASE_URL=http://127.0.0.1:PORT`
-/// redirects every site to a local server (`/host/path`). Compiled out of
+/// redirects every provider to a local server (`/host/path`). Compiled out of
 /// release builds.
 #[cfg(feature = "test-hooks")]
 fn with_test_hooks(factory: HttpFactory) -> HttpFactory {

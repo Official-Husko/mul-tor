@@ -117,7 +117,7 @@ async fn the_proxy_pool_merges_sources_and_skips_failures() {
 // --------------------------------------------------------------- availability
 
 #[tokio::test]
-async fn availability_reports_each_site_independently_and_in_order() {
+async fn availability_reports_each_provider_independently_and_in_order() {
     let mock = Mock::start(|r| match r.host.as_str() {
         "catbox.moe" => Reply::html("ok"),
         "litterbox.catbox.moe" => Reply::text("busy").status(503),
@@ -126,7 +126,7 @@ async fn availability_reports_each_site_independently_and_in_order() {
     })
     .await;
     let registry = Registry::builtin();
-    let sites = vec![
+    let providers = vec![
         registry.find("catbox").unwrap().clone(),
         registry.find("litterbox").unwrap().clone(),
         registry.find("oshi").unwrap().clone(),
@@ -136,11 +136,11 @@ async fn availability_reports_each_site_independently_and_in_order() {
         .with_proxy(ProxyMode::Direct)
         .with_url_rewrite(mock.rewrite());
 
-    let statuses = availability::check(&factory, &sites).await;
+    let statuses = availability::check(&factory, &providers).await;
 
     let summary: Vec<_> = statuses
         .iter()
-        .map(|s| (s.site.info().name, s.health.clone()))
+        .map(|s| (s.provider.info().name, s.health.clone()))
         .collect();
     assert_eq!(
         summary,
@@ -162,8 +162,8 @@ async fn availability_reports_unreachable_hosts_as_down() {
     let factory = HttpFactory::new()
         .with_proxy(ProxyMode::Direct)
         .with_url_rewrite(Arc::new(|_: &str| "http://127.0.0.1:1/".to_string()));
-    let site = Registry::builtin().find("catbox").unwrap().clone();
-    let statuses = availability::check(&factory, &[site]).await;
+    let provider = Registry::builtin().find("catbox").unwrap().clone();
+    let statuses = availability::check(&factory, &[provider]).await;
     assert_eq!(statuses[0].health, Health::Down("connection failed".into()));
 }
 
@@ -180,7 +180,7 @@ async fn the_latest_release_is_parsed() {
             Reply::json(json!({
                 "tag_name": "v2.1.0",
                 "name": "Mul-Tor 2.1",
-                "body": "- faster\n- more sites",
+                "body": "- faster\n- more providers",
                 "published_at": "2026-03-04T05:06:07Z",
                 "html_url": "https://github.com/Official-Husko/mul-tor/releases/tag/v2.1.0",
                 "assets": []

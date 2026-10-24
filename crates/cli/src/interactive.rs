@@ -1,4 +1,4 @@
-//! The guided mode (run `mul-tor` with no arguments): pick files, pick sites,
+//! The guided mode (run `mul-tor` with no arguments): pick files, pick providers,
 //! watch the uploads, optionally go again. Mirrors the flow of the Python tool.
 
 use std::io::{self, IsTerminal};
@@ -12,7 +12,7 @@ use console::style;
 use dialoguer::theme::ColorfulTheme;
 use dialoguer::{Confirm, Input, MultiSelect, Select};
 use mul_tor_core::files::scan_inputs;
-use mul_tor_core::{HttpFactory, Site, update};
+use mul_tor_core::{HttpFactory, Provider, update};
 
 use crate::app::App;
 use crate::input::parse_paths;
@@ -48,11 +48,11 @@ pub async fn run(app: App) -> Result<ExitCode> {
         announce_update(&factory).await;
     }
 
-    let mut eligible = app.eligible_sites();
+    let mut eligible = app.eligible_providers();
     if app.config.check_availability {
         eligible = run::filter_reachable(&factory, eligible, &[], false).await;
         println!(
-            "{} {} sites available\n",
+            "{} {} providers available\n",
             style("[i]").cyan(),
             style(eligible.len()).yellow()
         );
@@ -64,13 +64,13 @@ pub async fn run(app: App) -> Result<ExitCode> {
         let Some(files) = ask_files(&theme)? else {
             return Ok(ExitCode::from(130));
         };
-        let Some(selection) = ask_sites(&app, &theme, &eligible)? else {
+        let Some(selection) = ask_providers(&app, &theme, &eligible)? else {
             return Ok(ExitCode::from(130));
         };
 
         let job = Job {
             files,
-            sites: selection.sites,
+            providers: selection.providers,
             link_format: selection.link_format,
             json: false,
             parallel: app.config.parallel(),
@@ -163,22 +163,22 @@ fn ask_files(theme: &ColorfulTheme) -> Result<Option<Vec<PathBuf>>> {
 }
 
 struct Chosen {
-    sites: Vec<Arc<dyn Site>>,
+    providers: Vec<Arc<dyn Provider>>,
     link_format: Option<String>,
 }
 
-fn ask_sites(
+fn ask_providers(
     app: &App,
     theme: &ColorfulTheme,
-    eligible: &[Arc<dyn Site>],
+    eligible: &[Arc<dyn Provider>],
 ) -> Result<Option<Chosen>> {
-    // A preset the config asks for, or one the user picks, pre-ticks its sites.
-    let mut preticked: Vec<Arc<dyn Site>> = Vec::new();
+    // A preset the config asks for, or one the user picks, pre-ticks its providers.
+    let mut preticked: Vec<Arc<dyn Provider>> = Vec::new();
     let mut link_format = None;
 
     let preset_request =
         if app.config.preset.enable_selection && app.presets.iter().next().is_some() {
-            let mut items = vec!["None (choose sites by hand)".to_string()];
+            let mut items = vec!["None (choose providers by hand)".to_string()];
             let stems: Vec<&str> = app.presets.iter().map(|(stem, _)| stem).collect();
             items.extend(stems.iter().map(|s| s.to_string()));
             let Some(choice) = Select::with_theme(theme)
@@ -202,16 +202,16 @@ fn ask_sites(
         for note in &selection.notes {
             println!("{} {note}", style("[i]").cyan());
         }
-        preticked = selection.sites;
+        preticked = selection.providers;
         link_format = selection.link_format;
     }
 
-    // Sites needing an account that is not set up cannot work; say so instead
+    // Providers needing an account that is not set up cannot work; say so instead
     // of offering them.
     let (usable, unconfigured): (Vec<_>, Vec<_>) = eligible
         .iter()
         .cloned()
-        .partition(|site| !app.lacks_credentials(site.info()));
+        .partition(|provider| !app.lacks_credentials(provider.info()));
     if !unconfigured.is_empty() {
         println!(
             "{} Not offered, no credentials in {}: {}",
@@ -225,13 +225,13 @@ fn ask_sites(
         );
     }
     if usable.is_empty() {
-        bail!("no sites are available; check your config, blacklist and connection");
+        bail!("no providers are available; check your config, blacklist and connection");
     }
 
     let labels: Vec<String> = usable
         .iter()
-        .map(|site| {
-            let info = site.info();
+        .map(|provider| {
+            let info = provider.info();
             let limit = info
                 .max_size
                 .map_or_else(|| "no limit".to_string(), |l| l.to_string());
@@ -240,13 +240,13 @@ fn ask_sites(
         .collect();
     let defaults: Vec<bool> = usable
         .iter()
-        .map(|site| preticked.iter().any(|p| Arc::ptr_eq(p, site)))
+        .map(|provider| preticked.iter().any(|p| Arc::ptr_eq(p, provider)))
         .collect();
 
     loop {
         let picked = MultiSelect::with_theme(theme)
             .with_prompt(format!(
-                "What sites do you want to upload to? {}",
+                "What providers do you want to upload to? {}",
                 style(format!(
                     "({} available, space selects, enter confirms)",
                     usable.len()
@@ -261,11 +261,11 @@ fn ask_sites(
             return Ok(None);
         };
         if picked.is_empty() {
-            println!("{} Pick at least one site.", style("[!]").red());
+            println!("{} Pick at least one provider.", style("[!]").red());
             continue;
         }
         return Ok(Some(Chosen {
-            sites: picked.into_iter().map(|i| usable[i].clone()).collect(),
+            providers: picked.into_iter().map(|i| usable[i].clone()).collect(),
             link_format,
         }));
     }

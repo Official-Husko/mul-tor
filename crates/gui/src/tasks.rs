@@ -9,7 +9,7 @@ use std::sync::mpsc::{self, Receiver, Sender};
 
 use mul_tor_core::availability::{self, Health};
 use mul_tor_core::update::{self, Release};
-use mul_tor_core::{AppDirs, Config, Engine, Event, HttpFactory, LinkLog, Site, setup};
+use mul_tor_core::{AppDirs, Config, Engine, Event, HttpFactory, LinkLog, Provider, setup};
 use tokio::runtime::Handle;
 use tokio_util::sync::CancellationToken;
 
@@ -23,7 +23,7 @@ pub enum Msg {
     Engine(Event),
     RunFinished,
     FilesPicked(Vec<PathBuf>),
-    /// `(site id, health)` for each probed site.
+    /// `(provider id, health)` for each probed provider.
     Availability(Vec<(String, Health)>),
     UpdateAvailable(Release),
     Notice(Level, String),
@@ -54,11 +54,11 @@ impl Bus {
 
 pub struct RunRequest {
     pub files: Vec<PathBuf>,
-    pub sites: Vec<Arc<dyn Site>>,
+    pub providers: Vec<Arc<dyn Provider>>,
     pub config: Config,
     pub dirs: AppDirs,
     pub link_format: Option<String>,
-    /// Test hook: points every site at a local server. Not present in real builds.
+    /// Test hook: points every provider at a local server. Not present in real builds.
     #[cfg(test)]
     pub url_rewrite: Option<mul_tor_core::http::UrlRewrite>,
 }
@@ -73,7 +73,7 @@ pub fn start_run(rt: &Handle, bus: &Bus, request: RunRequest) -> CancellationTok
         let url_rewrite = request.url_rewrite.clone();
         let RunRequest {
             files,
-            sites,
+            providers,
             config,
             dirs,
             link_format,
@@ -106,26 +106,29 @@ pub fn start_run(rt: &Handle, bus: &Bus, request: RunRequest) -> CancellationTok
         let sink_bus = bus.clone();
         let sink: mul_tor_core::EventSink =
             Arc::new(move |event| sink_bus.send(Msg::Engine(event)));
-        engine.run(files, sites, sink, token).await;
+        engine.run(files, providers, sink, token).await;
         bus.send(Msg::RunFinished);
     });
     cancel
 }
 
-/// Probe `sites` and report which answer.
+/// Probe `providers` and report which answer.
 pub fn check_availability(
     rt: &Handle,
     bus: &Bus,
     config: Config,
     dirs: AppDirs,
-    sites: Vec<(String, Arc<dyn Site>)>,
+    providers: Vec<(String, Arc<dyn Provider>)>,
 ) {
     let bus = bus.clone();
     rt.spawn(async move {
         let setup = setup::http_factory(&config, &dirs, None).await;
-        let just_sites: Vec<_> = sites.iter().map(|(_, site)| site.clone()).collect();
-        let statuses = availability::check(&setup.factory, &just_sites).await;
-        let results = sites
+        let just_providers: Vec<_> = providers
+            .iter()
+            .map(|(_, provider)| provider.clone())
+            .collect();
+        let statuses = availability::check(&setup.factory, &just_providers).await;
+        let results = providers
             .iter()
             .zip(statuses)
             .map(|((id, _), status)| (id.clone(), status.health))

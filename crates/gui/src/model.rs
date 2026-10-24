@@ -1,5 +1,5 @@
 //! What the window shows, independent of how it is drawn: the file list, the
-//! site selection, and the state of every upload. Everything here is plain
+//! provider selection, and the state of every upload. Everything here is plain
 //! data so it can be tested without a window.
 
 use std::collections::{BTreeSet, HashMap};
@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use mul_tor_core::availability::Health;
 use mul_tor_core::files::scan_inputs;
 use mul_tor_core::linklog::format_template;
-use mul_tor_core::{Event, JobId, ProgressSnapshot, Site, UploadError};
+use mul_tor_core::{Event, JobId, ProgressSnapshot, Provider, UploadError};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FileEntry {
@@ -39,7 +39,7 @@ impl JobState {
 pub struct JobRow {
     pub id: JobId,
     pub file: String,
-    pub site: &'static str,
+    pub provider: &'static str,
     pub size: u64,
     pub state: JobState,
 }
@@ -64,9 +64,9 @@ pub struct Counts {
 #[derive(Default)]
 pub struct Model {
     pub files: Vec<FileEntry>,
-    /// Ids of the ticked sites.
+    /// Ids of the ticked providers.
     pub selected: BTreeSet<String>,
-    pub site_filter: String,
+    pub provider_filter: String,
     /// File stem of the chosen preset, if any.
     pub preset: Option<String>,
     pub jobs: Vec<JobRow>,
@@ -112,7 +112,7 @@ impl Model {
         self.files.iter().map(|f| f.size).sum()
     }
 
-    pub fn toggle_site(&mut self, id: &str, on: bool) {
+    pub fn toggle_provider(&mut self, id: &str, on: bool) {
         if on {
             self.selected.insert(id.to_string());
         } else {
@@ -120,7 +120,7 @@ impl Model {
         }
     }
 
-    /// Replace the selection with exactly these sites.
+    /// Replace the selection with exactly these providers.
     pub fn select_only<'a>(&mut self, ids: impl IntoIterator<Item = &'a str>) {
         self.selected = ids.into_iter().map(str::to_string).collect();
     }
@@ -156,13 +156,13 @@ impl Model {
             Event::Queued {
                 job,
                 file_name,
-                site,
+                provider,
                 size,
             } => {
                 self.jobs.push(JobRow {
                     id: job,
                     file: file_name,
-                    site,
+                    provider,
                     size,
                     state: JobState::Queued,
                 });
@@ -256,7 +256,7 @@ impl Model {
                             ("status", "ok"),
                             ("file_name", &job.file),
                             ("file_url", url),
-                            ("site_name", job.site),
+                            ("provider_name", job.provider),
                             ("date_and_time", ""),
                         ],
                     ),
@@ -275,13 +275,13 @@ impl Model {
     }
 }
 
-/// Does `site` match the user's search text (name or alias)?
-pub fn matches_filter(site: &dyn Site, filter: &str) -> bool {
+/// Does `provider` match the user's search text (name or alias)?
+pub fn matches_filter(provider: &dyn Provider, filter: &str) -> bool {
     let filter = filter.trim().to_lowercase();
     if filter.is_empty() {
         return true;
     }
-    let info = site.info();
+    let info = provider.info();
     info.name.to_lowercase().contains(&filter)
         || info
             .aliases
@@ -296,11 +296,11 @@ mod tests {
     use super::*;
     use mul_tor_core::{JobOutcome, Registry, UploadedFile};
 
-    fn queued(job: JobId, file: &str, site: &'static str, size: u64) -> Event {
+    fn queued(job: JobId, file: &str, provider: &'static str, size: u64) -> Event {
         Event::Queued {
             job,
             file_name: file.into(),
-            site,
+            provider,
             size,
         }
     }
@@ -309,7 +309,7 @@ mod tests {
         Event::Finished(Arc::new(JobOutcome {
             job,
             file_name: "f".into(),
-            site: "S",
+            provider: "S",
             result,
         }))
     }
@@ -410,7 +410,7 @@ mod tests {
     #[test]
     fn links_can_be_copied_plain_or_in_the_preset_format() {
         let mut model = Model::default();
-        model.begin_run(Some("[URL='{file_url}']{site_name}[/URL]".into()));
+        model.begin_run(Some("[URL='{file_url}']{provider_name}[/URL]".into()));
         model.apply(queued(0, "a", "Catbox", 1));
         model.apply(queued(1, "a", "Oshi", 1));
         model.apply(queued(2, "a", "Keep", 1));
@@ -444,7 +444,7 @@ mod tests {
             name: "f".into(),
             size: 1,
         });
-        model.toggle_site("catbox", true);
+        model.toggle_provider("catbox", true);
         assert!(model.can_start());
 
         model.begin_run(None);
@@ -461,10 +461,10 @@ mod tests {
     }
 
     #[test]
-    fn starting_needs_files_and_sites() {
+    fn starting_needs_files_and_providers() {
         let mut model = Model::default();
         assert!(!model.can_start());
-        model.toggle_site("catbox", true);
+        model.toggle_provider("catbox", true);
         assert!(!model.can_start());
         model.files.push(FileEntry {
             path: "f".into(),
@@ -472,7 +472,7 @@ mod tests {
             size: 1,
         });
         assert!(model.can_start());
-        model.toggle_site("catbox", false);
+        model.toggle_provider("catbox", false);
         assert!(!model.can_start());
     }
 
@@ -501,7 +501,7 @@ mod tests {
     #[test]
     fn selecting_a_preset_replaces_the_selection() {
         let mut model = Model::default();
-        model.toggle_site("oshi", true);
+        model.toggle_provider("oshi", true);
         model.select_only(["catbox", "keep"]);
         assert_eq!(
             model
@@ -514,7 +514,7 @@ mod tests {
     }
 
     #[test]
-    fn site_filter_matches_names_and_aliases_case_insensitively() {
+    fn provider_filter_matches_names_and_aliases_case_insensitively() {
         let registry = Registry::builtin();
         let userscloud = registry.find("usercloud").unwrap();
         assert!(matches_filter(&**userscloud, ""));

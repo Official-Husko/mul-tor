@@ -1,4 +1,4 @@
-//! Engine behaviour, using fake sites so scheduling can be controlled.
+//! Engine behaviour, using fake providers so scheduling can be controlled.
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -9,7 +9,7 @@ use async_trait::async_trait;
 use mul_tor_core::size::SizeLimit;
 use mul_tor_core::{
     CredentialField, Credentials, Engine, Event, EventSink, HttpFactory, JobOutcome, LinkLog,
-    ProxyMode, Site, SiteInfo, UploadContext, UploadError, UploadedFile,
+    Provider, ProviderInfo, ProxyMode, UploadContext, UploadError, UploadedFile,
 };
 use tokio_util::sync::CancellationToken;
 
@@ -42,12 +42,12 @@ impl Drop for ActiveGuard<'_> {
 }
 
 struct Fake {
-    info: SiteInfo,
+    info: ProviderInfo,
     behaviour: Behaviour,
     probe: Arc<Probe>,
 }
 
-fn fake(info: SiteInfo, behaviour: Behaviour, probe: &Arc<Probe>) -> Arc<dyn Site> {
+fn fake(info: ProviderInfo, behaviour: Behaviour, probe: &Arc<Probe>) -> Arc<dyn Provider> {
     Arc::new(Fake {
         info,
         behaviour,
@@ -59,13 +59,13 @@ fn fake(info: SiteInfo, behaviour: Behaviour, probe: &Arc<Probe>) -> Arc<dyn Sit
 const BLOCKED: &[&str] = &[".exe"];
 const API_KEY: &[CredentialField] = &[CredentialField::new("apiKey", "key", true)];
 
-fn plain(name: &'static str) -> SiteInfo {
-    SiteInfo::new(name, "https://fake.example/", "https://fake.example/")
+fn plain(name: &'static str) -> ProviderInfo {
+    ProviderInfo::new(name, "https://fake.example/", "https://fake.example/")
 }
 
 #[async_trait]
-impl Site for Fake {
-    fn info(&self) -> &SiteInfo {
+impl Provider for Fake {
+    fn info(&self) -> &ProviderInfo {
         &self.info
     }
 
@@ -139,7 +139,7 @@ impl Harness {
 fn finished(outcomes: &[Arc<JobOutcome>]) -> Vec<(String, &'static str, bool)> {
     outcomes
         .iter()
-        .map(|o| (o.file_name.clone(), o.site, o.is_ok()))
+        .map(|o| (o.file_name.clone(), o.provider, o.is_ok()))
         .collect()
 }
 
@@ -147,7 +147,7 @@ fn finished(outcomes: &[Arc<JobOutcome>]) -> Vec<(String, &'static str, bool)> {
 async fn jobs_run_file_major_in_the_order_given() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![
+    let providers = vec![
         fake(plain("A"), Behaviour::Succeed, &probe),
         fake(plain("B"), Behaviour::Succeed, &probe),
     ];
@@ -155,7 +155,7 @@ async fn jobs_run_file_major_in_the_order_given() {
 
     let outcomes = h
         .engine()
-        .run(files, sites, h.sink.clone(), CancellationToken::new())
+        .run(files, providers, h.sink.clone(), CancellationToken::new())
         .await;
 
     assert_eq!(
@@ -182,11 +182,11 @@ async fn jobs_run_file_major_in_the_order_given() {
 async fn every_job_is_queued_before_any_starts_and_finishes_last() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![fake(plain("A"), Behaviour::Succeed, &probe)];
+    let providers = vec![fake(plain("A"), Behaviour::Succeed, &probe)];
     h.engine()
         .run(
             vec![h.file("f1", b"x"), h.file("f2", b"y")],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -225,7 +225,7 @@ async fn every_job_is_queued_before_any_starts_and_finishes_last() {
 async fn parallelism_is_bounded_by_the_setting() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites: Vec<_> = ["A", "B", "C", "D"]
+    let providers: Vec<_> = ["A", "B", "C", "D"]
         .into_iter()
         .map(|name| fake(plain(name), Behaviour::Work(200), &probe))
         .collect();
@@ -235,7 +235,7 @@ async fn parallelism_is_bounded_by_the_setting() {
         .with_parallelism(2)
         .run(
             vec![h.file("f", b"0123456789")],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -246,13 +246,13 @@ async fn parallelism_is_bounded_by_the_setting() {
 }
 
 #[tokio::test]
-async fn offline_checks_stop_a_job_before_the_site_is_called() {
+async fn offline_checks_stop_a_job_before_the_provider_is_called() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
     let small = plain("Small").max_size(SizeLimit::mb(1));
     let keyed = plain("Keyed").requires(API_KEY);
     let picky = plain("Picky").blocked_extensions(BLOCKED);
-    let sites = vec![
+    let providers = vec![
         fake(small, Behaviour::Succeed, &probe),
         fake(keyed, Behaviour::Succeed, &probe),
         fake(picky, Behaviour::Succeed, &probe),
@@ -268,7 +268,7 @@ async fn offline_checks_stop_a_job_before_the_site_is_called() {
         .engine()
         .run(
             vec![big, empty],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -299,11 +299,11 @@ async fn offline_checks_stop_a_job_before_the_site_is_called() {
 }
 
 #[tokio::test]
-async fn credentials_reach_the_site_by_site_id() {
+async fn credentials_reach_the_provider_by_provider_id() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
     let keyed = plain("Key.d").requires(API_KEY);
-    let sites = vec![fake(keyed, Behaviour::EchoKey, &probe)];
+    let providers = vec![fake(keyed, Behaviour::EchoKey, &probe)];
 
     let mut creds = Credentials::default();
     creds.set("apiKey", "SECRET-1");
@@ -314,7 +314,7 @@ async fn credentials_reach_the_site_by_site_id() {
     let outcomes = engine
         .run(
             vec![h.file("f", b"x")],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -326,7 +326,7 @@ async fn credentials_reach_the_site_by_site_id() {
 async fn an_unreadable_file_fails_its_jobs_but_not_the_rest() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![
+    let providers = vec![
         fake(plain("A"), Behaviour::Succeed, &probe),
         fake(plain("B"), Behaviour::Succeed, &probe),
     ];
@@ -337,7 +337,7 @@ async fn an_unreadable_file_fails_its_jobs_but_not_the_rest() {
         .engine()
         .run(
             vec![missing, good],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -359,7 +359,7 @@ async fn an_unreadable_file_fails_its_jobs_but_not_the_rest() {
 async fn cancelling_aborts_running_jobs_and_skips_the_rest() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![
+    let providers = vec![
         fake(plain("Hangs"), Behaviour::Hang, &probe),
         fake(plain("Later"), Behaviour::Succeed, &probe),
     ];
@@ -376,7 +376,7 @@ async fn cancelling_aborts_running_jobs_and_skips_the_rest() {
     let outcomes = tokio::time::timeout(
         Duration::from_secs(10),
         h.engine()
-            .run(vec![h.file("f", b"x")], sites, h.sink.clone(), cancel),
+            .run(vec![h.file("f", b"x")], providers, h.sink.clone(), cancel),
     )
     .await
     .expect("run must not hang after cancellation");
@@ -390,7 +390,7 @@ async fn cancelling_aborts_running_jobs_and_skips_the_rest() {
     assert_eq!(
         probe.calls.load(Ordering::SeqCst),
         1,
-        "the second site never started"
+        "the second provider never started"
     );
     assert_eq!(
         probe.active.load(Ordering::SeqCst),
@@ -430,7 +430,7 @@ async fn cancelling_before_the_run_starts_nothing() {
 async fn a_panicking_uploader_becomes_a_failed_job() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![
+    let providers = vec![
         fake(plain("Boom"), Behaviour::Panic, &probe),
         fake(plain("Fine"), Behaviour::Succeed, &probe),
     ];
@@ -438,7 +438,7 @@ async fn a_panicking_uploader_becomes_a_failed_job() {
         .engine()
         .run(
             vec![h.file("f", b"x")],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -468,11 +468,11 @@ async fn a_panicking_uploader_becomes_a_failed_job() {
 async fn progress_is_reported_while_a_job_runs() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![fake(plain("Slow"), Behaviour::Work(600), &probe)];
+    let providers = vec![fake(plain("Slow"), Behaviour::Work(600), &probe)];
     h.engine()
         .run(
             vec![h.file("f", &[0u8; 1000])],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -507,18 +507,18 @@ async fn progress_is_reported_while_a_job_runs() {
 async fn only_successful_uploads_are_written_to_the_link_file() {
     let h = Harness::new();
     let probe = Arc::new(Probe::default());
-    let sites = vec![
+    let providers = vec![
         fake(plain("Good"), Behaviour::Succeed, &probe),
         fake(plain("Bad"), Behaviour::Fail, &probe),
     ];
     let out = h.dir.path().join("links");
-    let log = LinkLog::new(&out).with_template(Some("[{site_name}]({file_url})".into()));
+    let log = LinkLog::new(&out).with_template(Some("[{provider_name}]({file_url})".into()));
 
     h.engine()
         .with_link_log(Some(log))
         .run(
             vec![h.file("a.zip", b"x")],
-            sites,
+            providers,
             h.sink.clone(),
             CancellationToken::new(),
         )
@@ -532,7 +532,7 @@ async fn only_successful_uploads_are_written_to_the_link_file() {
 }
 
 #[tokio::test]
-async fn no_files_or_no_sites_is_a_quiet_no_op() {
+async fn no_files_or_no_providers_is_a_quiet_no_op() {
     let h = Harness::new();
     let outcomes = h
         .engine()

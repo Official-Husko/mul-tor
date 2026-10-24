@@ -1,9 +1,9 @@
-//! Working out which sites a request means.
+//! Working out which providers a request means.
 
 use std::sync::Arc;
 
 use anyhow::{Result, bail};
-use mul_tor_core::Site;
+use mul_tor_core::Provider;
 
 use crate::app::App;
 
@@ -16,19 +16,19 @@ pub struct Request<'a> {
 }
 
 pub struct Selection {
-    pub sites: Vec<Arc<dyn Site>>,
+    pub providers: Vec<Arc<dyn Provider>>,
     /// Template for the formatted link file, when a preset was used.
     pub link_format: Option<String>,
-    /// Things worth telling the user (skipped sites and why).
+    /// Things worth telling the user (skipped providers and why).
     pub notes: Vec<String>,
 }
 
 /// `Ok(None)` means the request named nothing, so the caller should ask the
 /// user (interactive) or complain (scripted).
 ///
-/// - Named sites (`--site`) are taken as given, even if their credentials are
+/// - Named providers (`--provider`) are taken as given, even if their credentials are
 ///   missing, so the failure is explicit.
-/// - Presets and `--all` skip blacklisted sites and sites whose credentials
+/// - Presets and `--all` skip blacklisted providers and providers whose credentials
 ///   are not configured, since those would only fail.
 /// - With nothing requested, a preset the config marks `auto_load` applies.
 pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
@@ -46,15 +46,15 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
     }
 
     let mut selection = Selection {
-        sites: Vec::new(),
+        providers: Vec::new(),
         link_format: None,
         notes: Vec::new(),
     };
     let mut skipped_no_credentials: Vec<&str> = Vec::new();
 
-    let mut add = |selection: &mut Selection, site: &Arc<dyn Site>, skip_unusable: bool| {
-        let info = site.info();
-        if selection.sites.iter().any(|s| Arc::ptr_eq(s, site)) {
+    let mut add = |selection: &mut Selection, provider: &Arc<dyn Provider>, skip_unusable: bool| {
+        let info = provider.info();
+        if selection.providers.iter().any(|s| Arc::ptr_eq(s, provider)) {
             return;
         }
         if app.config.is_blacklisted(info) {
@@ -69,7 +69,7 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
             skipped_no_credentials.push(info.name);
             return;
         }
-        selection.sites.push(site.clone());
+        selection.providers.push(provider.clone());
     };
 
     if let Some(name) = preset_name {
@@ -79,13 +79,13 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
         let resolved = preset.resolve(&app.registry);
         if !resolved.unsupported.is_empty() {
             selection.notes.push(format!(
-                "preset `{}` also lists sites Mul-Tor does not support: {}",
+                "preset `{}` also lists providers Mul-Tor does not support: {}",
                 preset.name,
                 resolved.unsupported.join(", ")
             ));
         }
-        for site in &resolved.sites {
-            add(&mut selection, site, true);
+        for provider in &resolved.providers {
+            add(&mut selection, provider, true);
         }
         if !preset.link_format.is_empty() {
             selection.link_format = Some(preset.link_format.clone());
@@ -93,8 +93,8 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
     }
 
     if request.all {
-        for site in app.registry.iter() {
-            add(&mut selection, site, true);
+        for provider in app.registry.iter() {
+            add(&mut selection, provider, true);
         }
     }
 
@@ -104,13 +104,13 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
             .resolve(request.names.iter().map(String::as_str));
         if !unknown.is_empty() {
             bail!(
-                "unknown site{}: {} (see `mul-tor sites`)",
+                "unknown provider{}: {} (see `mul-tor providers`)",
                 if unknown.len() == 1 { "" } else { "s" },
                 unknown.join(", ")
             );
         }
-        for site in &found {
-            add(&mut selection, site, false);
+        for provider in &found {
+            add(&mut selection, provider, false);
         }
     }
 
@@ -120,8 +120,8 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
             skipped_no_credentials.join(", ")
         ));
     }
-    if selection.sites.is_empty() {
-        let mut message = String::from("no usable sites were selected");
+    if selection.providers.is_empty() {
+        let mut message = String::from("no usable providers were selected");
         for note in &selection.notes {
             message.push_str(&format!("\n  - {note}"));
         }
@@ -137,7 +137,7 @@ mod tests {
     use mul_tor_core::{Config, Credentials};
 
     fn names(selection: &Selection) -> Vec<&'static str> {
-        selection.sites.iter().map(|s| s.info().name).collect()
+        selection.providers.iter().map(|s| s.info().name).collect()
     }
 
     fn strings(items: &[&str]) -> Vec<String> {
@@ -151,7 +151,7 @@ mod tests {
     }
 
     #[test]
-    fn named_sites_are_resolved_loosely_in_order_without_duplicates() {
+    fn named_providers_are_resolved_loosely_in_order_without_duplicates() {
         let app = test_app(Config::default());
         let wanted = strings(&["oshi", "Transfer_sh", "OSHI"]);
         let selection = select(
@@ -184,7 +184,7 @@ mod tests {
     }
 
     #[test]
-    fn named_sites_keep_missing_credentials_so_the_failure_is_explicit() {
+    fn named_providers_keep_missing_credentials_so_the_failure_is_explicit() {
         let app = test_app(Config::default());
         let wanted = strings(&["pixeldrain"]);
         let selection = select(
@@ -200,7 +200,7 @@ mod tests {
     }
 
     #[test]
-    fn presets_skip_sites_that_lack_credentials_and_say_so() {
+    fn presets_skip_providers_that_lack_credentials_and_say_so() {
         let app = test_app(Config::default());
         let selection = select(
             &app,
@@ -227,7 +227,7 @@ mod tests {
     }
 
     #[test]
-    fn configured_credentials_make_a_keyed_site_usable() {
+    fn configured_credentials_make_a_keyed_provider_usable() {
         let mut config = Config::default();
         let mut creds = Credentials::default();
         creds.set("apiKey", "k");
@@ -246,7 +246,7 @@ mod tests {
     }
 
     #[test]
-    fn all_excludes_blacklisted_and_credentialless_sites() {
+    fn all_excludes_blacklisted_and_credentialless_providers() {
         let config = Config {
             blacklist: strings(&["oshi"]),
             ..Config::default()
@@ -269,7 +269,7 @@ mod tests {
     }
 
     #[test]
-    fn a_named_blacklisted_site_is_skipped_with_a_note() {
+    fn a_named_blacklisted_provider_is_skipped_with_a_note() {
         let config = Config {
             blacklist: strings(&["oshi"]),
             ..Config::default()
@@ -329,7 +329,7 @@ mod tests {
     }
 
     #[test]
-    fn preset_and_named_sites_combine() {
+    fn preset_and_named_providers_combine() {
         let app = test_app(Config::default());
         let wanted = strings(&["keep"]);
         let selection = select(

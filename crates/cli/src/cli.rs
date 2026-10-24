@@ -9,17 +9,17 @@ Run without a command for the interactive mode.
 
 Examples:
   mul-tor                                        Interactive mode
-  mul-tor upload backup.7z -s pixeldrain -s gofile
+  mul-tor upload backup.7z -p pixeldrain -p gofile
   mul-tor upload ./release --preset f95 --parallel 3
   mul-tor upload photos/ -r --all --json         One JSON object per upload
-  mul-tor sites                                  What is supported
+  mul-tor providers                                  What is supported
 ";
 
 #[derive(Parser, Debug)]
 #[command(
     name = "mul-tor",
     version,
-    about = "Upload files to many file-hosting sites at once",
+    about = "Upload files to many file-hosting providers at once",
     after_help = AFTER_HELP,
     propagate_version = true
 )]
@@ -45,13 +45,13 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// Upload files or folders to one or more sites
+    /// Upload files or folders to one or more providers
     Upload(UploadArgs),
-    /// List the supported sites
-    Sites(SitesArgs),
+    /// List the supported providers
+    Providers(ProvidersArgs),
     /// List the available presets
     Presets,
-    /// Check which sites are reachable right now
+    /// Check which providers are reachable right now
     Check,
     /// Show where the config lives, or print it
     Config(ConfigArgs),
@@ -63,15 +63,15 @@ pub struct UploadArgs {
     #[arg(required = true, value_name = "PATH")]
     pub paths: Vec<PathBuf>,
 
-    /// Site to upload to; repeat or separate with commas. See `mul-tor sites`
-    #[arg(short, long = "site", value_name = "NAME", value_delimiter = ',')]
-    pub sites: Vec<String>,
+    /// Provider to upload to; repeat or separate with commas. See `mul-tor providers`
+    #[arg(short, long = "provider", value_name = "NAME", value_delimiter = ',')]
+    pub providers: Vec<String>,
 
-    /// Upload to every site of a preset (e.g. f95). See `mul-tor presets`
-    #[arg(short, long, value_name = "NAME")]
+    /// Upload to every provider of a preset (e.g. f95). See `mul-tor presets`
+    #[arg(short = 'P', long, value_name = "NAME")]
     pub preset: Option<String>,
 
-    /// Upload to every site that needs no missing credentials
+    /// Upload to every provider that needs no missing credentials
     #[arg(short, long)]
     pub all: bool,
 
@@ -83,7 +83,7 @@ pub struct UploadArgs {
     #[arg(short = 'j', long, value_name = "N")]
     pub parallel: Option<usize>,
 
-    /// Do not check which sites are reachable first
+    /// Do not check which providers are reachable first
     #[arg(long)]
     pub no_check: bool,
 
@@ -105,14 +105,14 @@ pub struct UploadArgs {
 }
 
 #[derive(Args, Debug)]
-pub struct SitesArgs {
+pub struct ProvidersArgs {
     /// Output format
-    #[arg(long, value_enum, default_value_t = SitesFormat::Table)]
-    pub format: SitesFormat,
+    #[arg(long, value_enum, default_value_t = ProvidersFormat::Table)]
+    pub format: ProvidersFormat,
 }
 
 #[derive(ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
-pub enum SitesFormat {
+pub enum ProvidersFormat {
     Table,
     Markdown,
     Json,
@@ -143,21 +143,21 @@ mod tests {
     }
 
     #[test]
-    fn sites_can_be_repeated_or_comma_separated() {
+    fn providers_can_be_repeated_or_comma_separated() {
         let cli = Cli::try_parse_from([
             "mul-tor",
             "upload",
             "a.zip",
-            "-s",
+            "-p",
             "gofile,oshi",
-            "--site",
+            "--provider",
             "pixeldrain",
         ])
         .unwrap();
         let Some(Command::Upload(args)) = cli.command else {
             panic!("not an upload command");
         };
-        assert_eq!(args.sites, ["gofile", "oshi", "pixeldrain"]);
+        assert_eq!(args.providers, ["gofile", "oshi", "pixeldrain"]);
     }
 
     #[test]

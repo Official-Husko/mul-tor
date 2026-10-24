@@ -40,7 +40,9 @@ async fn dispatch(cli: Cli) -> Result<ExitCode> {
     match cli.command {
         None => interactive::run(app).await,
         Some(Command::Upload(args)) => upload(app, args).await,
-        Some(Command::Sites(args)) => listing::sites(&app, args.format).map(|()| ExitCode::SUCCESS),
+        Some(Command::Providers(args)) => {
+            listing::providers(&app, args.format).map(|()| ExitCode::SUCCESS)
+        }
         Some(Command::Presets) => listing::presets(&app).map(|()| ExitCode::SUCCESS),
         Some(Command::Check) => listing::check(&app).await.map(|()| ExitCode::SUCCESS),
         Some(Command::Config(args)) => {
@@ -59,28 +61,30 @@ async fn upload(app: App, args: UploadArgs) -> Result<ExitCode> {
     }
 
     let request = Request {
-        names: &args.sites,
+        names: &args.providers,
         preset: args.preset.as_deref(),
         all: args.all,
     };
     let Some(selection) = select(&app, &request)? else {
-        bail!("no sites chosen: use --site NAME, --preset NAME or --all (see `mul-tor sites`)");
+        bail!(
+            "no providers chosen: use --provider NAME, --preset NAME or --all (see `mul-tor providers`)"
+        );
     };
     for note in &selection.notes {
         eprintln!("{} {note}", style("[i]").cyan());
     }
 
     let factory = app.http_factory(args.proxy.as_deref(), args.json).await?;
-    let sites = if app.config.check_availability && !args.no_check {
-        let named = &args.sites;
-        run::filter_reachable(&factory, selection.sites, named, args.json).await
+    let providers = if app.config.check_availability && !args.no_check {
+        let named = &args.providers;
+        run::filter_reachable(&factory, selection.providers, named, args.json).await
     } else {
-        selection.sites
+        selection.providers
     };
 
     let job = Job {
         files: scan.files,
-        sites,
+        providers,
         link_format: selection.link_format,
         json: args.json,
         parallel: args

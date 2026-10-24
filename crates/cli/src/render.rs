@@ -125,17 +125,17 @@ impl Renderer {
             return json_line(outcome);
         }
         let file = style(&outcome.file_name).cyan();
-        let site = style(outcome.site).yellow();
+        let provider = style(outcome.provider).yellow();
         match &outcome.result {
             Ok(uploaded) => format!(
-                "{} {file} {} {site}{} {}",
+                "{} {file} {} {provider}{} {}",
                 style("[+]").green(),
                 style("uploaded to").green(),
                 style("! URL:").green(),
                 style(&uploaded.url).cyan().underlined()
             ),
             Err(error) => format!(
-                "{} {file} to {site} {}",
+                "{} {file} to {provider} {}",
                 style("[!]").red(),
                 style(format!("failed: {error}")).red()
             ),
@@ -167,13 +167,13 @@ pub fn json_line(outcome: &JobOutcome) -> String {
     let value = match &outcome.result {
         Ok(uploaded) => json!({
             "file": outcome.file_name,
-            "site": outcome.site,
+            "provider": outcome.provider,
             "status": "ok",
             "url": uploaded.url,
         }),
         Err(error) => json!({
             "file": outcome.file_name,
-            "site": outcome.site,
+            "provider": outcome.provider,
             "status": "error",
             "kind": error.kind(),
             "error": error.to_string(),
@@ -191,7 +191,7 @@ mod tests {
         JobOutcome {
             job: 0,
             file_name: "a \"b\".zip".into(),
-            site: "Pixeldrain",
+            provider: "Pixeldrain",
             result,
         }
     }

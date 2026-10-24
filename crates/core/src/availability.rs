@@ -1,9 +1,9 @@
-//! Is a site reachable right now?
+//! Is a provider reachable right now?
 //!
-//! The Python version pinged each site one after another (up to five seconds
+//! The Python version pinged each provider one after another (up to five seconds
 //! each, so a bad day meant minutes at startup) and only accepted HTTP 200.
 //! Here the probes run concurrently and any answer that proves the host is up
-//! counts, including the 403/429 some sites give to non-browsers.
+//! counts, including the 403/429 some providers give to non-browsers.
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,7 +12,7 @@ use futures::StreamExt;
 use reqwest::StatusCode;
 
 use crate::http::HttpFactory;
-use crate::site::Site;
+use crate::provider::Provider;
 
 const PROBE_TIMEOUT: Duration = Duration::from_secs(5);
 const CONCURRENCY: usize = 16;
@@ -30,27 +30,27 @@ impl Health {
 }
 
 #[derive(Clone)]
-pub struct SiteStatus {
-    pub site: Arc<dyn Site>,
+pub struct ProviderStatus {
+    pub provider: Arc<dyn Provider>,
     pub health: Health,
 }
 
-/// Probe every site; results are in the same order as `sites`.
-pub async fn check(factory: &HttpFactory, sites: &[Arc<dyn Site>]) -> Vec<SiteStatus> {
+/// Probe every provider; results are in the same order as `providers`.
+pub async fn check(factory: &HttpFactory, providers: &[Arc<dyn Provider>]) -> Vec<ProviderStatus> {
     // Each probe owns its inputs. Building the futures up front, rather than
     // inside a `Stream::map` closure, keeps this future spawnable on a
     // multi-threaded runtime (rustc cannot prove the closure form `Send`).
-    let probes: Vec<_> = sites
+    let probes: Vec<_> = providers
         .iter()
         .cloned()
-        .map(|site| {
+        .map(|provider| {
             let factory = factory.clone();
             async move {
-                let health = probe(&factory, &site).await;
+                let health = probe(&factory, &provider).await;
                 if let Health::Down(reason) = &health {
-                    tracing::warn!(site = site.info().name, %reason, "availability check failed");
+                    tracing::warn!(provider = provider.info().name, %reason, "availability check failed");
                 }
-                SiteStatus { site, health }
+                ProviderStatus { provider, health }
             }
         })
         .collect();
@@ -60,13 +60,13 @@ pub async fn check(factory: &HttpFactory, sites: &[Arc<dyn Site>]) -> Vec<SiteSt
         .await
 }
 
-async fn probe(factory: &HttpFactory, site: &Arc<dyn Site>) -> Health {
+async fn probe(factory: &HttpFactory, provider: &Arc<dyn Provider>) -> Health {
     let http = match factory.client() {
         Ok(http) => http,
         Err(error) => return Health::Down(format!("could not set up a connection: {error}")),
     };
     match http
-        .get(site.info().probe_url)
+        .get(provider.info().probe_url)
         .timeout(PROBE_TIMEOUT)
         .send()
         .await
@@ -79,7 +79,7 @@ async fn probe(factory: &HttpFactory, site: &Arc<dyn Site>) -> Health {
 }
 
 /// Any answer that is not a server error shows the host is alive. 401/403/405/429
-/// are what sites tend to answer a bare GET with; they still accept uploads.
+/// are what providers tend to answer a bare GET with; they still accept uploads.
 fn judge(status: StatusCode) -> Health {
     let alive = status.is_success()
         || status.is_redirection()

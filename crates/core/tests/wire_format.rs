@@ -1,5 +1,5 @@
 //! Checks the HTTP wire format that every uploader depends on, using Catbox as
-//! the representative site.
+//! the representative provider.
 
 mod common;
 

@@ -1,8 +1,8 @@
 # Mul-Tor settings.
 #
 # Edit this file, then restart Mul-Tor. Every option is shown with its default.
-# Site names are matched loosely: "Transfer.sh", "transfer_sh" and "transfersh"
-# all mean the same site.
+# Provider names are matched loosely: "Transfer.sh", "transfer_sh" and "transfersh"
+# all mean the same provider.
 
 version = 2
 
@@ -10,7 +10,7 @@ version = 2
 # downloads or installs anything).
 check_for_updates = true
 
-# Ping every site at startup and hide the ones that do not answer.
+# Ping every provider at startup and hide the ones that do not answer.
 check_availability = true
 
 # Send each upload through a random proxy from a freshly downloaded public
@@ -36,18 +36,18 @@ parallel_uploads = 1
 # Where file_links.txt is written. Default: the folder you run Mul-Tor from.
 # links_dir = "/path/to/folder"
 
-# Sites that are never offered.
+# Providers that are never offered.
 blacklist = []
 
 [preset]
-# Pre-select the sites of a preset instead of asking. `name` is the preset's
+# Pre-select the providers of a preset instead of asking. `name` is the preset's
 # file name, identifier or title, e.g. "f95".
 auto_load = false
 name = ""
 # Offer a preset choice in interactive mode.
 enable_selection = false
 
-# Accounts for the sites that need one. Fill in only what you use.
+# Accounts for the providers that need one. Fill in only what you use.
 #
 # [credentials.Pixeldrain]
 # apiKey = ""

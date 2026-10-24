@@ -1,30 +1,32 @@
-//! The read-only commands: `sites`, `presets`, `check`, `config`.
+//! The read-only commands: `providers`, `presets`, `check`, `config`.
 
 use anyhow::{Context as _, Result};
 use console::style;
 use mul_tor_core::availability::{self, Health};
-use mul_tor_core::{Auth, SiteInfo};
+use mul_tor_core::{Auth, ProviderInfo};
 use serde_json::json;
 
 use crate::app::App;
-use crate::cli::{ConfigAction, SitesFormat};
+use crate::cli::{ConfigAction, ProvidersFormat};
 
-pub fn sites(app: &App, format: SitesFormat) -> Result<()> {
-    let infos: Vec<&SiteInfo> = app.registry.iter().map(|s| s.info()).collect();
+pub fn providers(app: &App, format: ProvidersFormat) -> Result<()> {
+    let infos: Vec<&ProviderInfo> = app.registry.iter().map(|s| s.info()).collect();
     match format {
-        SitesFormat::Table => print!("{}", sites_table(&infos)),
-        SitesFormat::Markdown => print!("{}", sites_markdown(&infos)),
-        SitesFormat::Json => println!("{}", serde_json::to_string_pretty(&sites_json(&infos))?),
+        ProvidersFormat::Table => print!("{}", providers_table(&infos)),
+        ProvidersFormat::Markdown => print!("{}", providers_markdown(&infos)),
+        ProvidersFormat::Json => {
+            println!("{}", serde_json::to_string_pretty(&providers_json(&infos))?)
+        }
     }
     Ok(())
 }
 
-fn size_label(info: &SiteInfo) -> String {
+fn size_label(info: &ProviderInfo) -> String {
     info.max_size
         .map_or_else(|| "—".to_string(), |limit| limit.to_string())
 }
 
-fn account_label(info: &SiteInfo) -> &'static str {
+fn account_label(info: &ProviderInfo) -> &'static str {
     match info.auth {
         Auth::None => "no",
         Auth::Optional => "optional",
@@ -32,7 +34,7 @@ fn account_label(info: &SiteInfo) -> &'static str {
     }
 }
 
-pub fn sites_table(infos: &[&SiteInfo]) -> String {
+pub fn providers_table(infos: &[&ProviderInfo]) -> String {
     let name_width = infos
         .iter()
         .map(|i| i.name.chars().count())
@@ -45,7 +47,7 @@ pub fn sites_table(infos: &[&SiteInfo]) -> String {
             .to_string()
             + "\n"
     };
-    let mut out = row("Site", "Max size", "Account", "Notes");
+    let mut out = row("Provider", "Max size", "Account", "Notes");
     for info in infos {
         out.push_str(&row(
             info.name,
@@ -57,9 +59,9 @@ pub fn sites_table(infos: &[&SiteInfo]) -> String {
     out
 }
 
-/// The table in the README's format; regenerate it with `mul-tor sites --format markdown`.
-pub fn sites_markdown(infos: &[&SiteInfo]) -> String {
-    let mut out = String::from("Site | API | Account | Max file size\n--- | --- | --- | ---\n");
+/// The table in the README's format; regenerate it with `mul-tor providers --format markdown`.
+pub fn providers_markdown(infos: &[&ProviderInfo]) -> String {
+    let mut out = String::from("Provider | API | Account | Max file size\n--- | --- | --- | ---\n");
     for info in infos {
         let api = info
             .api_docs
@@ -81,7 +83,7 @@ pub fn sites_markdown(infos: &[&SiteInfo]) -> String {
     out
 }
 
-pub fn sites_json(infos: &[&SiteInfo]) -> serde_json::Value {
+pub fn providers_json(infos: &[&ProviderInfo]) -> serde_json::Value {
     infos
         .iter()
         .map(|info| {
@@ -109,7 +111,7 @@ pub fn presets(app: &App) -> Result<()> {
         println!(
             "{}  {}",
             style(stem).bold(),
-            style(format!("({title}, {} sites)", resolved.sites.len())).dim()
+            style(format!("({title}, {} providers)", resolved.providers.len())).dim()
         );
         if !preset.description.is_empty() {
             println!("  {}", preset.description);
@@ -130,18 +132,18 @@ pub fn presets(app: &App) -> Result<()> {
 }
 
 pub async fn check(app: &App) -> Result<()> {
-    let sites = app.eligible_sites();
+    let providers = app.eligible_providers();
     let factory = app.http_factory(None, true).await?;
-    let statuses = availability::check(&factory, &sites).await;
+    let statuses = availability::check(&factory, &providers).await;
 
-    let name_width = sites
+    let name_width = providers
         .iter()
         .map(|s| s.info().name.chars().count())
         .max()
         .unwrap_or(4);
     let mut down = 0;
     for status in &statuses {
-        let name = status.site.info().name;
+        let name = status.provider.info().name;
         match &status.health {
             Health::Up => println!("{} {name}", style("up  ").green()),
             Health::Down(reason) => {
@@ -191,15 +193,15 @@ mod tests {
     use super::*;
     use mul_tor_core::Registry;
 
-    fn all_infos(registry: &Registry) -> Vec<&SiteInfo> {
+    fn all_infos(registry: &Registry) -> Vec<&ProviderInfo> {
         registry.iter().map(|s| s.info()).collect()
     }
 
     #[test]
-    fn the_table_lists_every_site() {
+    fn the_table_lists_every_provider() {
         let registry = Registry::builtin();
-        let table = sites_table(&all_infos(&registry));
-        assert_eq!(table.lines().count(), 38); // header + 37 sites
+        let table = providers_table(&all_infos(&registry));
+        assert_eq!(table.lines().count(), 38); // header + 37 providers
         assert!(
             table.contains("Pixeldrain") && table.contains("20 GB") && table.contains("required")
         );
@@ -208,7 +210,7 @@ mod tests {
     #[test]
     fn markdown_rows_have_four_columns() {
         let registry = Registry::builtin();
-        let md = sites_markdown(&all_infos(&registry));
+        let md = providers_markdown(&all_infos(&registry));
         for line in md.lines() {
             assert_eq!(line.matches(" | ").count(), 3, "{line}");
         }
@@ -219,9 +221,9 @@ mod tests {
     }
 
     #[test]
-    fn json_describes_each_site() {
+    fn json_describes_each_provider() {
         let registry = Registry::builtin();
-        let json = sites_json(&all_infos(&registry));
+        let json = providers_json(&all_infos(&registry));
         let list = json.as_array().unwrap();
         assert_eq!(list.len(), 37);
         let pixeldrain = list.iter().find(|s| s["name"] == "Pixeldrain").unwrap();
@@ -230,16 +232,16 @@ mod tests {
         assert_eq!(pixeldrain["max_size_bytes"], 20u64 * 1024 * 1024 * 1024);
     }
 
-    /// The README's site table is generated from the registry; fail loudly when
-    /// a site is added without regenerating it.
+    /// The README's provider table is generated from the registry; fail loudly when
+    /// a provider is added without regenerating it.
     #[test]
-    fn the_readme_lists_every_supported_site() {
+    fn the_readme_lists_every_supported_provider() {
         let readme = include_str!("../../../README.md");
-        for site in Registry::builtin().iter() {
-            let info = site.info();
+        for provider in Registry::builtin().iter() {
+            let info = provider.info();
             assert!(
                 readme.contains(&format!("[{}]({})", info.name, info.homepage)),
-                "README.md is missing {}; regenerate with `mul-tor sites --format markdown`",
+                "README.md is missing {}; regenerate with `mul-tor providers --format markdown`",
                 info.name
             );
         }

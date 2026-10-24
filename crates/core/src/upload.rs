@@ -14,10 +14,10 @@ use tokio_util::io::ReaderStream;
 use crate::error::UploadError;
 use crate::http::Http;
 use crate::progress::Progress;
-use crate::site::Credentials;
+use crate::provider::Credentials;
 
-/// Longest file name (in bytes) we send to a site. Filesystems allow 255; the
-/// margin leaves room for sites that add a prefix or suffix.
+/// Longest file name (in bytes) we send to a provider. Filesystems allow 255; the
+/// margin leaves room for providers that add a prefix or suffix.
 const MAX_NAME_BYTES: usize = 240;
 
 /// Read buffer for streamed bodies. Large enough to keep throughput high,
@@ -28,7 +28,7 @@ const STREAM_CHUNK: usize = 256 * 1024;
 #[derive(Clone, Debug)]
 pub struct LocalFile {
     pub path: PathBuf,
-    /// Name as sent to sites (shortened to a safe length, extension kept).
+    /// Name as sent to providers (shortened to a safe length, extension kept).
     pub name: String,
     pub size: u64,
 }
@@ -68,7 +68,7 @@ impl UploadedFile {
     }
 }
 
-/// Everything an uploader needs for one file on one site.
+/// Everything an uploader needs for one file on one provider.
 pub struct UploadContext<'a> {
     pub file: &'a LocalFile,
     pub http: &'a Http,

@@ -1,6 +1,6 @@
 [package]
 name = "mul-tor-gui"
-description = "Upload files to many hosting sites at once (graphical interface)"
+description = "Upload files to many hosting providers at once (graphical interface)"
 version.workspace = true
 edition.workspace = true
 # egui 0.37 requires 1.95. Verified: `cargo +1.95.0 check -p mul-tor-gui`.
