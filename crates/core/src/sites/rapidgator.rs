@@ -26,10 +26,7 @@ const INFO: SiteInfo = SiteInfo::new(
 ])
 .api_docs("https://rapidgator.net/article/api/")
 .credentials_url("https://rapidgator.net/article/api/")
-.known_issue(
-    "The size limit depends on the account, so it is only checked after logging in. \
-         The Python version reported intermittent failures on batch uploads.",
-);
+.known_issue("The size limit depends on your account, so it is only checked after logging in. Mul-Tor 1.x reported intermittent failures on batch uploads.");
 
 const API: &str = "https://rapidgator.net/api/v2";
 

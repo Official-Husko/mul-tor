@@ -16,10 +16,7 @@ const INFO: SiteInfo = SiteInfo::new(
     "https://download.gg/",
 )
 .max_size(SizeLimit::gb(25))
-.known_issue(
-    "The Python version never actually selected this site because of a name mismatch bug, \
-         so it has had little real-world testing.",
-);
+.known_issue("Less tested than the others: Mul-Tor 1.x never actually offered this site because of a naming bug.");
 
 #[async_trait]
 impl Site for DownloadGg {

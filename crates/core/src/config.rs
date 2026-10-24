@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::{Error, Result};
 use crate::paths::AppDirs;
-use crate::site::{Credentials, SiteInfo, normalize_name};
+use crate::site::{Auth, Credentials, SiteInfo, normalize_name};
 
 /// Current layout of `config.toml`.
 pub const CONFIG_VERSION: u32 = 2;
@@ -96,6 +96,17 @@ impl Config {
             .iter()
             .map(|(name, creds)| (normalize_name(name), creds.clone()))
             .collect()
+    }
+
+    /// Does `site` need credentials that are not filled in?
+    pub fn lacks_credentials(&self, site: &SiteInfo) -> bool {
+        if site.auth != Auth::Required {
+            return false;
+        }
+        let credentials = self.credentials_for(site);
+        site.credentials
+            .iter()
+            .any(|field| credentials.get(field.key).is_none())
     }
 
     pub fn is_blacklisted(&self, site: &SiteInfo) -> bool {
@@ -380,6 +391,32 @@ mod tests {
             config.credentials.is_empty(),
             "blank credentials are removed"
         );
+    }
+
+    #[test]
+    fn lacking_credentials_means_a_required_field_is_blank() {
+        let pixeldrain = crate::Registry::builtin()
+            .find("pixeldrain")
+            .unwrap()
+            .clone();
+        let oshi = crate::Registry::builtin().find("oshi").unwrap().clone();
+        let mut config = Config::default();
+        assert!(config.lacks_credentials(pixeldrain.info()));
+        assert!(
+            !config.lacks_credentials(oshi.info()),
+            "anonymous sites never lack any"
+        );
+
+        let mut creds = Credentials::default();
+        creds.set("apiKey", "   ");
+        config.set_credentials(pixeldrain.info(), creds.clone());
+        assert!(
+            config.lacks_credentials(pixeldrain.info()),
+            "blank is missing"
+        );
+        creds.set("apiKey", "k");
+        config.set_credentials(pixeldrain.info(), creds);
+        assert!(!config.lacks_credentials(pixeldrain.info()));
     }
 
     #[test]

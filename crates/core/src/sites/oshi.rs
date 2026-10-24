@@ -12,7 +12,7 @@ pub struct Oshi;
 
 const INFO: SiteInfo = SiteInfo::new("Oshi", "https://oshi.at/", "https://oshi.at/cmd")
     .max_size(SizeLimit::gb(5))
-    .known_issue("Very slow server; the Python version recommended keeping it last.");
+    .known_issue("Very slow server; best left for last.");
 
 #[async_trait]
 impl Site for Oshi {

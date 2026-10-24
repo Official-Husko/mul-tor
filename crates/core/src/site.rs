@@ -210,6 +210,11 @@ impl Credentials {
         self.0.values().all(|value| value.trim().is_empty())
     }
 
+    /// The value for `key`, created empty if absent. For editing in a UI.
+    pub fn entry(&mut self, key: impl Into<String>) -> &mut String {
+        self.0.entry(key.into()).or_default()
+    }
+
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.0.iter().map(|(k, v)| (k.as_str(), v.as_str()))
     }

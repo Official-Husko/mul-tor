@@ -4,11 +4,11 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use anyhow::{Context as _, Result};
+use anyhow::Result;
 use console::style;
 use mul_tor_core::{
-    AppDirs, Auth, Config, ConfigOrigin, ConfigStore, HttpFactory, PresetLibrary, ProxyMode,
-    Registry, Site, SiteInfo, proxies, useragents,
+    AppDirs, Config, ConfigOrigin, ConfigStore, HttpFactory, PresetLibrary, Registry, Site,
+    SiteInfo, setup,
 };
 
 pub struct App {
@@ -70,13 +70,7 @@ impl App {
 
     /// Does `site` need credentials that are not filled in?
     pub fn lacks_credentials(&self, site: &SiteInfo) -> bool {
-        if site.auth != Auth::Required {
-            return false;
-        }
-        let credentials = self.config.credentials_for(site);
-        site.credentials
-            .iter()
-            .any(|field| credentials.get(field.key).is_none())
+        self.config.lacks_credentials(site)
     }
 
     /// The HTTP layer as configured: user agents, proxy.
@@ -88,50 +82,20 @@ impl App {
         proxy_override: Option<&str>,
         quiet: bool,
     ) -> Result<HttpFactory> {
-        let mut factory = HttpFactory::new();
-
-        if self.config.random_user_agent || self.config.use_proxies {
-            // Plain client for these bootstrap downloads.
-            let bootstrap = HttpFactory::new()
-                .client()
-                .context("could not set up the HTTP client")?;
-
-            if self.config.random_user_agent {
-                factory = factory.with_user_agents(
-                    useragents::load(&self.dirs.user_agents_file(), &bootstrap).await,
-                );
-            }
-
-            let fixed = proxy_override
-                .map(str::to_string)
-                .or_else(|| self.config.proxy.clone());
-            if let Some(url) = fixed {
-                factory = factory.with_proxy(ProxyMode::Fixed(url));
-            } else if self.config.use_proxies {
-                if !quiet {
-                    eprintln!("{}", style("Fetching fresh proxies...").yellow());
-                }
-                let pool = proxies::fetch_pool(&bootstrap).await;
-                if pool.is_empty() {
-                    eprintln!(
-                        "{} No proxies could be fetched; connecting directly.",
-                        style("[!]").yellow()
-                    );
-                } else {
-                    if !quiet {
-                        eprintln!("{} Fetched {} proxies.", style("[i]").cyan(), pool.len());
-                    }
-                    factory = factory.with_proxy(ProxyMode::Pool(pool));
-                }
-            }
-        } else if let Some(url) = proxy_override
-            .map(str::to_string)
-            .or_else(|| self.config.proxy.clone())
+        if !quiet
+            && self.config.use_proxies
+            && self.config.proxy.is_none()
+            && proxy_override.is_none()
         {
-            factory = factory.with_proxy(ProxyMode::Fixed(url));
+            eprintln!("{}", style("Fetching fresh proxies...").yellow());
         }
-
-        Ok(with_test_hooks(factory))
+        let setup = setup::http_factory(&self.config, &self.dirs, proxy_override).await;
+        if !quiet {
+            for note in &setup.notes {
+                eprintln!("{} {note}", style("[i]").cyan());
+            }
+        }
+        Ok(with_test_hooks(setup.factory))
     }
 }
 
@@ -142,7 +106,7 @@ impl App {
 fn with_test_hooks(factory: HttpFactory) -> HttpFactory {
     match std::env::var("MUL_TOR_TEST_BASE_URL") {
         Ok(base) => factory
-            .with_proxy(ProxyMode::Direct)
+            .with_proxy(mul_tor_core::ProxyMode::Direct)
             .with_url_rewrite(Arc::new(move |url: &str| {
                 let rest = url
                     .strip_prefix("https://")

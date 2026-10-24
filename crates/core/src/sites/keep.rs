@@ -14,7 +14,7 @@ pub struct Keep;
 const INFO: SiteInfo = SiteInfo::new("Keep", "https://keep.sh/", "https://keep.sh/")
     .aliases(&["Keep.sh"])
     .max_size(SizeLimit::mb(500))
-    .known_issue("The Python version flagged this host as having unresolved upstream problems.");
+    .known_issue("Mul-Tor 1.x flagged this host as having unresolved problems on its side.");
 
 const LINK_PREFIX: &str = "https://free.keep.sh/";
 

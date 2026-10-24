@@ -16,10 +16,7 @@ const INFO: SiteInfo = SiteInfo::new(
     "https://transfer.sh/",
 )
 .max_size(SizeLimit::gb(10))
-.known_issue(
-    "The Python version flagged this host as unreliable, and never actually selected it \
-         because of a name mismatch bug.",
-);
+.known_issue("The public service has been unreliable, and Mul-Tor 1.x never actually offered it because of a naming bug.");
 
 #[async_trait]
 impl Site for TransferSh {

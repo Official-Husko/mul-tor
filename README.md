@@ -43,6 +43,23 @@ cargo install --path crates/gui      # the graphical tool:    `mul-tor-gui`
 The command-line tool has no system dependencies. Static, self-contained builds
 are possible (for example with the `*-unknown-linux-musl` targets).
 
+## Using the graphical version
+
+`mul-tor-gui` is the same engine in a window (egui, rendered with wgpu): drop files
+on it, tick sites or pick a preset, press Upload. Every upload gets its own
+progress bar and, once finished, a link you can copy or open. Settings (including
+your accounts) are edited in the window and saved to the same `config.toml`.
+
+![The Mul-Tor window while uploading](media/gui.png)
+
+*The window part-way through a run (rendered with sample data).*
+
+It needs a GPU driver that supports Vulkan, Metal or Direct3D 12, which any recent
+desktop has. On Linux it also loads a few system libraries at run time
+(`libxkbcommon-x11`, `libwayland-client` or X11, and `libvulkan`); a minimal or
+containerised install may be missing them, and the command-line version needs
+none of this.
+
 ## Using the command line
 
 ```sh

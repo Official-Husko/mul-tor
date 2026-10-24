@@ -15,6 +15,7 @@ pub mod preset;
 pub mod progress;
 pub mod proxies;
 mod reply;
+pub mod setup;
 pub mod site;
 pub mod sites;
 pub mod size;

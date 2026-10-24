@@ -37,14 +37,24 @@ pub struct SiteStatus {
 
 /// Probe every site; results are in the same order as `sites`.
 pub async fn check(factory: &HttpFactory, sites: &[Arc<dyn Site>]) -> Vec<SiteStatus> {
-    futures::stream::iter(sites.iter().cloned())
-        .map(|site| async move {
-            let health = probe(factory, &site).await;
-            if let Health::Down(reason) = &health {
-                tracing::warn!(site = site.info().name, %reason, "availability check failed");
+    // Each probe owns its inputs. Building the futures up front, rather than
+    // inside a `Stream::map` closure, keeps this future spawnable on a
+    // multi-threaded runtime (rustc cannot prove the closure form `Send`).
+    let probes: Vec<_> = sites
+        .iter()
+        .cloned()
+        .map(|site| {
+            let factory = factory.clone();
+            async move {
+                let health = probe(&factory, &site).await;
+                if let Health::Down(reason) = &health {
+                    tracing::warn!(site = site.info().name, %reason, "availability check failed");
+                }
+                SiteStatus { site, health }
             }
-            SiteStatus { site, health }
         })
+        .collect();
+    futures::stream::iter(probes)
         .buffered(CONCURRENCY)
         .collect()
         .await
