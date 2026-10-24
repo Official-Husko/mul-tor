@@ -1,38 +1,30 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Something does not work as it should
 title: ''
 labels: bug
 assignees: Official-Husko
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**What happened?**
+A clear and concise description of the problem, and what you expected instead.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**How to reproduce it**
+The exact command you ran (`mul-tor upload ... --site ...`), or the steps you took in the graphical version.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Which program and version?**
+Output of `mul-tor --version` (or `mul-tor-gui --version`), and whether you use the command line or the graphical version.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Operating system**
+e.g. Windows 11, macOS 15, Ubuntu 24.04.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Site(s) affected**
+If a particular host fails, name it, and say whether it worked before.
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**The log**
+The relevant lines from `runtime.log` (it sits next to your `config.toml`; `mul-tor config path` shows where). It contains the site's reply, which usually shows what went wrong.
+**Remove any API keys, passwords or private links first.**
 
-**Additional context**
-Add any other context about the problem here.
+**Anything else**
+Screenshots, proxy settings, anything unusual about your setup.

@@ -7,7 +7,7 @@ and sharing: pick the files, pick the hosts, get all the links.
 > **Mul-Tor 2.0 is a rewrite in Rust** (currently an alpha). It ships as a single
 > native program for Linux, macOS and Windows: a command-line tool (`mul-tor`)
 > and a graphical one (`mul-tor-gui`, built on egui/wgpu). The Python 1.x
-> version lives on in the git history (tag `v1.5.2`).
+> version lives on in the git history (tag `1.5.2`).
 
 ## Status
 
@@ -202,7 +202,7 @@ Site | API | Account | Max file size
 <details>
   <summary>Open FAQ</summary>
   Q: Where did the site X go?\
-  A: Check the [rejected sites](#rejected-sites) list. Sites that were dropped from the Python version are in its git history (tag `v1.5.2`).
+  A: Check the [rejected sites](#rejected-sites) list. Sites that were dropped from the Python version are in its git history (tag `1.5.2`).
 
   Q: Are there any presets?\
   A: Yes: `f95` and `cs-rin-ru` are built in (`mul-tor presets`). More can be dropped into the `presets` folder next to your `config.toml`; community ones may be collected in [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets).

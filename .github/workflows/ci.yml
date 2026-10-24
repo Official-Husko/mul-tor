@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [master, development]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: Format and lints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --locked --features mul-tor/test-hooks -- -D warnings
+
+  test:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # `test-hooks` lets the end-to-end tests redirect every site to a local
+      # mock server. Nothing in the suite talks to the real sites.
+      - run: cargo test --workspace --locked --features mul-tor/test-hooks
+
+  cli-release-build:
+    name: CLI builds on its own (no GUI dependencies)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked -p mul-tor
+      - name: The CLI binary must not link the GUI stack
+        run: |
+          if ldd target/release/mul-tor | grep -Ei 'wayland|xkb|vulkan|libX11'; then
+            echo "the command-line binary should have no graphics dependencies" >&2
+            exit 1
+          fi

@@ -1,5 +1,11 @@
 //! Mul-Tor, graphical version.
 
+// No console window behind the GUI on Windows release builds.
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
+
 mod app;
 mod model;
 mod tasks;
