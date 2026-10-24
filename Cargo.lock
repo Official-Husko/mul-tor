@@ -2091,13 +2091,18 @@ name = "mul-tor"
 version = "2.0.0-alpha.1"
 dependencies = [
  "anyhow",
+ "axum",
  "clap",
  "console",
  "dialoguer",
+ "directories",
  "indicatif",
  "mul-tor-core",
  "serde_json",
+ "tempfile",
  "tokio",
+ "tokio-util",
+ "toml",
  "tracing",
  "tracing-subscriber",
 ]

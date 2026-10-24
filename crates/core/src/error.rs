@@ -54,6 +54,20 @@ impl UploadError {
         }
     }
 
+    /// A short, stable identifier for the kind of failure (for machine-readable output).
+    pub fn kind(&self) -> &'static str {
+        match self {
+            UploadError::TooLarge { .. } => "too_large",
+            UploadError::EmptyFile => "empty_file",
+            UploadError::MissingCredential(_) => "missing_credential",
+            UploadError::Rejected(_) => "rejected",
+            UploadError::Network(_) => "network",
+            UploadError::Io(_) => "io",
+            UploadError::Protocol { .. } => "protocol",
+            UploadError::Cancelled => "cancelled",
+        }
+    }
+
     /// The raw response excerpt, if one was captured.
     pub fn raw(&self) -> Option<&str> {
         match self {
@@ -132,6 +146,17 @@ mod tests {
         let raw = err.raw().unwrap();
         assert!(raw.len() < 2200);
         assert!(raw.contains("truncated"));
+    }
+
+    #[test]
+    fn kinds_are_stable_identifiers() {
+        assert_eq!(UploadError::EmptyFile.kind(), "empty_file");
+        assert_eq!(UploadError::Cancelled.kind(), "cancelled");
+        assert_eq!(UploadError::unexpected("x").kind(), "protocol");
+        assert_eq!(
+            UploadError::MissingCredential("k").kind(),
+            "missing_credential"
+        );
     }
 
     #[test]
