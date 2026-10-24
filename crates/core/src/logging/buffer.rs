@@ -37,6 +37,14 @@ impl LogBuffer {
         self.records().iter().cloned().collect()
     }
 
+    /// The newest `count` records, oldest first. Cheap enough to call on
+    /// every redraw of a log view.
+    pub fn tail(&self, count: usize) -> Vec<LogRecord> {
+        let records = self.records();
+        let skip = records.len().saturating_sub(count);
+        records.iter().skip(skip).cloned().collect()
+    }
+
     /// Records newer than `seq` (use `0` for all), oldest first.
     pub fn since(&self, seq: u64) -> Vec<LogRecord> {
         self.records()

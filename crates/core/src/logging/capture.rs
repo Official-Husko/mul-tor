@@ -182,6 +182,20 @@ mod tests {
     }
 
     #[test]
+    fn tail_returns_the_newest_records_oldest_first() {
+        let buffer = LogBuffer::new(10);
+        capture(&buffer, || {
+            for n in 1..=6 {
+                tracing::info!(n, "tick");
+            }
+        });
+        let seqs: Vec<_> = buffer.tail(3).iter().map(|r| r.seq).collect();
+        assert_eq!(seqs, [4, 5, 6]);
+        assert_eq!(buffer.tail(99).len(), 6);
+        assert!(buffer.tail(0).is_empty());
+    }
+
+    #[test]
     fn since_returns_only_what_is_new() {
         let buffer = LogBuffer::new(10);
         capture(&buffer, || {
