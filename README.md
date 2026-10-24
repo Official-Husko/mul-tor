@@ -181,6 +181,7 @@ Provider | API | Account | Max file size
 [Buzzheavier](https://buzzheavier.com/) | [Yes](https://buzzheavier.com/api.html) | No | ∞
 [Catbox](https://catbox.moe/) | [Yes](https://catbox.moe/tools.php) | No | 200 MB
 [ClicknUpload](https://clicknupload.click) | No | No | 2 GB
+[curl.by](https://curl.by/) | [Yes](https://curl.by/) | No | ∞
 [CyberFile](https://cyberfile.me/) | No | No | 10 GB
 [Delafil](https://delafil.se/) | No | No | 6 GB
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
@@ -215,6 +216,7 @@ Provider | API | Account | Max file size
 [Uguu](https://uguu.se/) | [Yes](https://uguu.se/api) | No | 128 MB
 [UserCloud](https://userscloud.com/) | No | No | 5 GB
 [UsersDrive](https://usersdrive.com/) | No | No | 2 GB
+[VikingFile](https://vikingfile.com/) | [Yes](https://vikingfile.com/api) | No | ∞
 [WDHO](https://wdho.ru/) | No | No | 5 GB
 [X0.at](https://x0.at/) | [Yes](https://x0.at/) | No | 1 GB
 

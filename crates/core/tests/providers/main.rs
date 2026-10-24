@@ -9,6 +9,7 @@
 mod common;
 
 mod chunked;
+mod curlby;
 mod fileio;
 mod filesfm;
 mod form_post;
@@ -21,4 +22,5 @@ mod rapidgator;
 mod single_request;
 mod support;
 mod two_step;
+mod vikingfile;
 mod xfs;
