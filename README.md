@@ -299,6 +299,9 @@ cargo build --workspace
 cargo test --workspace --features mul-tor/test-hooks
 ```
 
+How the code is organised, and the rules it follows, are in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 `test-hooks` lets the end-to-end tests redirect every provider to a local mock server;
 it is never part of a release build.
 
