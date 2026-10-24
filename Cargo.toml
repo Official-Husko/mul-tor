@@ -69,7 +69,18 @@ unsafe_code = "forbid"
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }
 
+# Debug info is the biggest cost of a dev build (compile and link time, and the
+# size of `target/`). Line tables are enough for backtraces and panics.
+[profile.dev]
+debug = "line-tables-only"
+
+# Dependencies never need to be stepped through.
+[profile.dev.package."*"]
+debug = false
+
 [profile.release]
 lto = "thin"
 codegen-units = 1
 strip = true
+# No `panic = "abort"`: the engine relies on unwinding to turn a crashing
+# provider into one failed job instead of losing the whole batch.
