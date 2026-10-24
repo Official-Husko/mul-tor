@@ -186,6 +186,7 @@ Provider | API | Account | Max file size
 [CyberFile](https://cyberfile.me/) | No | No | 10 GB
 [Delafil](https://delafil.se/) | No | No | 6 GB
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
+[Dosya.co](https://dosya.co/) | No | No | 2 GB
 [Download.gg](https://download.gg/) | No | No | 25 GB
 [EasySend](https://easysend.co/) | [Yes](https://easysend.co/developer-api) | No | 1 GB
 [EasyUpload](https://easyupload.io/) | No | No | 10 GB
@@ -196,6 +197,7 @@ Provider | API | Account | Max file size
 [Files.dp.ua](https://files.dp.ua/) | No | No | 100 GB
 [Filesadmin](https://filesadmin.com/) | No | No | 3 GB
 [FilesFm](https://files.fm/) | No | No | 5 GB
+[Filespace](https://filespace.com/) | No | No | 150 MB
 [FileUpload](https://file-upload.net/) | No | No | 5 GB
 [Gofile](https://gofile.io/) | [Yes](https://gofile.io/api) | No | ∞
 [HexUpload](https://hexupload.net/) | No | No | 2 GB

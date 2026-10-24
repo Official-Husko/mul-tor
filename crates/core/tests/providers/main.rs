@@ -24,3 +24,4 @@ mod support;
 mod two_step;
 mod vikingfile;
 mod xfs;
+mod xfs_redirect;

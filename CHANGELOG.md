@@ -35,6 +35,8 @@ Mul-Tor is rewritten in Rust.
   EasySend, Qu.ax, Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and X0.at. All but 0x0.st (not
   reachable from the machine they were tried on) were uploaded to for real and are marked
   `working`.
+* Dosya.co and Filespace, hosts running an older XFileSharing that ends an upload on a
+  result page rather than answering with JSON. Both were uploaded to for real.
 * A provider can list the only file types it takes (Qu.ax), next to the list it refuses.
 
 ### Changed
