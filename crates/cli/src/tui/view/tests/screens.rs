@@ -3,7 +3,9 @@
 use std::sync::Arc;
 
 use crossterm::event::KeyCode;
-use mul_tor_core::{Event, JobOutcome, ProgressSnapshot, UploadError, UploadedFile};
+use mul_tor_core::{
+    Auth, Event, JobOutcome, ProgressSnapshot, Registry, UploadError, UploadedFile,
+};
 
 use super::{assert_shows, render};
 use crate::tui::model::Screen;
@@ -73,11 +75,21 @@ fn providers_show_their_state_and_the_details_panel() {
     press(&mut f.model, KeyCode::Char('n'));
     press(&mut f.model, KeyCode::Char('a'));
     let screen = render(&mut f.model, 120, 40);
+    // The first provider of the list, and the first one that needs an account:
+    // both stay on the first screenful however many providers are added.
+    let registry = Registry::builtin();
+    let first = registry.iter().next().unwrap().info().name;
+    let keyed = registry
+        .iter()
+        .map(|p| p.info())
+        .find(|info| info.auth == Auth::Required)
+        .unwrap()
+        .name;
     assert_shows(
         &screen,
         &[
             "2 Providers",
-            "Gofile",
+            first,
             "[x]",
             "needs account",
             "unverified",
@@ -86,10 +98,7 @@ fn providers_show_their_state_and_the_details_panel() {
             "Filter:",
         ],
     );
-    assert!(
-        screen.contains("BowFile") && screen.contains("[-]"),
-        "{screen}"
-    );
+    assert!(screen.contains(keyed) && screen.contains("[-]"), "{screen}");
 }
 
 #[test]
