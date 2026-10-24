@@ -11,4 +11,4 @@ pub use chunks::chunk_ranges;
 pub use context::{UploadContext, UploadedFile, new_form};
 pub use file::{LocalFile, shorten_name};
 pub use random::{LOWER_ALNUM, MIXED_ALNUM, random_string};
-pub use url::url_with_segments;
+pub use url::{https_url_within, is_web_link, url_with_segments};

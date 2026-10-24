@@ -7,13 +7,12 @@
 //! data in [`providers`].
 
 use async_trait::async_trait;
-use reqwest::Url;
 
 use crate::error::UploadError;
 use crate::provider::{Provider, ProviderInfo};
 use crate::reply::{Reply, SendReply};
 use crate::size::SizeLimit;
-use crate::upload::{UploadContext, UploadedFile, new_form};
+use crate::upload::{UploadContext, UploadedFile, is_web_link, new_form};
 
 /// Where the download link is in the reply.
 #[derive(Clone, Copy)]
@@ -57,10 +56,7 @@ impl FormPostProvider {
             LinkIn::Body => reply.body.trim().to_string(),
             LinkIn::Json(pointer) => reply.json_string(pointer)?,
         };
-        let usable = !link.chars().any(char::is_whitespace)
-            && Url::parse(&link)
-                .is_ok_and(|url| matches!(url.scheme(), "http" | "https") && url.has_host());
-        if usable {
+        if is_web_link(&link) {
             Ok(link)
         } else {
             Err(UploadError::protocol(
