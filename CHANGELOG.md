@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0-alpha.1 (unreleased)
+## 2.0.0 (unreleased)
 
 Mul-Tor is rewritten in Rust.
 

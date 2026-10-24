@@ -93,5 +93,5 @@ jobs:
         with:
           files: dist/*
           generate_release_notes: true
-          # 2.0.0-alpha.1 and friends are pre-releases.
+          # A tag with a suffix (2.1.0-rc.1) is a pre-release.
           prerelease: ${{ contains(github.ref_name, '-') }}

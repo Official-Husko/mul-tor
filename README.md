@@ -4,7 +4,7 @@
 and sharing: pick the files, pick the hosts, get all the links.
 
 > [!NOTE]
-> **Mul-Tor 2.0 is a rewrite in Rust** (currently an alpha). It ships as a single
+> **Mul-Tor 2.0 is a rewrite in Rust** (not released yet). It ships as a single
 > native program for Linux, macOS and Windows: a command-line tool (`mul-tor`)
 > and a graphical one (`mul-tor-gui`, built on egui/wgpu). The Python 1.x
 > version lives on in the git history (tag `1.5.2`).
