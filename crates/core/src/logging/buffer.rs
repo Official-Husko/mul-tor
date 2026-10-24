@@ -76,8 +76,11 @@ impl LogBuffer {
     }
 
     pub(super) fn push(&self, mut record: LogRecord) {
-        record.seq = self.inner.next_seq.fetch_add(1, Ordering::Relaxed);
         let mut records = self.records();
+        // Numbered under the lock: threads that number first and store later
+        // would leave the list out of order, and a UI that asks for "records
+        // after N" would skip some.
+        record.seq = self.inner.next_seq.fetch_add(1, Ordering::Relaxed);
         if records.len() == self.inner.capacity {
             records.pop_front();
         }

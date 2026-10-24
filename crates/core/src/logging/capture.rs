@@ -155,6 +155,33 @@ mod tests {
     }
 
     #[test]
+    fn records_from_many_threads_stay_in_sequence_order() {
+        let buffer = LogBuffer::new(10_000);
+        let subscriber = std::sync::Arc::new(tracing_subscriber::registry().with(buffer.layer()));
+        let threads: Vec<_> = (0..8)
+            .map(|_| {
+                let subscriber = subscriber.clone();
+                std::thread::spawn(move || {
+                    tracing::subscriber::with_default(subscriber, || {
+                        for n in 0..500 {
+                            tracing::info!(n, "tick");
+                        }
+                    });
+                })
+            })
+            .collect();
+        for thread in threads {
+            thread.join().unwrap();
+        }
+        let seqs: Vec<_> = buffer.snapshot().iter().map(|r| r.seq).collect();
+        assert_eq!(seqs.len(), 4000);
+        assert!(
+            seqs.windows(2).all(|pair| pair[0] < pair[1]),
+            "out of order"
+        );
+    }
+
+    #[test]
     fn since_returns_only_what_is_new() {
         let buffer = LogBuffer::new(10);
         capture(&buffer, || {
