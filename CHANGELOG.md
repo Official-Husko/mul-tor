@@ -8,6 +8,15 @@ Mul-Tor is rewritten in Rust.
 * `mul-tor`, a single native command-line program for Linux, macOS and Windows
   (no Python, no installer), with a scriptable `upload` command (`--json`, exit
   codes), `providers`, `presets`, `check` and `config` commands.
+* Logging that says when, where and for what: local timestamps with milliseconds
+  and UTC offset, level, module and source line, the upload (provider, file) a
+  line belongs to, how long it took, and every request with its query string
+  removed. Daily files (last 14 kept) in a `logs` folder, optional JSON lines,
+  `MUL_TOR_LOG` to change the detail, `-v`/`-vv`/`-vvv` on the terminal and
+  `mul-tor logs` to read them.
+* A recorded state for every provider (unverified, working, degraded, broken),
+  shown in `mul-tor providers` and the window; broken ones are skipped by
+  `--all` and presets.
 * `mul-tor-gui`, a graphical version (egui on wgpu) built on the same engine.
 * Several uploads at once (`--parallel`), per-upload progress bars (including
   chunked and multi-step uploads), and clean cancellation with Ctrl-C.
