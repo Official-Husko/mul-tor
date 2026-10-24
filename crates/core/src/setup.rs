@@ -2,6 +2,7 @@
 
 use crate::config::Config;
 use crate::http::{HttpFactory, ProxyMode};
+use crate::logging::redact_url;
 use crate::paths::AppDirs;
 use crate::{proxies, useragents};
 
@@ -23,6 +24,7 @@ pub async fn http_factory(
 ) -> HttpSetup {
     let mut factory = HttpFactory::new();
     let mut notes = Vec::new();
+    let mut pooled = false;
 
     let fixed = proxy_override
         .map(str::to_string)
@@ -45,12 +47,29 @@ pub async fn http_factory(
                     } else {
                         notes.push(format!("Fetched {} proxies.", pool.len()));
                         factory = factory.with_proxy(ProxyMode::Pool(pool));
+                        pooled = true;
                     }
                 }
             }
             Err(error) => notes.push(format!("Could not set up the HTTP client: {error}")),
         }
     }
+
+    let routing = match (&fixed, pooled) {
+        (Some(url), _) => {
+            // A proxy URL may carry a user name and password.
+            tracing::info!(proxy = %redact_url(url), "using a fixed proxy");
+            "fixed proxy"
+        }
+        (None, true) => "proxy pool",
+        (None, false) => "direct",
+    };
+    tracing::info!(
+        routing,
+        random_user_agent = config.random_user_agent,
+        notes = notes.len(),
+        "http layer ready"
+    );
 
     if let Some(url) = fixed {
         factory = factory.with_proxy(ProxyMode::Fixed(url));

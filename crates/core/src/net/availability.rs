@@ -47,8 +47,17 @@ pub async fn check(factory: &HttpFactory, providers: &[Arc<dyn Provider>]) -> Ve
             let factory = factory.clone();
             async move {
                 let health = probe(&factory, &provider).await;
-                if let Health::Down(reason) = &health {
-                    tracing::warn!(provider = provider.info().name, %reason, "availability check failed");
+                match &health {
+                    Health::Down(reason) => tracing::warn!(
+                        provider = provider.info().name,
+                        %reason,
+                        "availability check failed"
+                    ),
+                    other => tracing::debug!(
+                        provider = provider.info().name,
+                        health = ?other,
+                        "availability checked"
+                    ),
                 }
                 ProviderStatus { provider, health }
             }

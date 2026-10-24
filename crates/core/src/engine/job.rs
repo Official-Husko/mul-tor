@@ -1,7 +1,7 @@
 //! One upload from start to finish.
 
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use chrono::Local;
 use tokio_util::sync::CancellationToken;
@@ -28,11 +28,16 @@ impl Engine {
             return finish(sink, &job, Err(UploadError::Cancelled));
         }
         sink(Event::Started { job: job.id });
+        let started = Instant::now();
         let result = self.execute(&job, sink, cancel).await;
+        let elapsed_ms = started.elapsed().as_millis() as u64;
 
         let info = job.provider.info();
         match &result {
             Ok(uploaded) => {
+                tracing::info!(elapsed_ms, "upload finished");
+                // The link itself can be private; it is in the link file, not here.
+                tracing::debug!(link = %uploaded.url, "link received");
                 if let Some(log) = &self.link_log {
                     let entry = LinkEntry {
                         when: Local::now(),
@@ -45,12 +50,12 @@ impl Engine {
                     }
                 }
             }
-            Err(UploadError::Cancelled) => {}
+            Err(UploadError::Cancelled) => tracing::info!(elapsed_ms, "upload cancelled"),
             Err(error) => {
                 tracing::warn!(
-                    provider = info.name,
-                    file = %job.file_name,
+                    kind = error.kind(),
                     %error,
+                    elapsed_ms,
                     raw = error.raw().unwrap_or(""),
                     "upload failed"
                 );
@@ -75,6 +80,7 @@ impl Engine {
             .cloned()
             .unwrap_or_default();
         info.precheck(file, &credentials)?;
+        tracing::info!(size = file.size, "upload started");
 
         let http = self.http.client()?;
         let progress = Progress::new(file.size);

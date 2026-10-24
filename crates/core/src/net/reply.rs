@@ -4,6 +4,7 @@
 //! provider is a short JSON/HTML/text reply, never file data.
 
 use std::sync::LazyLock;
+use std::time::Instant;
 
 use regex::Regex;
 use reqwest::header::HeaderMap;
@@ -11,6 +12,7 @@ use reqwest::{RequestBuilder, StatusCode, Url};
 use serde_json::Value;
 
 use crate::error::UploadError;
+use crate::logging::redact_url;
 
 #[derive(Debug)]
 pub(crate) struct Reply {
@@ -122,7 +124,31 @@ pub(crate) trait SendReply {
 
 impl SendReply for RequestBuilder {
     async fn send_reply(self) -> Result<Reply, UploadError> {
-        Reply::read(self.send().await?).await
+        let (client, request) = self.build_split();
+        let request = request?;
+        // Only ever log the redacted URL: query strings carry API keys.
+        let method = request.method().clone();
+        let url = redact_url(request.url().as_str());
+        let started = Instant::now();
+        tracing::debug!(%method, %url, "request sent");
+
+        let outcome = match client.execute(request).await {
+            Ok(response) => Reply::read(response).await,
+            Err(error) => Err(error.into()),
+        };
+        let elapsed_ms = started.elapsed().as_millis() as u64;
+        match &outcome {
+            Ok(reply) => tracing::debug!(
+                %method,
+                %url,
+                status = reply.status.as_u16(),
+                bytes = reply.body.len(),
+                elapsed_ms,
+                "reply received"
+            ),
+            Err(error) => tracing::debug!(%method, %url, %error, elapsed_ms, "request failed"),
+        }
+        outcome
     }
 }
 

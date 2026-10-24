@@ -94,7 +94,7 @@ before any request is made, so `upload` never has to:
 | a file name in a URL                     | `url_with_segments(base, &[&cx.file.name])?`    | escapes `?`, `#`, `/` and spaces |
 | chunks                                   | `chunk_ranges(size, chunk_size)`                | |
 | progress text for multi-step flows       | `cx.progress.set_message("Chunk 3/12")`         | shown next to the progress bar |
-| reading the reply                        | `.ok()?`, `.expect_status(201)?`, `.json_string("/a/b")?`, `embedded_json`, `capture(&REGEX, &body)`, `csrf_meta` | errors keep a trimmed copy of the reply for `runtime.log` |
+| reading the reply                        | `.ok()?`, `.expect_status(201)?`, `.json_string("/a/b")?`, `embedded_json`, `capture(&REGEX, &body)`, `csrf_meta` | errors keep a trimmed copy of the reply for the log |
 | a random id                              | `random_string(len, MIXED_ALNUM)`               | |
 
 Rules:
@@ -106,11 +106,17 @@ Rules:
    the timeout also covers waiting for the response, so it would abort any
    upload slower than the timeout. Small API calls are fine; `cx.http.get` already
    has one.
-3. **Return errors, do not log them.** The engine logs failures with the provider name,
-   the file and the trimmed reply. Use `UploadError::protocol(msg, &reply.body)`
-   so that excerpt is attached.
-4. **Never print or log credentials**, and do not put them in URLs you build
-   without good reason (error messages strip the query string, but be careful).
+3. **Return errors, do not log them.** The engine logs a failure once, inside a
+   span that already names the provider and file, with the trimmed reply. Use
+   `UploadError::protocol(msg, &reply.body)` so that excerpt is attached.
+   Every request and reply is logged at `debug` level for you (method, host and
+   path, status, size, time), so do not add your own for those. For a decision
+   worth a line (a retry, a fallback server) use `tracing::debug!(field = value,
+   "what happened")`, never `println!`.
+4. **Never print or log credentials, tokens or cookies**, and do not put them in
+   URLs you build without good reason. Query strings are stripped from logged
+   URLs and from network error messages, but anything you format into your own
+   message or `tracing` field is on you; `logging::redact_url` is there for URLs.
 5. If a value from the reply ends up in a URL you request (a server name, say),
    check it is what you expect (see `gofile.rs`, `onefichier.rs`).
 

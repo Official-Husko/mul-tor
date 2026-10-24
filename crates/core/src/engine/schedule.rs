@@ -2,9 +2,11 @@
 
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::time::Instant;
 
 use tokio::sync::Semaphore;
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument;
 
 use super::Engine;
 use super::event::{Event, EventSink, JobOutcome};
@@ -26,7 +28,27 @@ impl Engine {
         sink: EventSink,
         cancel: CancellationToken,
     ) -> Vec<Arc<JobOutcome>> {
+        let span = tracing::info_span!(
+            "run",
+            files = files.len(),
+            providers = providers.len(),
+            parallel = self.parallel
+        );
+        self.run_jobs(files, providers, sink, cancel)
+            .instrument(span)
+            .await
+    }
+
+    async fn run_jobs(
+        &self,
+        files: Vec<PathBuf>,
+        providers: Vec<Arc<dyn Provider>>,
+        sink: EventSink,
+        cancel: CancellationToken,
+    ) -> Vec<Arc<JobOutcome>> {
+        let started = Instant::now();
         let jobs = self.plan(files, &providers, &sink).await;
+        tracing::info!(jobs = jobs.len(), "run started");
 
         let permits = Arc::new(Semaphore::new(self.parallel));
         let mut running = Vec::with_capacity(jobs.len());
@@ -47,11 +69,21 @@ impl Engine {
             let sink = sink.clone();
             let cancel = cancel.clone();
             let identity = (job.id, job.file_name.clone(), job.provider.info().name);
-            let handle = tokio::spawn(async move {
-                let outcome = engine.run_job(job, &sink, &cancel).await;
-                drop(permit);
-                outcome
-            });
+            // A spawned task does not inherit the current span; hand it over.
+            let span = tracing::info_span!(
+                "job",
+                id = job.id,
+                provider = identity.2,
+                file = %job.file_name
+            );
+            let handle = tokio::spawn(
+                async move {
+                    let outcome = engine.run_job(job, &sink, &cancel).await;
+                    drop(permit);
+                    outcome
+                }
+                .instrument(span),
+            );
             running.push((identity, handle));
         }
 
@@ -61,6 +93,7 @@ impl Engine {
                 // An uploader panicked. Report it as a failed job instead of
                 // taking the whole run down.
                 Err(error) => {
+                    tracing::error!(job, provider, file = %file_name, %error, "the uploader crashed");
                     let outcome = Arc::new(JobOutcome {
                         job,
                         file_name,
@@ -76,6 +109,18 @@ impl Engine {
         }
 
         outcomes.sort_by_key(|outcome| outcome.job);
+        let succeeded = outcomes.iter().filter(|o| o.is_ok()).count();
+        let cancelled = outcomes
+            .iter()
+            .filter(|o| matches!(o.result, Err(UploadError::Cancelled)))
+            .count();
+        tracing::info!(
+            succeeded,
+            failed = outcomes.len() - succeeded - cancelled,
+            cancelled,
+            elapsed_ms = started.elapsed().as_millis() as u64,
+            "run finished"
+        );
         outcomes
     }
 }
