@@ -29,6 +29,12 @@ directories = "6"
 futures = "0.3"
 indicatif = "0.18"
 md-5 = "0.11"
+# AES-CCM with a PBKDF2 key: what the Lufi web client's sjcl produces
+aes = "0.9"
+base64 = "0.23"
+ccm = "0.6"
+pbkdf2 = { version = "0.13", default-features = false, features = ["hmac"] }
+sha2 = "0.11"
 rand = "0.10"
 # No calendar widget or macros: they only add build time.
 ratatui = { version = "0.30", default-features = false, features = ["crossterm", "underline-color", "layout-cache"] }
@@ -49,6 +55,7 @@ reqwest = { version = "0.13", default-features = false, features = [
     "socks",
     "system-proxy",
 ] }
+reqwest-websocket = "0.6"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 semver = "1"
 serde = { version = "1", features = ["derive"] }
@@ -66,7 +73,7 @@ url = "2"
 uuid = { version = "1", features = ["v4"] }
 
 # dev-only
-axum = { version = "0.8", features = ["multipart"] }
+axum = { version = "0.8", features = ["multipart", "ws"] }
 tempfile = "3"
 log = "0.4"
 

@@ -175,6 +175,7 @@ Provider | API | Account | Max file size
 [0x0.st](https://0x0.st/) | [Yes](https://0x0.st/) | No | 512 MB
 [1CloudFile](https://1cloudfile.com/) | No | No | 5 GB
 [1Fichier](https://1fichier.com/) | [Yes](https://1fichier.com/api.html) | No | 300 GB
+[AdminForge](https://upload.adminforge.de/) | No | No | 2 GB
 [AnonTransfer](https://anontransfer.com/) | No | No | 5 GB
 [Anonymfile](https://anonymfile.com/) | [Yes](https://anonymfile.com/docs/api) | No | 7 GB
 [Ayaya.beauty](https://ayaya.beauty/) | No | No | 4 GB
@@ -186,6 +187,7 @@ Provider | API | Account | Max file size
 [CyberFile](https://cyberfile.me/) | No | No | 10 GB
 [Datanodes](https://datanodes.to/) | No | No | 3 GB
 [Delafil](https://delafil.se/) | No | No | 6 GB
+[Disroot](https://upload.disroot.org/) | No | No | 2 GB
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
 [Dosya.co](https://dosya.co/) | No | No | 2 GB
 [Download.gg](https://download.gg/) | No | No | 25 GB

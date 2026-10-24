@@ -22,6 +22,7 @@ Only test against hosts and accounts you are allowed to use.
 | The host…                                                  | Use                                             |
 |------------------------------------------------------------|-------------------------------------------------|
 | takes one multipart `POST` and answers with the link (in the body or a JSON field) | add an entry to `providers/form_post.rs` — data only |
+| runs Lufi (end-to-end encrypted, WebSocket upload)         | add an entry to `providers/lufi/mod.rs` — data only |
 | runs XFileSharing (upload form `file_0`, JSON `file_code`) | add an entry to `providers/xfs.rs` — data only  |
 | runs jQuery File Upload with `Content-Range` chunks        | add an entry to `providers/jqfu.rs` — data only |
 | uses Dropzone-style chunks (`dzuuid`, `dzchunkindex`…)     | write a file that calls `providers/dropzone.rs` |

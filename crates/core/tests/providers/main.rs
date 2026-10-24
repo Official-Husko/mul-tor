@@ -20,6 +20,7 @@ mod gigafile;
 mod gofile;
 mod jqfu;
 mod laravel;
+mod lufi;
 mod onefichier;
 mod rapidgator;
 mod single_request;

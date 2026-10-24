@@ -13,6 +13,7 @@ mod recorded;
 mod reply;
 mod run;
 mod server;
+mod socket;
 
 pub use multipart::{FormPart, field, parse_multipart, text_field};
 pub use recorded::Recorded;

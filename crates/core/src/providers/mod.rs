@@ -3,7 +3,7 @@
 //! Adding a provider: see `docs/ADDING_PROVIDERS.md`.
 //!
 //! Providers that share a protocol are declared as data in a family module
-//! (`xfs`, `jqfu`, `form_post`); the rest get a file of their own. The Dropzone helper is
+//! (`xfs`, `jqfu`, `form_post`, `lufi`); the rest get a file of their own. The Dropzone helper is
 //! used by several of those individual files.
 
 use std::sync::Arc;
@@ -13,6 +13,7 @@ use crate::provider::Provider;
 mod dropzone;
 mod form_post;
 mod jqfu;
+mod lufi;
 mod xfs;
 
 mod anontransfer;
@@ -73,6 +74,7 @@ pub use gofile::Gofile;
 pub use jqfu::JqfuProvider;
 pub use keep::Keep;
 pub use krakenfiles::Krakenfiles;
+pub use lufi::LufiProvider;
 pub use mixdrop::Mixdrop;
 pub use onefichier::OneFichier;
 pub use oshi::Oshi;
@@ -131,6 +133,11 @@ pub fn all() -> Vec<Arc<dyn Provider>> {
     );
     providers.extend(
         jqfu::providers()
+            .into_iter()
+            .map(|s| Arc::new(s) as Arc<dyn Provider>),
+    );
+    providers.extend(
+        lufi::providers()
             .into_iter()
             .map(|s| Arc::new(s) as Arc<dyn Provider>),
     );

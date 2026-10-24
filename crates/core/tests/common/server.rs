@@ -4,17 +4,22 @@ use std::sync::{Arc, Mutex};
 
 use axum::Router;
 use axum::body::{Body, to_bytes};
+use axum::extract::ws::WebSocketUpgrade;
+use axum::extract::ws::rejection::WebSocketUpgradeRejection;
 use axum::http::{HeaderName, HeaderValue, Request, Response, StatusCode};
+use axum::response::IntoResponse;
 use mul_tor_core::http::UrlRewrite;
 
 use super::recorded::Recorded;
 use super::reply::Reply;
+use super::socket::{SocketHandler, serve_socket};
 
 type Handler = dyn Fn(&Recorded) -> Reply + Send + Sync;
 
 pub struct Mock {
     port: u16,
     requests: Arc<Mutex<Vec<Recorded>>>,
+    messages: Arc<Mutex<Vec<String>>>,
     task: tokio::task::JoinHandle<()>,
 }
 
@@ -26,44 +31,78 @@ impl Drop for Mock {
 
 impl Mock {
     pub async fn start(handler: impl Fn(&Recorded) -> Reply + Send + Sync + 'static) -> Mock {
+        Self::serve(handler, None).await
+    }
+
+    /// Like [`Mock::start`], and a WebSocket upgrade is accepted: `on_text` gets
+    /// every text message and returns the messages to send back.
+    pub async fn start_with_socket(
+        handler: impl Fn(&Recorded) -> Reply + Send + Sync + 'static,
+        on_text: impl Fn(&str) -> Vec<String> + Send + Sync + 'static,
+    ) -> Mock {
+        Self::serve(handler, Some(Arc::new(on_text))).await
+    }
+
+    async fn serve(
+        handler: impl Fn(&Recorded) -> Reply + Send + Sync + 'static,
+        socket: Option<Arc<SocketHandler>>,
+    ) -> Mock {
         let requests: Arc<Mutex<Vec<Recorded>>> = Arc::default();
+        let messages: Arc<Mutex<Vec<String>>> = Arc::default();
         let handler: Arc<Handler> = Arc::new(handler);
         let log = requests.clone();
+        let received = messages.clone();
 
-        let app = Router::new().fallback(move |request: Request<Body>| {
-            let handler = handler.clone();
-            let log = log.clone();
-            async move {
-                let (parts, body) = request.into_parts();
-                let body = to_bytes(body, usize::MAX).await.unwrap().to_vec();
-                // `/host/the/real/path` -> host + path
-                let full = parts.uri.path().trim_start_matches('/');
-                let (host, path) = match full.split_once('/') {
-                    Some((host, rest)) => (host.to_string(), format!("/{rest}")),
-                    None => (full.to_string(), "/".to_string()),
-                };
-                let recorded = Recorded {
-                    method: parts.method.to_string(),
-                    host,
-                    path,
-                    query: parts.uri.query().unwrap_or("").to_string(),
-                    headers: parts.headers,
-                    body,
-                };
-                let reply = handler(&recorded);
-                log.lock().unwrap().push(recorded);
+        let app = Router::new().fallback(
+            move |ws: Result<WebSocketUpgrade, WebSocketUpgradeRejection>,
+                  request: Request<Body>| {
+                let handler = handler.clone();
+                let log = log.clone();
+                let socket = socket.clone();
+                let received = received.clone();
+                async move {
+                    let (parts, body) = request.into_parts();
+                    let body = to_bytes(body, usize::MAX).await.unwrap().to_vec();
+                    // `/host/the/real/path` -> host + path
+                    let full = parts.uri.path().trim_start_matches('/');
+                    let (host, path) = match full.split_once('/') {
+                        Some((host, rest)) => (host.to_string(), format!("/{rest}")),
+                        None => (full.to_string(), "/".to_string()),
+                    };
+                    let recorded = Recorded {
+                        method: parts.method.to_string(),
+                        host,
+                        path,
+                        query: parts.uri.query().unwrap_or("").to_string(),
+                        headers: parts.headers,
+                        body,
+                    };
+                    if let (Ok(upgrade), Some(socket)) = (ws, socket) {
+                        log.lock().unwrap().push(recorded);
+                        return upgrade
+                            .on_upgrade(move |connection| {
+                                serve_socket(connection, socket, received)
+                            })
+                            .into_response();
+                    }
+                    let reply = handler(&recorded);
+                    log.lock().unwrap().push(recorded);
 
-                let mut response =
-                    Response::builder().status(StatusCode::from_u16(reply.status).unwrap());
-                for (name, value) in &reply.headers {
-                    response = response.header(
-                        HeaderName::from_bytes(name.as_bytes()).unwrap(),
-                        HeaderValue::from_str(value).unwrap(),
-                    );
+                    let mut response =
+                        Response::builder().status(StatusCode::from_u16(reply.status).unwrap());
+                    for (name, value) in &reply.headers {
+                        response = response.header(
+                            HeaderName::from_bytes(name.as_bytes()).unwrap(),
+                            HeaderValue::from_str(value).unwrap(),
+                        );
+                    }
+                    response
+                        .body(Body::from(reply.body))
+                        .unwrap()
+                        .into_response()
                 }
-                response.body(Body::from(reply.body)).unwrap()
-            }
-        });
+            },
+        );
 
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -73,8 +112,14 @@ impl Mock {
         Mock {
             port,
             requests,
+            messages,
             task,
         }
+    }
+
+    /// Text messages that arrived over a WebSocket, in order.
+    pub fn messages(&self) -> Vec<String> {
+        self.messages.lock().unwrap().clone()
     }
 
     pub fn requests(&self) -> Vec<Recorded> {
