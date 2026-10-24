@@ -7,6 +7,7 @@
 )]
 
 mod app;
+mod logging;
 mod model;
 mod tasks;
 mod theme;
@@ -21,7 +22,8 @@ use app::MulTorApp;
 
 fn main() {
     let home = home_from_args();
-    init_logging(&home);
+    // Held until the window closes, so the log file is flushed.
+    let _log = logging::init(home.as_deref());
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -74,30 +76,4 @@ fn home_from_args() -> Option<PathBuf> {
         }
     }
     std::env::var_os("MUL_TOR_HOME").map(PathBuf::from)
-}
-
-/// Failures go to runtime.log, as in the command-line version.
-fn init_logging(home: &Option<PathBuf>) {
-    use std::sync::Mutex;
-    use tracing_subscriber::{EnvFilter, fmt, prelude::*};
-
-    let Ok(dirs) = mul_tor_core::AppDirs::discover(home.as_deref()) else {
-        return;
-    };
-    let _ = dirs.create_all();
-    let Ok(file) = std::fs::OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(dirs.log_file())
-    else {
-        return;
-    };
-    let _ = tracing_subscriber::registry()
-        .with(
-            fmt::layer()
-                .with_ansi(false)
-                .with_writer(Mutex::new(file))
-                .with_filter(EnvFilter::new("warn")),
-        )
-        .try_init();
 }

@@ -23,7 +23,7 @@ e.g. Windows 11, macOS 15, Ubuntu 24.04.
 If a particular host fails, name it, and say whether it worked before.
 
 **The log**
-The relevant lines from `runtime.log` (it sits next to your `config.toml`; `mul-tor config path` shows where). It contains the provider's reply, which usually shows what went wrong.
+The relevant lines from the log (`mul-tor logs -n 100`, or the files in the folder `mul-tor logs --path` prints; run again with `-vv` for more detail). It contains the provider's reply, which usually shows what went wrong.
 **Remove any API keys, passwords or private links first.**
 
 **Anything else**

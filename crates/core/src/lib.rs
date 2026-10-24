@@ -6,6 +6,7 @@
 pub mod engine;
 pub mod error;
 pub mod files;
+pub mod logging;
 mod net;
 pub mod progress;
 pub mod provider;

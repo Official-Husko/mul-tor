@@ -244,7 +244,9 @@ async fn a_failing_upload_is_explained_and_logged() {
     let out = stdout(&output);
     assert!(out.contains("a.txt to LitterBox failed:"), "{out}");
     assert!(out.contains("1 failed"), "{out}");
-    let log = std::fs::read_to_string(env.home().join("runtime.log")).unwrap();
+    let log_file = mul_tor_core::logging::latest_log(&env.home().join("logs"))
+        .expect("the run wrote a log file");
+    let log = std::fs::read_to_string(log_file).unwrap();
     assert!(
         log.contains("upload failed") && log.contains("LitterBox"),
         "{log}"

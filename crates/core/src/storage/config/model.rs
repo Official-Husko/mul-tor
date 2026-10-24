@@ -43,6 +43,10 @@ pub struct Config {
     pub links_dir: Option<PathBuf>,
     /// Providers that are never offered. Matched like provider names.
     pub blacklist: Vec<String>,
+    /// How much detail the log files get: error, warn, info, debug or trace.
+    pub log_level: String,
+    /// Write the log files as JSON lines instead of plain text.
+    pub log_json: bool,
     pub preset: PresetSettings,
     /// Per-provider credentials, keyed by provider name.
     pub credentials: BTreeMap<String, Credentials>,
@@ -61,6 +65,8 @@ impl Default for Config {
             parallel_uploads: 1,
             links_dir: None,
             blacklist: Vec::new(),
+            log_level: "info".to_string(),
+            log_json: false,
             preset: PresetSettings::default(),
             credentials: BTreeMap::new(),
         }

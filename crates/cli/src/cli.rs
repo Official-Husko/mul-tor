@@ -55,6 +55,8 @@ pub enum Command {
     Check,
     /// Show where the config lives, or print it
     Config(ConfigArgs),
+    /// Show the latest lines of the log
+    Logs(LogsArgs),
 }
 
 #[derive(Args, Debug)]
@@ -116,6 +118,17 @@ pub enum ProvidersFormat {
     Table,
     Markdown,
     Json,
+}
+
+#[derive(Args, Debug)]
+pub struct LogsArgs {
+    /// How many of the latest lines to show
+    #[arg(short = 'n', long, default_value_t = 50, value_name = "LINES")]
+    pub lines: usize,
+
+    /// Only print the folder the log files are in
+    #[arg(long)]
+    pub path: bool,
 }
 
 #[derive(Args, Debug)]

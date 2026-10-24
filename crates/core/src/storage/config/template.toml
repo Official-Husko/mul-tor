@@ -39,6 +39,14 @@ parallel_uploads = 1
 # Providers that are never offered.
 blacklist = []
 
+# How much detail goes into the daily log files (see `mul-tor logs`):
+# "error", "warn", "info", "debug" or "trace". The MUL_TOR_LOG environment
+# variable overrides this, e.g. MUL_TOR_LOG=mul_tor_core::engine=debug.
+log_level = "info"
+
+# Write the log files as JSON lines (one object per record) instead of text.
+log_json = false
+
 [preset]
 # Pre-select the providers of a preset instead of asking. `name` is the preset's
 # file name, identifier or title, e.g. "f95".

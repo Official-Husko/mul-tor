@@ -55,7 +55,8 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util
 tokio-util = { version = "0.7", features = ["io"] }
 toml = "1"
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 url = "2"
 uuid = { version = "1", features = ["v4"] }
 

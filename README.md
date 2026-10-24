@@ -15,7 +15,7 @@ and sharing: pick the files, pick the hosts, get all the links.
 * Every uploader is tested against a local mock server that checks the exact
   HTTP requests it sends (field names, headers, chunk boundaries). **They have not
   been re-verified against the live services**; the protocols come from the 2024
-  Python code, and file hosts change often. If a provider fails, `runtime.log` has
+  Python code, and file hosts change often. If a provider fails, `mul-tor logs` shows
   the details; please [open an issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 * New providers are being added; see [docs/ADDING_PROVIDERS.md](docs/ADDING_PROVIDERS.md).
 
@@ -76,7 +76,7 @@ mul-tor check                             # which providers answer right now?
 * `--provider` names are forgiving: `Transfer.sh`, `transfer_sh` and `transfersh` are the same.
 * Exit code `0` = everything uploaded, `1` = at least one upload failed,
   `2` = bad usage or configuration, `130` = cancelled with Ctrl-C.
-* Failures are explained on screen and logged in `runtime.log`, including a
+* Failures are explained on screen and logged (see [Logs](#logs)), including a
   trimmed copy of what the provider replied.
 
 ## Configuration
@@ -95,6 +95,25 @@ apiKey = "..."
 `mul-tor providers` shows which providers need one, and the table below links to where
 you get the keys. **The file contains secrets and is created readable only by you
 on Linux/macOS.**
+
+## Logs
+
+Every run is recorded in a daily file, `mul-tor.YYYY-MM-DD.log`, in the `logs`
+folder next to your data (`mul-tor logs --path` prints it; the last 14 days are
+kept). Each line has a local timestamp with milliseconds and UTC offset, the
+level, the upload it belongs to, the module and source line that wrote it, and
+structured fields:
+
+```text
+2026-10-24 13:05:41.123 +02:00  INFO run{files=1 providers=2 parallel=1}:job{id=0 provider=Gofile file=backup.7z}: mul_tor_core::engine::job: crates/core/src/engine/job.rs:41: upload started size=1048576
+```
+
+* `mul-tor logs` shows the latest lines (`-n 200` for more).
+* `-v` / `-vv` / `-vvv` also print to the terminal (info / debug / trace).
+* `log_level` and `log_json` in `config.toml` choose the detail and a
+  machine-readable format. The `MUL_TOR_LOG` environment variable overrides the
+  level, and takes filters such as `MUL_TOR_LOG=warn,mul_tor_core::engine=debug`.
+* Passwords, API keys, tokens and the query part of URLs are never written.
 
 ### Coming from the Python version?
 
@@ -212,7 +231,7 @@ Provider | API | Account | Max file size
   A: Yes you can, for that read [this wiki page](https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration).
 
   Q: How can I get help?\
-  A: Run `mul-tor --help`, check the [Wiki](https://github.com/Official-Husko/mul-tor/wiki) (parts of it still describe 1.x) and the log file `runtime.log` in the config folder. If that does not help, check out the [issues page](https://github.com/Official-Husko/mul-tor/issues) and if there is none [open one up](https://github.com/Official-Husko/mul-tor/issues/new/choose).
+  A: Run `mul-tor --help`, check the [Wiki](https://github.com/Official-Husko/mul-tor/wiki) (parts of it still describe 1.x) and `mul-tor logs`. If that does not help, check out the [issues page](https://github.com/Official-Husko/mul-tor/issues) and if there is none [open one up](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
   Q: How do I get the API key?\
   A: In the Account column of the table above, the "Yes" of the provider you want links to the page where you create the key. Then put it in `config.toml` (see Configuration).

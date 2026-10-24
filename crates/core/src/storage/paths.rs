@@ -58,8 +58,9 @@ impl AppDirs {
         self.cache.join("user_agents.json")
     }
 
-    pub fn log_file(&self) -> PathBuf {
-        self.data.join("runtime.log")
+    /// Daily log files; see [`crate::logging`].
+    pub fn log_dir(&self) -> PathBuf {
+        self.data.join("logs")
     }
 
     /// Default place for the link files in the GUI. (The CLI defaults to the
@@ -98,7 +99,7 @@ mod tests {
             dirs.user_agents_file(),
             Path::new("/tmp/mt/user_agents.json")
         );
-        assert_eq!(dirs.log_file(), Path::new("/tmp/mt/runtime.log"));
+        assert_eq!(dirs.log_dir(), Path::new("/tmp/mt/logs"));
     }
 
     #[test]

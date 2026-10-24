@@ -4,6 +4,7 @@ mod input;
 mod interactive;
 mod listing;
 mod logging;
+mod logs;
 mod render;
 mod run;
 mod select;
@@ -35,7 +36,7 @@ async fn main() -> ExitCode {
 
 async fn dispatch(cli: Cli) -> Result<ExitCode> {
     let app = App::load(cli.home.as_deref(), false)?;
-    logging::init(&app.dirs, cli.verbose);
+    let _log = logging::init(&app, cli.verbose, None);
 
     match cli.command {
         None => interactive::run(app).await,
@@ -48,6 +49,7 @@ async fn dispatch(cli: Cli) -> Result<ExitCode> {
         Some(Command::Config(args)) => {
             listing::config(&app, args.action).map(|()| ExitCode::SUCCESS)
         }
+        Some(Command::Logs(args)) => logs::logs(&app, args).map(|()| ExitCode::SUCCESS),
     }
 }
 
