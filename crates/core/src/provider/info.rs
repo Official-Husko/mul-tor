@@ -36,6 +36,8 @@ pub struct ProviderInfo {
     pub reliability: Reliability,
     /// Lower-case extensions with the leading dot (`".exe"`) the provider refuses.
     pub blocked_extensions: &'static [&'static str],
+    /// When not empty, the only extensions (same format) the provider takes.
+    pub allowed_extensions: &'static [&'static str],
 }
 
 impl ProviderInfo {
@@ -52,6 +54,7 @@ impl ProviderInfo {
             credentials_url: None,
             reliability: Reliability::Unverified,
             blocked_extensions: &[],
+            allowed_extensions: &[],
         }
     }
 
@@ -101,6 +104,12 @@ impl ProviderInfo {
 
     pub const fn blocked_extensions(mut self, extensions: &'static [&'static str]) -> Self {
         self.blocked_extensions = extensions;
+        self
+    }
+
+    /// Refuse every file whose name does not end in one of `extensions`.
+    pub const fn allowed_extensions(mut self, extensions: &'static [&'static str]) -> Self {
+        self.allowed_extensions = extensions;
         self
     }
 

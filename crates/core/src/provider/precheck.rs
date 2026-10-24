@@ -28,6 +28,17 @@ impl ProviderInfo {
                 "`{blocked}` files are not allowed"
             )));
         }
+        if !self.allowed_extensions.is_empty()
+            && !self
+                .allowed_extensions
+                .iter()
+                .any(|extension| lower.ends_with(*extension))
+        {
+            return Err(UploadError::Rejected(format!(
+                "only {} files are allowed",
+                self.allowed_extensions.join(" ")
+            )));
+        }
         if self.auth == Auth::Required {
             for field in self.credentials {
                 if credentials.get(field.key).is_none() {
@@ -52,6 +63,10 @@ mod tests {
             .max_size(SizeLimit::mb(10))
             .requires(&[CredentialField::new("apiKey", "API key", true)])
             .blocked_extensions(&[".exe"]);
+
+    const ARCHIVES: ProviderInfo =
+        ProviderInfo::new("Archives", "https://example.com", "https://example.com")
+            .allowed_extensions(&[".zip", ".tar.gz"]);
 
     fn file(name: &str, size: u64) -> LocalFile {
         LocalFile {
@@ -83,5 +98,17 @@ mod tests {
             KEYED.precheck(&file("a.zip", 1), &Credentials::default()),
             Err(UploadError::MissingCredential("apiKey"))
         ));
+    }
+
+    #[test]
+    fn precheck_only_lets_allowed_extensions_through() {
+        let creds = Credentials::default();
+        assert!(ARCHIVES.precheck(&file("a.ZIP", 1), &creds).is_ok());
+        assert!(ARCHIVES.precheck(&file("a.tar.gz", 1), &creds).is_ok());
+        let refused = ARCHIVES.precheck(&file("a.bin", 1), &creds).unwrap_err();
+        assert!(matches!(refused, UploadError::Rejected(_)), "{refused}");
+        assert!(refused.to_string().contains(".zip .tar.gz"), "{refused}");
+        // A provider that lists no extensions takes anything.
+        assert!(KEYED.allowed_extensions.is_empty());
     }
 }

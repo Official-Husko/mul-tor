@@ -87,6 +87,13 @@ pub fn draw(frame: &mut Frame, area: Rect, model: &Model, theme: &Theme) {
             Span::raw(info.blocked_extensions.join(" ")),
         ]));
     }
+    if !info.allowed_extensions.is_empty() {
+        lines.push(Line::raw(""));
+        lines.push(Line::from(vec![
+            label("Accepts"),
+            Span::raw(info.allowed_extensions.join(" ")),
+        ]));
+    }
     frame.render_widget(
         Paragraph::new(lines).block(block).wrap(Wrap { trim: true }),
         area,

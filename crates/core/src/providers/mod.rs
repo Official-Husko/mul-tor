@@ -210,7 +210,11 @@ mod tests {
                 Auth::None => assert!(info.credentials.is_empty(), "{}", info.name),
                 _ => assert!(!info.credentials.is_empty(), "{}", info.name),
             }
-            for ext in info.blocked_extensions {
+            for ext in info
+                .blocked_extensions
+                .iter()
+                .chain(info.allowed_extensions)
+            {
                 assert!(
                     ext.starts_with('.') && *ext == ext.to_lowercase(),
                     "{}",
