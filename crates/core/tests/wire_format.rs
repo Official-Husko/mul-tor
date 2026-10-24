@@ -78,6 +78,40 @@ async fn bracketed_field_names_are_not_percent_encoded() {
 }
 
 #[tokio::test]
+async fn request_header_names_are_title_cased_like_the_python_client_sent_them() {
+    // Read the raw bytes off a socket: an HTTP server library would normalise the case.
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let port = listener.local_addr().unwrap().port();
+    let server = tokio::spawn(async move {
+        let (mut socket, _) = listener.accept().await.unwrap();
+        let mut head = vec![0u8; 4096];
+        let n = socket.read(&mut head).await.unwrap();
+        socket
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")
+            .await
+            .unwrap();
+        String::from_utf8_lossy(&head[..n]).into_owned()
+    });
+
+    let http = mul_tor_core::HttpFactory::new()
+        .with_proxy(mul_tor_core::ProxyMode::Direct)
+        .client()
+        .unwrap();
+    http.get(format!("http://127.0.0.1:{port}/"))
+        .header("X-Requested-With", "XMLHttpRequest")
+        .send()
+        .await
+        .unwrap();
+    let raw = server.await.unwrap();
+    assert!(raw.contains("\r\nUser-Agent: "), "{raw}");
+    assert!(
+        raw.contains("\r\nX-Requested-With: XMLHttpRequest"),
+        "{raw}"
+    );
+}
+
+#[tokio::test]
 async fn non_ascii_file_names_are_sent_as_raw_utf8() {
     let mock = Mock::start(catbox_handler).await;
     let run = run(

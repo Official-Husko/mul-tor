@@ -24,6 +24,9 @@ pub struct XfsSite {
     fields: &'static [(&'static str, &'static str)],
     /// Download link with `{code}` standing in for the returned `file_code`.
     link_template: &'static str,
+    /// Treat a reply without `file_status` as a failure. (A `file_status` other
+    /// than "OK" always is.) Only UsersDrive was strict about this before.
+    require_status: bool,
 }
 
 impl XfsSite {
@@ -42,7 +45,13 @@ impl XfsSite {
             file_field,
             fields,
             link_template,
+            require_status: false,
         }
+    }
+
+    fn requiring_status(mut self) -> Self {
+        self.require_status = true;
+        self
     }
 }
 
@@ -78,13 +87,21 @@ impl Site for XfsSite {
         let first = json
             .get(0)
             .ok_or_else(|| UploadError::protocol("reply has no file entry", &reply.body))?;
-        if let Some(status) = first.get("file_status").and_then(|s| s.as_str())
-            && status != "OK"
-        {
-            return Err(UploadError::protocol(
-                format!("server rejected the file ({status})"),
-                &reply.body,
-            ));
+        match first.get("file_status").and_then(|s| s.as_str()) {
+            Some("OK") => {}
+            Some(status) => {
+                return Err(UploadError::protocol(
+                    format!("server rejected the file ({status})"),
+                    &reply.body,
+                ));
+            }
+            None if self.require_status => {
+                return Err(UploadError::protocol(
+                    "reply has no file_status",
+                    &reply.body,
+                ));
+            }
+            None => {}
         }
         let code = first
             .get("file_code")
@@ -163,6 +180,7 @@ pub(super) fn sites() -> Vec<XfsSite> {
             "file_0",
             &[("utype", "anon"), ("keepalive", "1")],
             "https://usersdrive.com/{code}.html",
-        ),
+        )
+        .requiring_status(),
     ]
 }

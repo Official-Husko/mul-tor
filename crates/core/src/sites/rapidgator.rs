@@ -33,6 +33,11 @@ const API: &str = "https://rapidgator.net/api/v2";
 /// The server reports an upload as finished with this state.
 const STATE_DONE: u64 = 2;
 
+/// Errors in a row from the status call before giving up. The Python version
+/// ignored them entirely; a status that is not ready *yet* is plausible right
+/// after the upload, a permanent failure should not take 15 minutes to surface.
+const MAX_POLL_FAILURES: u32 = 5;
+
 pub struct Rapidgator {
     poll_interval: Duration,
     max_polls: usize,
@@ -159,6 +164,7 @@ impl Site for Rapidgator {
             .await?;
         check_status(&sent, "the upload")?;
 
+        let mut failures = 0;
         for poll in 1..=self.max_polls {
             cx.progress.set_message(format!(
                 "Waiting for the server to process the file ({poll})"
@@ -169,9 +175,19 @@ impl Site for Rapidgator {
                 .query(&[("upload_id", upload_id.as_str()), ("token", token.as_str())])
                 .send_reply()
                 .await?;
-            let info_json = check_status(&info, "checking the upload")?;
-            if upload_state(&info_json) == Some(STATE_DONE) {
-                return Ok(UploadedFile::new(file_url(&info_json, &info.body)?));
+            match check_status(&info, "checking the upload") {
+                Ok(info_json) => {
+                    failures = 0;
+                    if upload_state(&info_json) == Some(STATE_DONE) {
+                        return Ok(UploadedFile::new(file_url(&info_json, &info.body)?));
+                    }
+                }
+                Err(error) => {
+                    failures += 1;
+                    if failures >= MAX_POLL_FAILURES {
+                        return Err(error);
+                    }
+                }
             }
             tokio::time::sleep(self.poll_interval).await;
         }

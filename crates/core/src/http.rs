@@ -152,7 +152,11 @@ impl HttpFactory {
         let mut builder = Client::builder()
             .user_agent(&user_agent)
             .connect_timeout(CONNECT_TIMEOUT)
-            .tcp_keepalive(Some(Duration::from_secs(60)));
+            .tcp_keepalive(Some(Duration::from_secs(60)))
+            // `User-Agent`, not `user-agent`: HTTP/1 header names are case-
+            // insensitive, but the Python client sent them title-cased and some
+            // of these old hosts have only ever seen that.
+            .http1_title_case_headers();
 
         match &self.proxy {
             ProxyMode::System => {}

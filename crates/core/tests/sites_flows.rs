@@ -213,6 +213,15 @@ async fn file_io_patches_metadata_with_the_anonymous_token() {
 }
 
 #[tokio::test]
+async fn file_io_needs_only_the_link_when_no_metadata_can_be_set() {
+    // No access token and no key: nothing to patch, but the upload worked.
+    let mock = Mock::start(|_| Reply::json(json!({"link": "https://file.io/OnlyLink"}))).await;
+    let run = run_default(&*builtin("file.io"), &mock).await;
+    assert_eq!(run.url(), "https://file.io/OnlyLink");
+    assert_eq!(mock.requests().len(), 1, "no PATCH without a token");
+}
+
+#[tokio::test]
 async fn file_io_still_succeeds_when_the_metadata_patch_fails() {
     let mock = Mock::start(|r| {
         if r.method == "POST" {
@@ -333,6 +342,58 @@ async fn rapidgator_reports_login_failures_without_leaking_the_password() {
     let message = run.error().to_string();
     assert!(message.contains("Wrong login or password"), "{message}");
     assert!(!message.contains("pw"), "{message}");
+}
+
+#[tokio::test]
+async fn rapidgator_survives_a_few_transient_errors_while_polling() {
+    let polls = Arc::new(AtomicUsize::new(0));
+    let mock = Mock::start(move |r| match r.path.as_str() {
+        "/api/v2/user/login" => Reply::json(json!({"status": 200, "response": {"token": "T"}})),
+        "/api/v2/file/upload" => Reply::json(json!({"status": 200, "response": {"upload": {
+            "state": 0, "upload_id": "U", "url": "https://u1.rapidgator.net/up"}}})),
+        "/up" => Reply::json(json!({"status": 200})),
+        "/api/v2/file/upload_info" => {
+            if polls.fetch_add(1, Ordering::SeqCst) < 3 {
+                Reply::json(json!({"status": 404, "details": "Upload not found yet"}))
+            } else {
+                Reply::json(json!({"status": 200, "response": {"upload": {
+                    "state": 2, "file": {"url": "https://rapidgator.net/file/late"}}}}))
+            }
+        }
+        _ => Reply::not_found(),
+    })
+    .await;
+    let site = Rapidgator::with_polling(Duration::from_millis(1), 20);
+    let run = run(&site, &mock, rg_creds()).await;
+    assert_eq!(run.url(), "https://rapidgator.net/file/late");
+}
+
+#[tokio::test]
+async fn rapidgator_gives_up_on_persistent_polling_errors_and_says_why() {
+    let mock = Mock::start(|r| match r.path.as_str() {
+        "/api/v2/user/login" => Reply::json(json!({"status": 200, "response": {"token": "T"}})),
+        "/api/v2/file/upload" => Reply::json(json!({"status": 200, "response": {"upload": {
+            "state": 0, "upload_id": "U", "url": "https://u1.rapidgator.net/up"}}})),
+        "/up" => Reply::json(json!({"status": 200})),
+        _ => Reply::json(json!({"status": 401, "details": "Token expired"})),
+    })
+    .await;
+    let site = Rapidgator::with_polling(Duration::from_millis(1), 500);
+    let run = run(&site, &mock, rg_creds()).await;
+    assert!(
+        run.error().to_string().contains("Token expired"),
+        "{}",
+        run.error()
+    );
+    let polls = mock
+        .requests()
+        .iter()
+        .filter(|r| r.path.ends_with("upload_info"))
+        .count();
+    assert_eq!(
+        polls, 5,
+        "should stop after 5 consecutive errors, not wait out all 500 polls"
+    );
 }
 
 #[tokio::test]
@@ -859,6 +920,39 @@ async fn usersdrive_matches_its_server_pattern_and_builds_html_links() {
     assert!(
         !parts.iter().any(|p| p.name == "file_public"),
         "UsersDrive never sent this"
+    );
+}
+
+#[tokio::test]
+async fn only_usersdrive_insists_on_a_file_status() {
+    let reply = json!([{"file_code": "ud1"}]); // no file_status
+    let mock = Mock::start(xfs_handler(
+        "usersdrive.com",
+        "https://dns3.userdrive.org/cgi-bin/upload.cgi?upload_type=file",
+        "dns3.userdrive.org",
+        "/cgi-bin/upload.cgi",
+        reply.clone(),
+    ))
+    .await;
+    let run = run_default(&*builtin("usersdrive"), &mock).await;
+    assert!(
+        run.error().to_string().contains("file_status"),
+        "{}",
+        run.error()
+    );
+
+    // The others never checked it, so a reply without one is fine.
+    let mock = Mock::start(xfs_handler(
+        "hexupload.net",
+        r#"<form action="https://s5.hexupload.net/cgi-bin/upload.cgi">"#,
+        "s5.hexupload.net",
+        "/cgi-bin/upload.cgi",
+        reply,
+    ))
+    .await;
+    assert_eq!(
+        run_default(&*builtin("hexupload"), &mock).await.url(),
+        "https://hexupload.net/ud1"
     );
 }
 

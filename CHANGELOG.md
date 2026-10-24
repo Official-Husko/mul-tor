@@ -28,6 +28,10 @@ Mul-Tor is rewritten in Rust.
 * Large files are streamed from disk and sent with a known length, never loaded
   into memory.
 * Long file names are shortened without losing their extension.
+* Empty files are refused up front with a clear message (the old code sent them
+  and left the outcome to the host).
+* Size limits, blocked file types and missing credentials are checked before any
+  request is made, so a doomed upload no longer costs a round-trip.
 
 ### Fixed
 * `Transfer.sh` and `Download.gg` could never be selected (their names differed

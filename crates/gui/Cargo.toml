@@ -3,6 +3,8 @@ name = "mul-tor-gui"
 description = "Upload files to many hosting sites at once (graphical interface)"
 version.workspace = true
 edition.workspace = true
+# egui 0.37 requires 1.95. Verified: `cargo +1.95.0 check -p mul-tor-gui`.
+rust-version = "1.95"
 license.workspace = true
 repository.workspace = true
 authors.workspace = true

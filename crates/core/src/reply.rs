@@ -86,8 +86,10 @@ impl Reply {
     }
 
     pub(crate) fn cookie(&self, name: &str) -> Option<&str> {
+        // A later Set-Cookie for the same name replaces an earlier one.
         self.cookies
             .iter()
+            .rev()
             .find(|(n, _)| n == name)
             .map(|(_, v)| v.as_str())
     }
@@ -184,6 +186,24 @@ mod tests {
         let v = embedded_json("{oops} then {\"ok\": 1}").unwrap();
         assert_eq!(v["ok"], 1);
         assert!(embedded_json("no json here").is_none());
+    }
+
+    #[test]
+    fn the_last_cookie_of_a_name_wins() {
+        let reply = Reply {
+            status: StatusCode::OK,
+            url: Url::parse("https://example.com/").unwrap(),
+            headers: HeaderMap::new(),
+            cookies: vec![
+                ("session".into(), "old".into()),
+                ("other".into(), "x".into()),
+                ("session".into(), "new".into()),
+            ],
+            body: String::new(),
+        };
+        assert_eq!(reply.cookie("session"), Some("new"));
+        assert_eq!(reply.cookie("other"), Some("x"));
+        assert_eq!(reply.cookie("missing"), None);
     }
 
     #[test]

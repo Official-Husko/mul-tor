@@ -285,6 +285,11 @@ async fn delafil_sends_max_chunk_size_and_files_array() {
     assert_eq!(run.url(), "https://delafil.se/abc");
     let parts = only_request(&mock).multipart();
     assert_eq!(text_field(&parts, "maxChunkSize"), "2000000000");
+    // As the Python version sent it (via `requests`' `files=`): a file-typed
+    // part with the field name as its filename and no Content-Type.
+    let max_chunk = field(&parts, "maxChunkSize");
+    assert_eq!(max_chunk.filename.as_deref(), Some("maxChunkSize"));
+    assert_eq!(max_chunk.content_type, None);
     assert_eq!(field(&parts, "files[]").data, b"0123456789abcdef");
 }
 

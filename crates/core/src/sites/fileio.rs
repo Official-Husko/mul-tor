@@ -32,12 +32,12 @@ impl Site for FileIo {
             .ok()?;
 
         let link = reply.json_string("/link")?;
-        let key = reply.json_string("/key")?;
 
         // Anonymous uploads hand back a token that allows editing the entry.
         // The upload has already worked at this point, so a failure here only
         // costs the description and expiry, not the link.
-        if let Some(token) = reply.header("x-file-io-anonymous-access-token") {
+        let token = reply.header("x-file-io-anonymous-access-token");
+        if let (Some(token), Ok(key)) = (token, reply.json_string("/key")) {
             cx.progress.set_message("Setting expiry");
             let patch = cx
                 .http

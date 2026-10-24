@@ -36,6 +36,15 @@ jobs:
       # mock server. Nothing in the suite talks to the real sites.
       - run: cargo test --workspace --locked --features mul-tor/test-hooks
 
+  msrv:
+    name: Minimum supported Rust version (1.89)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.89.0
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check -p mul-tor-core -p mul-tor --locked
+
   cli-release-build:
     name: CLI builds on its own (no GUI dependencies)
     runs-on: ubuntu-latest

@@ -33,7 +33,8 @@ and sharing: pick the files, pick the hosts, get all the links.
 
 Pre-built binaries will be attached to the
 [releases](https://github.com/Official-Husko/mul-tor/releases). Until then, build
-from source with a recent [Rust toolchain](https://rustup.rs):
+from source with a [Rust toolchain](https://rustup.rs) (1.89 or newer; the graphical
+version needs 1.95):
 
 ```sh
 cargo install --path crates/cli      # the command-line tool: `mul-tor`
