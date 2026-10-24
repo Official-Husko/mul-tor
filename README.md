@@ -177,6 +177,7 @@ Provider | API | Account | Max file size
 [1Fichier](https://1fichier.com/) | [Yes](https://1fichier.com/api.html) | No | 300 GB
 [AnonTransfer](https://anontransfer.com/) | No | No | 5 GB
 [Anonymfile](https://anonymfile.com/) | [Yes](https://anonymfile.com/docs/api) | No | 7 GB
+[Ayaya.beauty](https://ayaya.beauty/) | No | No | 4 GB
 [BowFile](https://bowfile.com/) | [Yes](https://bowfile.com/api) | [Yes](https://bowfile.com/account/edit#api) | 5 GB
 [Buzzheavier](https://buzzheavier.com/) | [Yes](https://buzzheavier.com/api.html) | No | ∞
 [Catbox](https://catbox.moe/) | [Yes](https://catbox.moe/tools.php) | No | 200 MB

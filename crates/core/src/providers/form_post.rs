@@ -1,6 +1,6 @@
 //! Hosts that take one multipart `POST` with the file in a single field and
-//! answer with the link: 0x0.st, EasySend, Qu.ax, Temp.sh, TempFile.org,
-//! tfLink, Uguu and X0.at.
+//! answer with the link: 0x0.st, Ayaya.beauty, EasySend, Qu.ax, Temp.sh,
+//! TempFile.org, tfLink, Uguu and X0.at.
 //!
 //! They differ only in the address, the name of the file field, a few fixed
 //! form fields and where the link sits in the reply, so each is one entry of
@@ -114,6 +114,20 @@ pub(super) fn providers() -> Vec<FormPostProvider> {
             "file",
             &[],
             LinkIn::Body,
+        ),
+        FormPostProvider::new(
+            ProviderInfo::new(
+                "Ayaya.beauty",
+                "https://ayaya.beauty/",
+                "https://ayaya.beauty/",
+            )
+            .aliases(&["Patchy"])
+            .max_size(SizeLimit::gb(4))
+            .verified(CHECKED),
+            "https://ayaya.beauty/-/upload",
+            "file",
+            &[],
+            LinkIn::Json("/link"),
         ),
         FormPostProvider::new(
             ProviderInfo::new("EasySend", "https://easysend.co/", "https://easysend.co/")

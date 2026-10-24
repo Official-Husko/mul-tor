@@ -17,7 +17,7 @@ struct Case {
     link: &'static str,
 }
 
-const CASES: [Case; 8] = [
+const CASES: [Case; 9] = [
     Case {
         provider: "0x0.st",
         host: "0x0.st",
@@ -88,6 +88,20 @@ const CASES: [Case; 8] = [
             )
         },
         link: "https://n.uguu.se/QeDbqotc.bin",
+    },
+    Case {
+        provider: "ayaya.beauty",
+        host: "ayaya.beauty",
+        path: "/-/upload",
+        file_field: "file",
+        reply: || {
+            Reply::json(json!({
+                "link": "https://ayaya.beauty/b3hjT",
+                "directLink": "https://ayaya.beauty/-/file/b3hjT",
+                "id": "b3hjT",
+            }))
+        },
+        link: "https://ayaya.beauty/b3hjT",
     },
     Case {
         provider: "x0.at",
