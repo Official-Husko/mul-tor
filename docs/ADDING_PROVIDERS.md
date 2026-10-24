@@ -123,8 +123,10 @@ else.) The list is sorted by name automatically.
 ## 5. Test it
 
 Tests run the provider against an in-process server that records every request, so
-nothing touches the real host. See `crates/core/tests/common/mod.rs` and the
-existing tests in `providers_simple.rs` / `providers_flows.rs`:
+nothing touches the real host. The harness is in `crates/core/tests/common/`;
+put the test in the file of `crates/core/tests/providers/` that matches the
+shape (`single_request.rs`, `forms.rs`, `two_step.rs`, `chunked.rs`, …) or add a
+new file and list it in `providers/main.rs`:
 
 ```rust
 #[tokio::test]
