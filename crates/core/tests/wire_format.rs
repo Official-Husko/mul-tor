@@ -118,7 +118,10 @@ async fn non_ascii_file_names_are_sent_as_raw_utf8() {
         &*builtin("catbox"),
         &mock,
         RunConfig {
-            name: "日本語 \"quoted\".txt".into(),
+            // Windows cannot create a file with a quote in its name, so the
+            // name that is sent differs from the name on disk.
+            name: "日本語.txt".into(),
+            sent_name: Some("日本語 \"quoted\".txt".into()),
             ..Default::default()
         },
     )

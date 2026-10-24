@@ -31,7 +31,11 @@ impl Run {
 }
 
 pub struct RunConfig {
+    /// The name of the file on disk.
     pub name: String,
+    /// The name the uploader sees, when it must differ from the one on disk:
+    /// some names cannot be created on every platform (Windows has no `"`).
+    pub sent_name: Option<String>,
     pub content: Vec<u8>,
     pub credentials: Credentials,
 }
@@ -40,6 +44,7 @@ impl Default for RunConfig {
     fn default() -> Self {
         Self {
             name: "sample.bin".into(),
+            sent_name: None,
             content: b"0123456789abcdef".to_vec(),
             credentials: Credentials::default(),
         }
@@ -54,7 +59,10 @@ pub async fn run(provider: &dyn Provider, mock: &Mock, config: RunConfig) -> Run
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join(&config.name);
     std::fs::write(&path, &config.content).unwrap();
-    let file = LocalFile::open(&path).await.unwrap();
+    let mut file = LocalFile::open(&path).await.unwrap();
+    if let Some(name) = &config.sent_name {
+        file.name = name.clone();
+    }
 
     let http = HttpFactory::new()
         .with_proxy(ProxyMode::Direct)
