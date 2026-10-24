@@ -104,8 +104,12 @@ pub(super) fn sites() -> Vec<JqfuSite> {
             true,
         ),
         JqfuSite::new(
-            SiteInfo::new("CyberFile", "https://cyberfile.me/", "https://cyberfile.me/")
-                .max_size(SizeLimit::gb(10)),
+            SiteInfo::new(
+                "CyberFile",
+                "https://cyberfile.me/",
+                "https://cyberfile.me/",
+            )
+            .max_size(SizeLimit::gb(10)),
             "https://cyberfile.me/ajax/file_upload_handler",
             25_000_000,
             UPLOAD_SOURCE,

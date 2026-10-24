@@ -10,9 +10,13 @@ use crate::upload::{UploadContext, UploadedFile, new_form};
 
 pub struct TmpFiles;
 
-const INFO: SiteInfo = SiteInfo::new("TmpFiles", "https://tmpfiles.org/", "https://tmpfiles.org/api")
-    .max_size(SizeLimit::mb(100))
-    .api_docs("https://tmpfiles.org/api");
+const INFO: SiteInfo = SiteInfo::new(
+    "TmpFiles",
+    "https://tmpfiles.org/",
+    "https://tmpfiles.org/api",
+)
+.max_size(SizeLimit::mb(100))
+.api_docs("https://tmpfiles.org/api");
 
 #[async_trait]
 impl Site for TmpFiles {

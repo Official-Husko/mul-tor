@@ -63,7 +63,9 @@ impl Gofile {
                         .unwrap_or_default();
                     // The name becomes part of a hostname; refuse anything else.
                     if !server.is_empty()
-                        && server.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
+                        && server
+                            .chars()
+                            .all(|c| c.is_ascii_alphanumeric() || c == '-')
                     {
                         return Ok(server.to_string());
                     }
@@ -107,7 +109,10 @@ impl Site for Gofile {
 
         let json = reply.json()?;
         if json.pointer("/status").and_then(Value::as_str) != Some("ok") {
-            return Err(UploadError::protocol("upload was not accepted", &reply.body));
+            return Err(UploadError::protocol(
+                "upload was not accepted",
+                &reply.body,
+            ));
         }
         Ok(UploadedFile::new(reply.json_string("/data/downloadPage")?))
     }

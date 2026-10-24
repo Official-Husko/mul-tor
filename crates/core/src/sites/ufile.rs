@@ -51,7 +51,10 @@ impl Site for UFile {
             .ok()?;
         let mut server = storage.json_string("/storageBaseUrl")?;
         if !server.starts_with("https://") {
-            return Err(UploadError::protocol("unusable storage server", &storage.body));
+            return Err(UploadError::protocol(
+                "unusable storage server",
+                &storage.body,
+            ));
         }
         if !server.ends_with('/') {
             server.push('/');

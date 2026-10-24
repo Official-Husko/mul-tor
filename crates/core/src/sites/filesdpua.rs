@@ -39,6 +39,8 @@ impl Site for FilesDpUa {
             .await?
             .expect_status(200)?;
 
-        Ok(UploadedFile::new(format!("https://files.dp.ua/en/{file_id}")))
+        Ok(UploadedFile::new(format!(
+            "https://files.dp.ua/en/{file_id}"
+        )))
     }
 }

@@ -24,8 +24,8 @@ mod doodrive;
 mod downloadgg;
 mod easyupload;
 mod fastupload;
-mod fileio;
 mod filebin;
+mod fileio;
 mod filesdpua;
 mod filesfm;
 mod filesi;
@@ -107,8 +107,16 @@ pub fn all() -> Vec<Arc<dyn Site>> {
         Arc::new(TransferSh),
         Arc::new(UFile::default()),
     ];
-    sites.extend(jqfu::sites().into_iter().map(|s| Arc::new(s) as Arc<dyn Site>));
-    sites.extend(xfs::sites().into_iter().map(|s| Arc::new(s) as Arc<dyn Site>));
+    sites.extend(
+        jqfu::sites()
+            .into_iter()
+            .map(|s| Arc::new(s) as Arc<dyn Site>),
+    );
+    sites.extend(
+        xfs::sites()
+            .into_iter()
+            .map(|s| Arc::new(s) as Arc<dyn Site>),
+    );
     sites.sort_by_key(|site| site.info().name.to_lowercase());
     sites
 }
@@ -124,12 +132,43 @@ mod tests {
     fn every_legacy_site_is_registered() {
         // The 37 sites of the Python version (`modules/site_data.py`).
         let legacy = [
-            "Gofile", "Pixeldrain", "FileBin", "Delafil", "Files.dp.ua", "FilesFm", "Krakenfiles",
-            "Transfer_sh", "TmpFiles", "Mixdrop", "1Fichier", "Fileio", "EasyUpload", "AnonTransfer",
-            "1CloudFile", "Anonymfile", "FileSi", "ClicknUpload", "FileUpload", "BowFile",
-            "HexUpload", "UserCloud", "DooDrive", "uFile", "Download_gg", "Catbox", "LitterBox",
-            "Keep", "TempSend", "UsersDrive", "Rapidgator", "WDHO", "Filesadmin", "Fastupload",
-            "CyberFile", "Buzzheavier", "Oshi",
+            "Gofile",
+            "Pixeldrain",
+            "FileBin",
+            "Delafil",
+            "Files.dp.ua",
+            "FilesFm",
+            "Krakenfiles",
+            "Transfer_sh",
+            "TmpFiles",
+            "Mixdrop",
+            "1Fichier",
+            "Fileio",
+            "EasyUpload",
+            "AnonTransfer",
+            "1CloudFile",
+            "Anonymfile",
+            "FileSi",
+            "ClicknUpload",
+            "FileUpload",
+            "BowFile",
+            "HexUpload",
+            "UserCloud",
+            "DooDrive",
+            "uFile",
+            "Download_gg",
+            "Catbox",
+            "LitterBox",
+            "Keep",
+            "TempSend",
+            "UsersDrive",
+            "Rapidgator",
+            "WDHO",
+            "Filesadmin",
+            "Fastupload",
+            "CyberFile",
+            "Buzzheavier",
+            "Oshi",
         ];
         assert_eq!(legacy.len(), 37);
         let registry = crate::Registry::builtin();
@@ -172,7 +211,11 @@ mod tests {
                 _ => assert!(!info.credentials.is_empty(), "{}", info.name),
             }
             for ext in info.blocked_extensions {
-                assert!(ext.starts_with('.') && *ext == ext.to_lowercase(), "{}", info.name);
+                assert!(
+                    ext.starts_with('.') && *ext == ext.to_lowercase(),
+                    "{}",
+                    info.name
+                );
             }
         }
     }
@@ -185,6 +228,9 @@ mod tests {
             .map(|s| s.info().name)
             .collect();
         keyed.sort();
-        assert_eq!(keyed, ["BowFile", "DooDrive", "Mixdrop", "Pixeldrain", "Rapidgator"]);
+        assert_eq!(
+            keyed,
+            ["BowFile", "DooDrive", "Mixdrop", "Pixeldrain", "Rapidgator"]
+        );
     }
 }

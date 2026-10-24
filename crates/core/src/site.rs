@@ -135,24 +135,23 @@ impl SiteInfo {
         let query = normalize_name(query);
         !query.is_empty()
             && (normalize_name(self.name) == query
-                || self.aliases.iter().any(|alias| normalize_name(alias) == query))
+                || self
+                    .aliases
+                    .iter()
+                    .any(|alias| normalize_name(alias) == query))
     }
 
     /// Cheap, offline checks every upload goes through before any request is made.
-    pub fn precheck(
-        &self,
-        file: &LocalFile,
-        credentials: &Credentials,
-    ) -> Result<(), UploadError> {
+    pub fn precheck(&self, file: &LocalFile, credentials: &Credentials) -> Result<(), UploadError> {
         if file.size == 0 {
             return Err(UploadError::EmptyFile);
         }
-        if let Some(limit) = self.max_size {
-            if file.size > limit.bytes() {
-                return Err(UploadError::TooLarge {
-                    limit: limit.to_string(),
-                });
-            }
+        if let Some(limit) = self.max_size
+            && file.size > limit.bytes()
+        {
+            return Err(UploadError::TooLarge {
+                limit: limit.to_string(),
+            });
         }
         let lower = file.name.to_lowercase();
         if let Some(blocked) = self
@@ -226,7 +225,11 @@ impl fmt::Debug for Credentials {
 
 impl<K: Into<String>, V: Into<String>> FromIterator<(K, V)> for Credentials {
     fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
-        Self(iter.into_iter().map(|(k, v)| (k.into(), v.into())).collect())
+        Self(
+            iter.into_iter()
+                .map(|(k, v)| (k.into(), v.into()))
+                .collect(),
+        )
     }
 }
 

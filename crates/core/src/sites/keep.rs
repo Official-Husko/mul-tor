@@ -35,7 +35,10 @@ impl Site for Keep {
         if link.starts_with(LINK_PREFIX) {
             Ok(UploadedFile::new(link))
         } else {
-            Err(UploadError::protocol("reply is not a download link", &reply.body))
+            Err(UploadError::protocol(
+                "reply is not a download link",
+                &reply.body,
+            ))
         }
     }
 }

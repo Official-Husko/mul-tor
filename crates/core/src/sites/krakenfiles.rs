@@ -38,8 +38,9 @@ impl Site for Krakenfiles {
             .send_reply()
             .await?
             .ok()?;
-        let upload_url = capture(&UPLOAD_URL, &page.body)
-            .ok_or_else(|| UploadError::unexpected("could not find the upload server in the page"))?;
+        let upload_url = capture(&UPLOAD_URL, &page.body).ok_or_else(|| {
+            UploadError::unexpected("could not find the upload server in the page")
+        })?;
 
         cx.progress.set_message("Uploading");
         let form = new_form().part("files[]", cx.whole_file_part().await?);

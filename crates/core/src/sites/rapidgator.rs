@@ -15,17 +15,21 @@ use crate::site::{CredentialField, Site, SiteInfo};
 use crate::size::format_bytes;
 use crate::upload::{UploadContext, UploadedFile, new_form};
 
-const INFO: SiteInfo = SiteInfo::new("Rapidgator", "https://rapidgator.net/", "https://rapidgator.net/")
-    .requires(&[
-        CredentialField::new("email", "Account e-mail", false),
-        CredentialField::new("password", "Password", true),
-    ])
-    .api_docs("https://rapidgator.net/article/api/")
-    .credentials_url("https://rapidgator.net/article/api/")
-    .known_issue(
-        "The size limit depends on the account, so it is only checked after logging in. \
+const INFO: SiteInfo = SiteInfo::new(
+    "Rapidgator",
+    "https://rapidgator.net/",
+    "https://rapidgator.net/",
+)
+.requires(&[
+    CredentialField::new("email", "Account e-mail", false),
+    CredentialField::new("password", "Password", true),
+])
+.api_docs("https://rapidgator.net/article/api/")
+.credentials_url("https://rapidgator.net/article/api/")
+.known_issue(
+    "The size limit depends on the account, so it is only checked after logging in. \
          The Python version reported intermittent failures on batch uploads.",
-    );
+);
 
 const API: &str = "https://rapidgator.net/api/v2";
 
@@ -103,19 +107,20 @@ impl Site for Rapidgator {
         let token = crate::reply::json_string(&login_json, "/response/token", &login.body)?;
 
         // Limits depend on the account; only enforce what the server told us.
-        if let Some(max) = as_u64(login_json.pointer("/response/user/upload/max_file_size")) {
-            if max > 0 && size > max {
-                return Err(UploadError::TooLarge {
-                    limit: format_bytes(max),
-                });
-            }
+        if let Some(max) = as_u64(login_json.pointer("/response/user/upload/max_file_size"))
+            && max > 0
+            && size > max
+        {
+            return Err(UploadError::TooLarge {
+                limit: format_bytes(max),
+            });
         }
-        if let Some(left) = as_u64(login_json.pointer("/response/user/storage/left")) {
-            if left <= size {
-                return Err(UploadError::Rejected(
-                    "not enough storage space left on the account".into(),
-                ));
-            }
+        if let Some(left) = as_u64(login_json.pointer("/response/user/storage/left"))
+            && left <= size
+        {
+            return Err(UploadError::Rejected(
+                "not enough storage space left on the account".into(),
+            ));
         }
 
         cx.progress.set_message("Hashing file");
@@ -139,8 +144,11 @@ impl Site for Rapidgator {
         if upload_state(&announce_json) == Some(STATE_DONE) {
             return Ok(UploadedFile::new(file_url(&announce_json, &announce.body)?));
         }
-        let upload_id =
-            crate::reply::json_string(&announce_json, "/response/upload/upload_id", &announce.body)?;
+        let upload_id = crate::reply::json_string(
+            &announce_json,
+            "/response/upload/upload_id",
+            &announce.body,
+        )?;
         let upload_url =
             crate::reply::json_string(&announce_json, "/response/upload/url", &announce.body)?;
 
@@ -155,8 +163,9 @@ impl Site for Rapidgator {
         check_status(&sent, "the upload")?;
 
         for poll in 1..=self.max_polls {
-            cx.progress
-                .set_message(format!("Waiting for the server to process the file ({poll})"));
+            cx.progress.set_message(format!(
+                "Waiting for the server to process the file ({poll})"
+            ));
             let info = cx
                 .http
                 .get(format!("{API}/file/upload_info"))
@@ -211,6 +220,9 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("hello");
         std::fs::write(&path, b"hello world").unwrap();
-        assert_eq!(hash_file(&path).unwrap(), "5eb63bbbe01eeed093cb22bb8f5acdc3");
+        assert_eq!(
+            hash_file(&path).unwrap(),
+            "5eb63bbbe01eeed093cb22bb8f5acdc3"
+        );
     }
 }

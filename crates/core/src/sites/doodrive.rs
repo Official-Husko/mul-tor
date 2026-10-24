@@ -60,7 +60,10 @@ impl Site for DooDrive {
         let complete_url = init.json_string("/data/complete_url")?;
         let chunk_size = init.json_u64("/data/max_chunk_size")?;
         if chunk_size == 0 {
-            return Err(UploadError::protocol("server announced a zero chunk size", &init.body));
+            return Err(UploadError::protocol(
+                "server announced a zero chunk size",
+                &init.body,
+            ));
         }
         let total_chunks = size.div_ceil(chunk_size);
 

@@ -10,14 +10,18 @@ use crate::upload::{UploadContext, UploadedFile, new_form};
 
 pub struct Mixdrop;
 
-const INFO: SiteInfo = SiteInfo::new("Mixdrop", "https://mixdrop.ag/", "https://ul.mixdrop.ag/api")
-    .max_size(SizeLimit::gb(10))
-    .requires(&[
-        CredentialField::new("email", "Account e-mail", false),
-        CredentialField::new("apiKey", "API key", true),
-    ])
-    .api_docs("https://mixdrop.ag/api/")
-    .credentials_url("https://mixdrop.ag/api/");
+const INFO: SiteInfo = SiteInfo::new(
+    "Mixdrop",
+    "https://mixdrop.ag/",
+    "https://ul.mixdrop.ag/api",
+)
+.max_size(SizeLimit::gb(10))
+.requires(&[
+    CredentialField::new("email", "Account e-mail", false),
+    CredentialField::new("apiKey", "API key", true),
+])
+.api_docs("https://mixdrop.ag/api/")
+.credentials_url("https://mixdrop.ag/api/");
 
 #[async_trait]
 impl Site for Mixdrop {
@@ -40,9 +44,14 @@ impl Site for Mixdrop {
 
         let json = reply.json()?;
         if json.get("success").and_then(|s| s.as_bool()) == Some(false) {
-            return Err(UploadError::protocol("Mixdrop refused the upload", &reply.body));
+            return Err(UploadError::protocol(
+                "Mixdrop refused the upload",
+                &reply.body,
+            ));
         }
         let file_ref = reply.json_string("/result/fileref")?;
-        Ok(UploadedFile::new(format!("https://mixdrop.ag/f/{file_ref}")))
+        Ok(UploadedFile::new(format!(
+            "https://mixdrop.ag/f/{file_ref}"
+        )))
     }
 }

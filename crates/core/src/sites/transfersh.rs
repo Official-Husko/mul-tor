@@ -10,12 +10,16 @@ use crate::upload::{UploadContext, UploadedFile, url_with_segments};
 
 pub struct TransferSh;
 
-const INFO: SiteInfo = SiteInfo::new("Transfer.sh", "https://transfer.sh/", "https://transfer.sh/")
-    .max_size(SizeLimit::gb(10))
-    .known_issue(
-        "The Python version flagged this host as unreliable, and never actually selected it \
+const INFO: SiteInfo = SiteInfo::new(
+    "Transfer.sh",
+    "https://transfer.sh/",
+    "https://transfer.sh/",
+)
+.max_size(SizeLimit::gb(10))
+.known_issue(
+    "The Python version flagged this host as unreliable, and never actually selected it \
          because of a name mismatch bug.",
-    );
+);
 
 #[async_trait]
 impl Site for TransferSh {
@@ -40,7 +44,10 @@ impl Site for TransferSh {
         if link.starts_with("http") {
             Ok(UploadedFile::new(link))
         } else {
-            Err(UploadError::protocol("reply is not a download link", &reply.body))
+            Err(UploadError::protocol(
+                "reply is not a download link",
+                &reply.body,
+            ))
         }
     }
 }

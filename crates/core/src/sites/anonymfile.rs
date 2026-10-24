@@ -50,7 +50,10 @@ impl Site for Anonymfile {
             .post("https://anonymfile.com/upload")
             .header("Accept", "application/json")
             .header("X-CSRF-TOKEN", csrf)
-            .header("Cookie", format!("XSRF-TOKEN={xsrf}; anonymfile_session={session}"))
+            .header(
+                "Cookie",
+                format!("XSRF-TOKEN={xsrf}; anonymfile_session={session}"),
+            )
             .multipart(form)
             .send_reply()
             .await?

@@ -35,10 +35,16 @@ impl Site for FilesFm {
         // Reply is comma separated: "<id>,<something>,<key>,…".
         let fields: Vec<&str> = init.body.trim().split(',').collect();
         let (Some(id), Some(key)) = (fields.first(), fields.get(2)) else {
-            return Err(UploadError::protocol("unexpected upload id reply", &init.body));
+            return Err(UploadError::protocol(
+                "unexpected upload id reply",
+                &init.body,
+            ));
         };
         if id.is_empty() || key.is_empty() {
-            return Err(UploadError::protocol("unexpected upload id reply", &init.body));
+            return Err(UploadError::protocol(
+                "unexpected upload id reply",
+                &init.body,
+            ));
         }
 
         cx.progress.set_message("Uploading");
@@ -69,7 +75,10 @@ impl Site for FilesFm {
         let finished = cx.http.get(finish_url).send_reply().await?.ok()?;
         let json = finished.json()?;
         if json.get("status").and_then(|s| s.as_str()) != Some("ok") {
-            return Err(UploadError::protocol("upload was not finished", &finished.body));
+            return Err(UploadError::protocol(
+                "upload was not finished",
+                &finished.body,
+            ));
         }
 
         Ok(UploadedFile::new(format!("https://files.fm/u/{id}")))

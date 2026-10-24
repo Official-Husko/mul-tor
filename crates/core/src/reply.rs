@@ -64,8 +64,9 @@ impl Reply {
     }
 
     pub(crate) fn json(&self) -> Result<Value, UploadError> {
-        serde_json::from_str(&self.body)
-            .map_err(|e| UploadError::protocol(format!("response is not valid JSON ({e})"), &self.body))
+        serde_json::from_str(&self.body).map_err(|e| {
+            UploadError::protocol(format!("response is not valid JSON ({e})"), &self.body)
+        })
     }
 
     /// A string (or number, rendered as text) at a JSON pointer such as `/data/url`.
@@ -75,8 +76,9 @@ impl Reply {
 
     /// A non-negative integer at `pointer`; accepts numbers and numeric strings.
     pub(crate) fn json_u64(&self, pointer: &str) -> Result<u64, UploadError> {
-        as_u64(self.json()?.pointer(pointer))
-            .ok_or_else(|| UploadError::protocol(format!("response has no number at `{pointer}`"), &self.body))
+        as_u64(self.json()?.pointer(pointer)).ok_or_else(|| {
+            UploadError::protocol(format!("response has no number at `{pointer}`"), &self.body)
+        })
     }
 
     pub(crate) fn header(&self, name: &str) -> Option<&str> {
@@ -94,7 +96,9 @@ impl Reply {
 /// An unsigned integer from a JSON number or numeric string.
 pub(crate) fn as_u64(value: Option<&Value>) -> Option<u64> {
     let value = value?;
-    value.as_u64().or_else(|| value.as_str()?.trim().parse().ok())
+    value
+        .as_u64()
+        .or_else(|| value.as_str()?.trim().parse().ok())
 }
 
 /// Look up `pointer` in `value`, accepting strings and numbers.
@@ -123,7 +127,12 @@ impl SendReply for RequestBuilder {
 /// First capture group (or the whole match if the regex has none) of `re` in `text`.
 pub(crate) fn capture(re: &Regex, text: &str) -> Option<String> {
     let caps = re.captures(text)?;
-    Some(caps.get(1).unwrap_or_else(|| caps.get(0).unwrap()).as_str().to_string())
+    Some(
+        caps.get(1)
+            .unwrap_or_else(|| caps.get(0).unwrap())
+            .as_str()
+            .to_string(),
+    )
 }
 
 /// The first JSON object in a text that is meant to be JSON but may be wrapped
@@ -139,9 +148,8 @@ pub(crate) fn embedded_json(text: &str) -> Option<Value> {
 
 /// CSRF token from a `<meta name="csrf-token" content="…">` tag (Laravel sites).
 pub(crate) fn csrf_meta(html: &str) -> Option<String> {
-    static META: LazyLock<Regex> = LazyLock::new(|| {
-        Regex::new(r#"<meta\s+name="csrf-token"\s+content="([^"]*)""#).unwrap()
-    });
+    static META: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r#"<meta\s+name="csrf-token"\s+content="([^"]*)""#).unwrap());
     capture(&META, html).filter(|t| !t.is_empty())
 }
 
@@ -151,7 +159,8 @@ mod tests {
 
     #[test]
     fn json_pointer_lookup_accepts_strings_and_numbers() {
-        let v: Value = serde_json::json!({"data": {"id": 42, "url": "https://x/y"}, "list": [{"url": "u0"}]});
+        let v: Value =
+            serde_json::json!({"data": {"id": 42, "url": "https://x/y"}, "list": [{"url": "u0"}]});
         assert_eq!(json_string(&v, "/data/url", "").unwrap(), "https://x/y");
         assert_eq!(json_string(&v, "/data/id", "").unwrap(), "42");
         assert_eq!(json_string(&v, "/list/0/url", "").unwrap(), "u0");

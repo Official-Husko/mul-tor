@@ -11,8 +11,8 @@ use crate::upload::{UploadContext, UploadedFile, new_form};
 
 pub struct FileIo;
 
-const INFO: SiteInfo = SiteInfo::new("File.io", "https://file.io/", "https://file.io/")
-    .max_size(SizeLimit::gb(2));
+const INFO: SiteInfo =
+    SiteInfo::new("File.io", "https://file.io/", "https://file.io/").max_size(SizeLimit::gb(2));
 
 #[async_trait]
 impl Site for FileIo {
@@ -52,7 +52,9 @@ impl Site for FileIo {
                 .await;
             match patch {
                 Ok(patch) if patch.status.is_success() => {}
-                Ok(patch) => tracing::warn!(status = %patch.status, "File.io metadata update was refused"),
+                Ok(patch) => {
+                    tracing::warn!(status = %patch.status, "File.io metadata update was refused")
+                }
                 Err(error) => tracing::warn!(%error, "File.io metadata update failed"),
             }
         }

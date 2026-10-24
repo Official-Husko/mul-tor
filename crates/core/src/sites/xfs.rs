@@ -55,8 +55,9 @@ impl Site for XfsSite {
     async fn upload(&self, cx: &UploadContext<'_>) -> Result<UploadedFile, UploadError> {
         cx.progress.set_message("Finding upload server");
         let page = cx.http.get(self.page_url).send_reply().await?.ok()?;
-        let endpoint = capture(&self.endpoint, &page.body)
-            .ok_or_else(|| UploadError::unexpected("could not find the upload server in the page"))?;
+        let endpoint = capture(&self.endpoint, &page.body).ok_or_else(|| {
+            UploadError::unexpected("could not find the upload server in the page")
+        })?;
 
         cx.progress.set_message("Uploading");
         let mut form = new_form();
@@ -77,13 +78,13 @@ impl Site for XfsSite {
         let first = json
             .get(0)
             .ok_or_else(|| UploadError::protocol("reply has no file entry", &reply.body))?;
-        if let Some(status) = first.get("file_status").and_then(|s| s.as_str()) {
-            if status != "OK" {
-                return Err(UploadError::protocol(
-                    format!("server rejected the file ({status})"),
-                    &reply.body,
-                ));
-            }
+        if let Some(status) = first.get("file_status").and_then(|s| s.as_str())
+            && status != "OK"
+        {
+            return Err(UploadError::protocol(
+                format!("server rejected the file ({status})"),
+                &reply.body,
+            ));
         }
         let code = first
             .get("file_code")
@@ -91,7 +92,9 @@ impl Site for XfsSite {
             .filter(|c| !c.is_empty())
             .ok_or_else(|| UploadError::protocol("reply has no file_code", &reply.body))?;
 
-        Ok(UploadedFile::new(self.link_template.replace("{code}", code)))
+        Ok(UploadedFile::new(
+            self.link_template.replace("{code}", code),
+        ))
     }
 }
 
@@ -121,9 +124,13 @@ pub(super) fn sites() -> Vec<XfsSite> {
             "https://clicknupload.vip/{code}",
         ),
         XfsSite::new(
-            SiteInfo::new("HexUpload", "https://hexupload.net/", "https://hexupload.net/")
-                .max_size(SizeLimit::gb(2))
-                .blocked_extensions(&[".jpeg", ".jpg", ".png"]),
+            SiteInfo::new(
+                "HexUpload",
+                "https://hexupload.net/",
+                "https://hexupload.net/",
+            )
+            .max_size(SizeLimit::gb(2))
+            .blocked_extensions(&[".jpeg", ".jpg", ".png"]),
             "https://hexupload.net/",
             FORM_ACTION,
             "file_0",

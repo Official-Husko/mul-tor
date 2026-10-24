@@ -119,15 +119,12 @@ impl FormPart {
 
 /// Find a part by field name.
 pub fn field<'a>(parts: &'a [FormPart], name: &str) -> &'a FormPart {
-    parts
-        .iter()
-        .find(|p| p.name == name)
-        .unwrap_or_else(|| {
-            panic!(
-                "no multipart field `{name}`; got {:?}",
-                parts.iter().map(|p| &p.name).collect::<Vec<_>>()
-            )
-        })
+    parts.iter().find(|p| p.name == name).unwrap_or_else(|| {
+        panic!(
+            "no multipart field `{name}`; got {:?}",
+            parts.iter().map(|p| &p.name).collect::<Vec<_>>()
+        )
+    })
 }
 
 pub fn text_field(parts: &[FormPart], name: &str) -> String {
@@ -193,8 +190,7 @@ fn quoted(disposition: &str, key: &str) -> Option<String> {
     let needle = format!("{key}=\"");
     let mut search = disposition;
     while let Some(pos) = search.find(&needle) {
-        let preceded_ok = pos == 0
-            || matches!(search.as_bytes()[pos - 1], b' ' | b';');
+        let preceded_ok = pos == 0 || matches!(search.as_bytes()[pos - 1], b' ' | b';');
         let value = &search[pos + needle.len()..];
         if preceded_ok {
             // Read up to the first unescaped quote, undoing `\"` and `\\`.
@@ -311,7 +307,8 @@ impl Mock {
                 let reply = handler(&recorded);
                 log.lock().unwrap().push(recorded);
 
-                let mut response = Response::builder().status(StatusCode::from_u16(reply.status).unwrap());
+                let mut response =
+                    Response::builder().status(StatusCode::from_u16(reply.status).unwrap());
                 for (name, value) in &reply.headers {
                     response = response.header(
                         HeaderName::from_bytes(name.as_bytes()).unwrap(),
@@ -340,7 +337,10 @@ impl Mock {
 
     /// Requests that were *not* the given host (e.g. to spot leaks).
     pub fn requests_to(&self, host: &str) -> Vec<Recorded> {
-        self.requests().into_iter().filter(|r| r.host == host).collect()
+        self.requests()
+            .into_iter()
+            .filter(|r| r.host == host)
+            .collect()
     }
 
     /// Maps `https://host/path?q` onto this server as `/host/path?q`.

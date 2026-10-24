@@ -14,8 +14,12 @@ use crate::site::{Site, SiteInfo};
 use crate::size::SizeLimit;
 use crate::upload::{UploadContext, UploadedFile};
 
-const INFO: SiteInfo = SiteInfo::new("EasyUpload", "https://easyupload.io/", "https://easyupload.io/")
-    .max_size(SizeLimit::gb(10));
+const INFO: SiteInfo = SiteInfo::new(
+    "EasyUpload",
+    "https://easyupload.io/",
+    "https://easyupload.io/",
+)
+.max_size(SizeLimit::gb(10));
 
 static SERVER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"https://upload\d+\.easyupload\.io/action\.php").unwrap());
@@ -53,8 +57,9 @@ impl Site for EasyUpload {
             .send_reply()
             .await?
             .ok()?;
-        let upload_url = capture(&SERVER, &home.body)
-            .ok_or_else(|| UploadError::unexpected("could not find the upload server in the page"))?;
+        let upload_url = capture(&SERVER, &home.body).ok_or_else(|| {
+            UploadError::unexpected("could not find the upload server in the page")
+        })?;
 
         let uuid = Uuid::new_v4().to_string();
         let headers: Headers = vec![

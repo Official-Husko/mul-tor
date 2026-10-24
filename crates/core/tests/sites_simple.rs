@@ -43,7 +43,10 @@ async fn pixeldrain_puts_the_raw_file_with_the_api_key_cookie() {
     let request = only_request(&mock);
     assert_eq!(request.path, "/api/file/my%20file%231.bin");
     assert_eq!(request.header("cookie"), Some("pd_auth_key=sekrit"));
-    assert_eq!(request.header("content-type"), Some("application/octet-stream"));
+    assert_eq!(
+        request.header("content-type"),
+        Some("application/octet-stream")
+    );
     assert_eq!(request.body, b"0123456789abcdef");
     request.assert_not_chunked();
     assert_eq!(run.progress.sent(), 16);
@@ -53,7 +56,10 @@ async fn pixeldrain_puts_the_raw_file_with_the_api_key_cookie() {
 async fn pixeldrain_without_a_key_fails_before_any_request() {
     let mock = Mock::start(|_| Reply::not_found()).await;
     let run = run_default(&*builtin("pixeldrain"), &mock).await;
-    assert!(matches!(run.error(), UploadError::MissingCredential("apiKey")));
+    assert!(matches!(
+        run.error(),
+        UploadError::MissingCredential("apiKey")
+    ));
     assert!(mock.requests().is_empty());
 }
 
@@ -82,10 +88,17 @@ async fn filebin_posts_to_a_random_bin() {
     let segments: Vec<&str> = request.path.trim_start_matches('/').split('/').collect();
     assert_eq!(segments.len(), 2);
     assert_eq!(segments[0].len(), 16);
-    assert!(segments[0].chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit()));
+    assert!(
+        segments[0]
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+    );
     assert_eq!(segments[1], "sample.bin");
     assert_eq!(request.header("accept"), Some("application/json"));
-    assert_eq!(request.header("content-type"), Some("application/octet-stream"));
+    assert_eq!(
+        request.header("content-type"),
+        Some("application/octet-stream")
+    );
     assert_eq!(request.body, b"0123456789abcdef");
     request.assert_not_chunked();
     assert_eq!(
@@ -120,12 +133,22 @@ async fn transfer_sh_puts_the_plain_file_not_a_multipart_envelope() {
     assert_eq!(run.url(), "https://transfer.sh/xYz/sample.bin");
     let request = only_request(&mock);
     assert_eq!(request.method, "PUT");
-    assert_eq!(request.body, b"0123456789abcdef", "body must be the bare file");
+    assert_eq!(
+        request.body, b"0123456789abcdef",
+        "body must be the bare file"
+    );
 }
 
 #[tokio::test]
 async fn legacy_site_spellings_still_resolve() {
-    for legacy in ["Transfer_sh", "Download_gg", "Files.fm", "Fileio", "FileSi", "Userscloud"] {
+    for legacy in [
+        "Transfer_sh",
+        "Download_gg",
+        "Files.fm",
+        "Fileio",
+        "FileSi",
+        "Userscloud",
+    ] {
         assert!(
             mul_tor_core::Registry::builtin().find(legacy).is_some(),
             "{legacy}"
@@ -135,12 +158,18 @@ async fn legacy_site_spellings_still_resolve() {
 
 #[tokio::test]
 async fn buzzheavier_reads_the_id_from_either_reply_shape() {
-    for reply in [json!({"id": "Z1"}), json!({"code": 201, "data": {"id": "Z1"}})] {
+    for reply in [
+        json!({"id": "Z1"}),
+        json!({"code": 201, "data": {"id": "Z1"}}),
+    ] {
         let mock = Mock::start(move |_| Reply::json(reply.clone()).status(201)).await;
         let run = run_default(&*builtin("buzzheavier"), &mock).await;
         assert_eq!(run.url(), "https://buzzheavier.com/f/Z1");
         let request = only_request(&mock);
-        assert_eq!((request.method.as_str(), request.host.as_str()), ("PUT", "w.buzzheavier.com"));
+        assert_eq!(
+            (request.method.as_str(), request.host.as_str()),
+            ("PUT", "w.buzzheavier.com")
+        );
         assert_eq!(request.path, "/sample.bin");
         request.assert_not_chunked();
     }
@@ -150,15 +179,17 @@ async fn buzzheavier_reads_the_id_from_either_reply_shape() {
 
 #[tokio::test]
 async fn oshi_extracts_the_last_dl_line() {
-    let mock = Mock::start(|_| {
-        Reply::text("MANAGE: https://oshi.at/a/manage\nDL: https://oshi.at/xyz\n")
-    })
-    .await;
+    let mock =
+        Mock::start(|_| Reply::text("MANAGE: https://oshi.at/a/manage\nDL: https://oshi.at/xyz\n"))
+            .await;
     let run = run_default(&*builtin("oshi"), &mock).await;
     assert_eq!(run.url(), "https://oshi.at/xyz");
     let request = only_request(&mock);
     assert_eq!(request.query, "shorturl=1");
-    assert_eq!(field(&request.multipart(), "file").data, b"0123456789abcdef");
+    assert_eq!(
+        field(&request.multipart(), "file").data,
+        b"0123456789abcdef"
+    );
 }
 
 #[tokio::test]
@@ -185,7 +216,9 @@ async fn tmpfiles_reads_data_url() {
 async fn tempsend_uses_the_url_it_was_redirected_to() {
     let mock = Mock::start(|r| {
         if r.is("POST", "tempsend.com", "/send") {
-            Reply::text("").status(302).header("location", "/tempsend.com/AbC123")
+            Reply::text("")
+                .status(302)
+                .header("location", "/tempsend.com/AbC123")
         } else if r.is("GET", "tempsend.com", "/AbC123") {
             Reply::html("<html>file page</html>")
         } else {
@@ -223,7 +256,10 @@ async fn file_si_reads_the_short_url() {
 async fn file_upload_net_builds_the_link_from_name_and_id() {
     let mock = Mock::start(|_| Reply::json(json!({"name": "sample.bin", "id": "9981"}))).await;
     let run = run_default(&*builtin("fileupload"), &mock).await;
-    assert_eq!(run.url(), "https://file-upload.net/download-9981/sample.bin.html");
+    assert_eq!(
+        run.url(),
+        "https://file-upload.net/download-9981/sample.bin.html"
+    );
     let request = only_request(&mock);
     assert!(request.is("POST", "up.file-upload.net", "/upload.php"));
     assert_eq!(
@@ -266,10 +302,9 @@ async fn files_dp_ua_links_to_the_id_the_client_chose() {
 
 #[tokio::test]
 async fn mixdrop_authenticates_in_the_form() {
-    let mock = Mock::start(|_| {
-        Reply::json(json!({"success": true, "result": {"fileref": "r1abc"}}))
-    })
-    .await;
+    let mock =
+        Mock::start(|_| Reply::json(json!({"success": true, "result": {"fileref": "r1abc"}})))
+            .await;
     let run = run(
         &*builtin("mixdrop"),
         &mock,
@@ -288,7 +323,8 @@ async fn mixdrop_authenticates_in_the_form() {
 
 #[tokio::test]
 async fn mixdrop_reports_success_false() {
-    let mock = Mock::start(|_| Reply::json(json!({"success": false, "error": {"msg": "bad key"}}))).await;
+    let mock =
+        Mock::start(|_| Reply::json(json!({"success": false, "error": {"msg": "bad key"}}))).await;
     let run = run(
         &*builtin("mixdrop"),
         &mock,
@@ -339,7 +375,9 @@ async fn krakenfiles_surfaces_the_server_side_error() {
 async fn bowfile_authorises_then_uploads_with_the_token() {
     let mock = Mock::start(|r| {
         if r.is("POST", "bowfile.com", "/api/v2/authorize") {
-            Reply::json(json!({"_status": "success", "data": {"access_token": "TOK", "account_id": 77}}))
+            Reply::json(
+                json!({"_status": "success", "data": {"access_token": "TOK", "account_id": 77}}),
+            )
         } else if r.is("POST", "bowfile.com", "/api/v2/file/upload") {
             Reply::json(json!({"data": [{"url": "https://bowfile.com/abc"}]}))
         } else {
@@ -390,6 +428,10 @@ async fn litterbox_requests_72_hours() {
     let run = run_default(&*builtin("litterbox"), &mock).await;
     assert_eq!(run.url(), "https://litter.catbox.moe/abc.bin");
     let request = only_request(&mock);
-    assert!(request.is("POST", "litterbox.catbox.moe", "/resources/internals/api.php"));
+    assert!(request.is(
+        "POST",
+        "litterbox.catbox.moe",
+        "/resources/internals/api.php"
+    ));
     assert_eq!(text_field(&request.multipart(), "time"), "72h");
 }

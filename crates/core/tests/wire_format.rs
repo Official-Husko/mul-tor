@@ -27,7 +27,10 @@ async fn catbox_sends_the_expected_form() {
     let file = field(&parts, "fileToUpload");
     assert_eq!(file.filename.as_deref(), Some("sample.bin"));
     assert_eq!(file.data, b"0123456789abcdef");
-    assert_eq!(file.content_type.as_deref(), Some("application/octet-stream"));
+    assert_eq!(
+        file.content_type.as_deref(),
+        Some("application/octet-stream")
+    );
 }
 
 #[tokio::test]
@@ -67,7 +70,11 @@ async fn bracketed_field_names_are_not_percent_encoded() {
         .unwrap();
     let parts = mock.requests()[0].multipart();
     assert_eq!(parts[0].name, "files[]");
-    assert!(parts[0].disposition.contains(r#"name="files[]""#), "{}", parts[0].disposition);
+    assert!(
+        parts[0].disposition.contains(r#"name="files[]""#),
+        "{}",
+        parts[0].disposition
+    );
 }
 
 #[tokio::test]

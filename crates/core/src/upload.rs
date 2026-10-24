@@ -131,9 +131,10 @@ async fn open_range(
     if offset > 0 {
         file.seek(SeekFrom::Start(offset)).await?;
     }
-    let stream = ReaderStream::with_capacity(file.take(len), STREAM_CHUNK).inspect_ok(move |chunk| {
-        progress.add(chunk.len() as u64);
-    });
+    let stream =
+        ReaderStream::with_capacity(file.take(len), STREAM_CHUNK).inspect_ok(move |chunk| {
+            progress.add(chunk.len() as u64);
+        });
     Ok(Body::wrap_stream(stream))
 }
 
@@ -206,7 +207,10 @@ mod tests {
 
     #[test]
     fn chunk_ranges_cover_the_file_exactly() {
-        assert_eq!(chunk_ranges(10, 4).collect::<Vec<_>>(), [(0, 4), (4, 4), (8, 2)]);
+        assert_eq!(
+            chunk_ranges(10, 4).collect::<Vec<_>>(),
+            [(0, 4), (4, 4), (8, 2)]
+        );
         assert_eq!(chunk_ranges(8, 4).collect::<Vec<_>>(), [(0, 4), (4, 4)]);
         assert_eq!(chunk_ranges(3, 100).collect::<Vec<_>>(), [(0, 3)]);
         assert_eq!(chunk_ranges(0, 4).count(), 0);
@@ -237,7 +241,10 @@ mod tests {
     #[test]
     fn extension_less_and_dotfile_names_are_cut_plainly() {
         assert_eq!(shorten_name(&"x".repeat(300), 240).len(), 240);
-        assert_eq!(shorten_name(&format!(".{}", "x".repeat(300)), 240).len(), 240);
+        assert_eq!(
+            shorten_name(&format!(".{}", "x".repeat(300)), 240).len(),
+            240
+        );
     }
 
     #[test]

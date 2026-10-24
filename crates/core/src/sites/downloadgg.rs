@@ -10,12 +10,16 @@ use crate::upload::{UploadContext, UploadedFile, new_form};
 
 pub struct DownloadGg;
 
-const INFO: SiteInfo = SiteInfo::new("Download.gg", "https://download.gg/", "https://download.gg/")
-    .max_size(SizeLimit::gb(25))
-    .known_issue(
-        "The Python version never actually selected this site because of a name mismatch bug, \
+const INFO: SiteInfo = SiteInfo::new(
+    "Download.gg",
+    "https://download.gg/",
+    "https://download.gg/",
+)
+.max_size(SizeLimit::gb(25))
+.known_issue(
+    "The Python version never actually selected this site because of a name mismatch bug, \
          so it has had little real-world testing.",
-    );
+);
 
 #[async_trait]
 impl Site for DownloadGg {

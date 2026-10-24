@@ -1,0 +1,69 @@
+# Mul-Tor settings.
+#
+# Edit this file, then restart Mul-Tor. Every option is shown with its default.
+# Site names are matched loosely: "Transfer.sh", "transfer_sh" and "transfersh"
+# all mean the same site.
+
+version = 2
+
+# Look for a newer release on GitHub at startup (it only tells you; it never
+# downloads or installs anything).
+check_for_updates = true
+
+# Ping every site at startup and hide the ones that do not answer.
+check_availability = true
+
+# Send each upload through a random proxy from a freshly downloaded public
+# list. Public proxies are slow, unreliable and can read your traffic: only
+# use this if you accept that.
+use_proxies = false
+
+# Use one specific proxy for everything instead (takes priority over
+# use_proxies). Examples: "http://127.0.0.1:8080", "socks5h://127.0.0.1:9050"
+# (the latter is Tor's default).
+# proxy = "socks5h://127.0.0.1:9050"
+
+# Pretend to be a normal browser (random user agent per upload) instead of
+# identifying as Mul-Tor.
+random_user_agent = false
+
+# Append every finished upload to file_links.txt.
+save_links = true
+
+# How many uploads run at the same time (1-16).
+parallel_uploads = 1
+
+# Where file_links.txt is written. Default: the folder you run Mul-Tor from.
+# links_dir = "/path/to/folder"
+
+# Sites that are never offered.
+blacklist = []
+
+[preset]
+# Pre-select the sites of a preset instead of asking. `name` is the preset's
+# file name, identifier or title, e.g. "f95".
+auto_load = false
+name = ""
+# Offer a preset choice in interactive mode.
+enable_selection = false
+
+# Accounts for the sites that need one. Fill in only what you use.
+#
+# [credentials.Pixeldrain]
+# apiKey = ""
+#
+# [credentials.BowFile]
+# apiKey1 = ""
+# apiKey2 = ""
+#
+# [credentials.DooDrive]
+# apiKey = ""
+# apiToken = ""
+#
+# [credentials.Mixdrop]
+# email = ""
+# apiKey = ""
+#
+# [credentials.Rapidgator]
+# email = ""
+# password = ""

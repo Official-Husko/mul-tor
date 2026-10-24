@@ -141,12 +141,14 @@ mod tests {
             .enable_all()
             .build()
             .unwrap();
+        // Go through the factory like production code: it installs the TLS
+        // provider, which a bare reqwest client would otherwise panic without.
+        let http = crate::HttpFactory::new()
+            .with_proxy(crate::ProxyMode::Direct)
+            .client()
+            .unwrap();
         let err = rt.block_on(async {
-            reqwest::Client::builder()
-                .no_proxy()
-                .build()
-                .unwrap()
-                .get("http://127.0.0.1:1/login?password=hunter2")
+            http.get("http://127.0.0.1:1/login?password=hunter2")
                 .send()
                 .await
                 .unwrap_err()

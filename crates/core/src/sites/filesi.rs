@@ -29,6 +29,8 @@ impl Site for FileSi {
             .send_reply()
             .await?
             .ok()?;
-        Ok(UploadedFile::new(reply.json_string("/data/file/url/short")?))
+        Ok(UploadedFile::new(
+            reply.json_string("/data/file/url/short")?,
+        ))
     }
 }
