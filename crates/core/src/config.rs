@@ -157,11 +157,8 @@ impl Config {
         }
 
         /// The placeholder entries the Python tool wrote into every new config.
-        const PLACEHOLDER_BLACKLIST: [&str; 3] = [
-            "SomeProviderName",
-            "CheapGoFileCopy",
-            "HotSinglesInYourArea",
-        ];
+        const PLACEHOLDER_BLACKLIST: [&str; 3] =
+            ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea"];
 
         let legacy: Legacy = serde_json::from_str(text).map_err(|e| Error::Config {
             path: origin.to_path_buf(),
@@ -348,7 +345,7 @@ mod tests {
             "DooDrive": {"apiKey": "", "apiToken": ""},
             "Pixeldrain": {"apiKey": "pd"}
         },
-        "blacklist": ["SomeProviderName", "CheapGoFileCopy", "HotSinglesInYourArea", "Oshi"]
+        "blacklist": ["SomeSiteName", "CheapGoFileCopy", "HotSinglesInYourArea", "Oshi"]
     }"#;
 
     #[test]

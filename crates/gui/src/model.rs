@@ -7,7 +7,7 @@ use std::path::PathBuf;
 
 use mul_tor_core::availability::Health;
 use mul_tor_core::files::scan_inputs;
-use mul_tor_core::linklog::format_template;
+use mul_tor_core::linklog::{format_template, template_fields};
 use mul_tor_core::{Event, JobId, ProgressSnapshot, Provider, UploadError};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -252,13 +252,7 @@ impl Model {
                 JobState::Done { url } => Some(match template {
                     Some(template) => format_template(
                         template,
-                        &[
-                            ("status", "ok"),
-                            ("file_name", &job.file),
-                            ("file_url", url),
-                            ("provider_name", job.provider),
-                            ("date_and_time", ""),
-                        ],
+                        &template_fields(job.provider, &job.file, url, ""),
                     ),
                     None => url.clone(),
                 }),
@@ -410,7 +404,7 @@ mod tests {
     #[test]
     fn links_can_be_copied_plain_or_in_the_preset_format() {
         let mut model = Model::default();
-        model.begin_run(Some("[URL='{file_url}']{provider_name}[/URL]".into()));
+        model.begin_run(Some("[URL='{file_url}']{site_name}[/URL]".into()));
         model.apply(queued(0, "a", "Catbox", 1));
         model.apply(queued(1, "a", "Oshi", 1));
         model.apply(queued(2, "a", "Keep", 1));

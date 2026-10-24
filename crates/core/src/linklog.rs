@@ -74,16 +74,28 @@ impl LinkEntry<'_> {
         let when = self.when.format("%Y-%m-%d %H:%M:%S%.6f").to_string();
         format_template(
             template,
-            &[
-                ("status", "ok"),
-                ("file_name", self.file_name),
-                ("file_url", self.url),
-                ("provider_name", self.provider),
-                ("site_name", self.provider),
-                ("date_and_time", &when),
-            ],
+            &template_fields(self.provider, self.file_name, self.url, &when),
         )
     }
+}
+
+/// The placeholders a link template can use. This is the only list, so every
+/// front-end fills a preset's template the same way.
+pub fn template_fields<'a>(
+    provider: &'a str,
+    file_name: &'a str,
+    url: &'a str,
+    when: &'a str,
+) -> [(&'static str, &'a str); 6] {
+    [
+        ("status", "ok"),
+        ("file_name", file_name),
+        ("file_url", url),
+        ("provider_name", provider),
+        // Older spelling, still used by shared preset files.
+        ("site_name", provider),
+        ("date_and_time", when),
+    ]
 }
 
 /// Appends finished uploads to `file_links.txt` (and, when a preset supplies
