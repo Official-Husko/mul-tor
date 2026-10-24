@@ -99,6 +99,23 @@ mod tests {
         tracing::debug!("too chatty for the default level");
     }
 
+    /// The shape of the line `emit` produces. The source path is written with
+    /// the platform's separator (`file!()`), so either one is accepted.
+    fn line_shape() -> Regex {
+        Regex::new(
+            r#"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d{3} [+-]\d\d:\d\d +INFO job\{id=7 provider="Gofile"\}: mul_tor_core::logging::layers::tests: crates[/\\]core[/\\]src[/\\]logging[/\\]layers\.rs:\d+: upload finished elapsed_ms=12$"#,
+        )
+        .unwrap()
+    }
+
+    #[test]
+    fn the_source_path_may_use_either_separator() {
+        let unix = r#"2026-10-24 11:37:33.546 +00:00  INFO job{id=7 provider="Gofile"}: mul_tor_core::logging::layers::tests: crates/core/src/logging/layers.rs:98: upload finished elapsed_ms=12"#;
+        let windows = unix.replace('/', "\\");
+        assert!(line_shape().is_match(unix));
+        assert!(line_shape().is_match(&windows), "{windows}");
+    }
+
     #[test]
     fn a_line_has_timestamp_level_span_module_source_and_fields() {
         let out = Memory::default();
@@ -112,11 +129,7 @@ mod tests {
             .find(|l| l.contains("upload finished"))
             .unwrap();
 
-        let shape = Regex::new(
-            r#"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d{3} [+-]\d\d:\d\d +INFO job\{id=7 provider="Gofile"\}: mul_tor_core::logging::layers::tests: crates/core/src/logging/layers\.rs:\d+: upload finished elapsed_ms=12$"#,
-        )
-        .unwrap();
-        assert!(shape.is_match(line), "{line}");
+        assert!(line_shape().is_match(line), "{line}");
         assert!(!text.contains("too chatty"), "debug is below the level");
     }
 
