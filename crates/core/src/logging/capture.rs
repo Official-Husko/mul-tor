@@ -3,6 +3,7 @@
 use chrono::Local;
 use tracing::span::{Attributes, Id, Record};
 use tracing::{Event, Subscriber};
+use tracing_log::NormalizeEvent;
 use tracing_subscriber::Layer;
 use tracing_subscriber::layer::Context;
 use tracing_subscriber::registry::LookupSpan;
@@ -72,7 +73,10 @@ where
             })
             .unwrap_or_default();
 
-        let metadata = event.metadata();
+        // A record from another crate's `log` calls arrives wrapped; this
+        // unwraps it to its own target, file and line.
+        let normalized = event.normalized_metadata();
+        let metadata = normalized.as_ref().unwrap_or_else(|| event.metadata());
         self.buffer.push(LogRecord {
             seq: 0,
             time: Local::now(),

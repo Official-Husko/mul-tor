@@ -59,6 +59,7 @@ tokio-util = { version = "0.7", features = ["io"] }
 toml = "1"
 tracing = "0.1"
 tracing-appender = "0.2"
+tracing-log = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 unicode-width = "0.2"
 url = "2"
@@ -67,6 +68,7 @@ uuid = { version = "1", features = ["v4"] }
 # dev-only
 axum = { version = "0.8", features = ["multipart"] }
 tempfile = "3"
+log = "0.4"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

@@ -11,8 +11,17 @@ pub(super) struct FieldCollector {
     pub fields: Vec<(String, String)>,
 }
 
+/// Fields the `log` bridge adds to describe where a record really came from.
+/// They are read through the event's normalised metadata instead.
+fn is_bridge_field(field: &Field) -> bool {
+    field.name().starts_with("log.")
+}
+
 impl Visit for FieldCollector {
     fn record_str(&mut self, field: &Field, value: &str) {
+        if is_bridge_field(field) {
+            return;
+        }
         if field.name() == "message" {
             self.message = value.to_string();
         } else {
@@ -22,6 +31,9 @@ impl Visit for FieldCollector {
     }
 
     fn record_debug(&mut self, field: &Field, value: &dyn Debug) {
+        if is_bridge_field(field) {
+            return;
+        }
         if field.name() == "message" {
             self.message = format!("{value:?}");
         } else {
