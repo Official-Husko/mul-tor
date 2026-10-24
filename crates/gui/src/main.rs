@@ -19,11 +19,16 @@ mod ui_tests;
 use std::path::PathBuf;
 
 use app::MulTorApp;
+use mul_tor_core::logging::LogBuffer;
+
+/// Log records kept for the log window.
+const LOG_RECORDS: usize = 2000;
 
 fn main() {
     let home = home_from_args();
     // Held until the window closes, so the log file is flushed.
-    let _log = logging::init(home.as_deref());
+    let logs = LogBuffer::new(LOG_RECORDS);
+    let _log = logging::init(home.as_deref(), logs.clone());
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -39,7 +44,7 @@ fn main() {
         options,
         Box::new(move |cc| {
             theme::apply(&cc.egui_ctx);
-            Ok(Box::new(MulTorApp::new(cc.egui_ctx.clone(), home)?))
+            Ok(Box::new(MulTorApp::new(cc.egui_ctx.clone(), home, logs)?))
         }),
     );
 

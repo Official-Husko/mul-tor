@@ -2,6 +2,7 @@
 //! a kittest harness, with an in-process server standing in for the providers.
 
 mod layout;
+mod logs;
 mod selection;
 mod settings;
 mod uploads;
@@ -15,6 +16,7 @@ use axum::body::{Body, to_bytes};
 use axum::http::{Request, Response};
 use egui_kittest::Harness;
 use egui_kittest::kittest::NodeT;
+use mul_tor_core::logging::LogBuffer;
 
 use crate::app::MulTorApp;
 
@@ -33,7 +35,9 @@ pub fn harness(home: &Path) -> Harness<'static, MulTorApp> {
     let home = home.to_path_buf();
     Harness::builder()
         .with_size(egui::vec2(1100.0, 720.0))
-        .build_eframe(move |cc| MulTorApp::new(cc.egui_ctx.clone(), Some(home)).unwrap())
+        .build_eframe(move |cc| {
+            MulTorApp::new(cc.egui_ctx.clone(), Some(home), LogBuffer::new(200)).unwrap()
+        })
 }
 
 pub fn sample_file(dir: &Path, name: &str) -> PathBuf {

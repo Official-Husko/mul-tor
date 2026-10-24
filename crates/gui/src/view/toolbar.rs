@@ -22,6 +22,13 @@ impl MulTorApp {
                 if ui.button("Settings").clicked() {
                     actions.push(Action::OpenSettings);
                 }
+                if ui
+                    .selectable_label(self.log_window.open, "Log")
+                    .on_hover_text("What the program has been doing")
+                    .clicked()
+                {
+                    actions.push(Action::ToggleLogs);
+                }
                 theme_selector(ui);
                 if let Some(release) = &self.update {
                     ui.hyperlink_to(

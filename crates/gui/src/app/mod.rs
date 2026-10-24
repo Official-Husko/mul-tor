@@ -3,6 +3,7 @@
 
 mod action;
 mod inbox;
+mod logs;
 mod notice;
 mod presets;
 mod rows;
@@ -14,11 +15,13 @@ use std::sync::mpsc::Receiver;
 use std::time::Duration;
 
 use anyhow::{Context as _, Result};
+use mul_tor_core::logging::LogBuffer;
 use mul_tor_core::update::Release;
 use mul_tor_core::{AppDirs, Config, ConfigStore, PresetLibrary, Registry};
 use tokio_util::sync::CancellationToken;
 
 pub use action::Action;
+pub use logs::{LogDetail, LogWindow};
 pub use notice::Notice;
 pub use rows::ProviderRow;
 pub use settings::{Settings, SettingsTab};
@@ -40,13 +43,16 @@ pub struct MulTorApp {
     pub settings: Settings,
     pub notice: Option<Notice>,
     pub update: Option<Release>,
+    /// Recent log records, for the log window.
+    pub logs: LogBuffer,
+    pub log_window: LogWindow,
     cancel: Option<CancellationToken>,
     #[cfg(test)]
     pub url_rewrite: Option<mul_tor_core::http::UrlRewrite>,
 }
 
 impl MulTorApp {
-    pub fn new(ctx: egui::Context, home: Option<PathBuf>) -> Result<Self> {
+    pub fn new(ctx: egui::Context, home: Option<PathBuf>, logs: LogBuffer) -> Result<Self> {
         let dirs = AppDirs::discover(home.as_deref())?;
         dirs.create_all()?;
         let store = ConfigStore::new(&dirs);
@@ -78,6 +84,8 @@ impl MulTorApp {
             settings: Settings::default(),
             notice: None,
             update: None,
+            logs,
+            log_window: LogWindow::default(),
             cancel: None,
             #[cfg(test)]
             url_rewrite: None,

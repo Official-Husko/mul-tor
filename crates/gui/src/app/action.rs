@@ -24,6 +24,8 @@ pub enum Action {
     OpenSettings,
     SaveSettings,
     CloseSettings,
+    ToggleLogs,
+    CopyLog,
 }
 
 impl MulTorApp {
@@ -70,6 +72,20 @@ impl MulTorApp {
             Action::OpenSettings => self.open_settings(),
             Action::SaveSettings => self.save_settings(),
             Action::CloseSettings => self.settings.open = false,
+            Action::ToggleLogs => self.log_window.open = !self.log_window.open,
+            Action::CopyLog => {
+                let detail = self.log_window.detail;
+                let text = self
+                    .logs
+                    .tail(crate::view::VISIBLE_LOG_RECORDS)
+                    .iter()
+                    .filter(|record| detail.shows(record.level))
+                    .map(|record| record.line())
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                ctx.copy_text(text);
+                self.show_notice(Level::Info, "Log copied to the clipboard");
+            }
         }
     }
 }

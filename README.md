@@ -54,8 +54,11 @@ are possible (for example with the `*-unknown-linux-musl` targets).
 
 `mul-tor-gui` is the same engine in a window (egui, rendered with wgpu): drop files
 on it, tick providers or pick a preset, press Upload. Every upload gets its own
-progress bar and, once finished, a link you can copy or open. Settings (including
-your accounts) are edited in the window and saved to the same `config.toml`.
+progress bar and, once finished, a link you can copy or open. Each provider row
+shows its limit, whether it answered the reachability check and its recorded
+status. The **Log** button opens a window with what the program has been doing
+(choose how much detail; copy it for a bug report). Settings (including your
+accounts) are edited in the window and saved to the same `config.toml`.
 
 ![The Mul-Tor window while uploading](media/gui.png)
 

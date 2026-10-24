@@ -3,6 +3,7 @@
 
 mod files;
 mod jobs;
+mod logs;
 mod overlay;
 mod providers;
 mod queue;
@@ -16,6 +17,9 @@ use egui::Ui;
 use crate::app::{Action, MulTorApp};
 
 type Actions = Vec<Action>;
+
+/// How many of the newest log records the log window shows (and copies).
+pub use logs::VISIBLE_RECORDS as VISIBLE_LOG_RECORDS;
 
 impl MulTorApp {
     /// The whole window.
@@ -38,6 +42,7 @@ impl MulTorApp {
         let ctx = ui.ctx().clone();
         self.settings_window(&ctx, &mut actions);
         overlay::drop_overlay(&ctx);
+        self.logs_window(&ctx, &mut actions);
 
         for action in actions {
             self.perform(action, &ctx);

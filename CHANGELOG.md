@@ -21,7 +21,8 @@ Mul-Tor is rewritten in Rust.
   browser, a provider checklist with filter, status and presets, a summary of what
   will be sent before it starts, live progress with speed and time left, a log pane
   and copy-all-links. Pasting or dropping paths works anywhere on the first step.
-* `mul-tor-gui`, a graphical version (egui on wgpu) built on the same engine.
+* `mul-tor-gui`, a graphical version (egui on wgpu) built on the same engine,
+  with a log window and a status column for every provider.
 * Several uploads at once (`--parallel`), per-upload progress bars (including
   chunked and multi-step uploads), and clean cancellation with Ctrl-C.
 * Your own proxy (`http://`, `socks5://`, `socks5h://`, so Tor works).
