@@ -23,6 +23,8 @@ jobs:
           components: clippy, rustfmt
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --all --check
+      # Small files that each do one thing: split a file rather than raise the limit.
+      - run: scripts/check-file-sizes.sh
       - run: cargo clippy --workspace --all-targets --locked --features mul-tor/test-hooks -- -D warnings
 
   test:
