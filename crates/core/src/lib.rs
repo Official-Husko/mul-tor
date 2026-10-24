@@ -3,25 +3,23 @@
 //! This crate has no user interface. The `mul-tor` CLI and `mul-tor-gui`
 //! binaries are thin front-ends over it.
 
-pub mod availability;
-pub mod config;
 pub mod engine;
 pub mod error;
 pub mod files;
-pub mod http;
-pub mod linklog;
-pub mod paths;
-pub mod preset;
+mod net;
 pub mod progress;
 pub mod provider;
 pub mod providers;
-pub mod proxies;
-mod reply;
 pub mod setup;
 pub mod size;
-pub mod update;
+mod storage;
 pub mod upload;
-pub mod useragents;
+
+// The network and storage modules are grouped on disk but live at the crate
+// root, so `mul_tor_core::http`, `::config` and friends stay as they are.
+pub(crate) use net::reply;
+pub use net::{availability, http, proxies, update, useragents};
+pub use storage::{config, linklog, paths, preset};
 
 pub use config::{Config, ConfigOrigin, ConfigStore};
 pub use engine::{Engine, Event, EventSink, JobId, JobOutcome};

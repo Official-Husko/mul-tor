@@ -68,8 +68,11 @@ impl Preset {
 
 /// The presets compiled into the program (the same files as `presets/` in the repo).
 const BUILTIN: [(&str, &str); 2] = [
-    ("f95", include_str!("../../../presets/f95.json")),
-    ("cs-rin-ru", include_str!("../../../presets/cs-rin-ru.json")),
+    ("f95", include_str!("../../../../presets/f95.json")),
+    (
+        "cs-rin-ru",
+        include_str!("../../../../presets/cs-rin-ru.json"),
+    ),
 ];
 
 /// Built-in presets plus the user's own.
