@@ -130,7 +130,7 @@ mod tests {
 
     #[test]
     fn every_legacy_site_is_registered() {
-        // The 37 sites of the Python version (`modules/site_data.py`).
+        // The 37 sites of the Python version (`modules/site_data.py` at tag 1.5.2).
         let legacy = [
             "Gofile",
             "Pixeldrain",
