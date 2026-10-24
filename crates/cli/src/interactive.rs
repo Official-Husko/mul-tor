@@ -15,9 +15,9 @@ use mul_tor_core::files::scan_inputs;
 use mul_tor_core::{HttpFactory, Provider, update};
 
 use crate::app::App;
-use crate::input::parse_paths;
-use crate::run::{self, Job};
-use crate::select::{Request, select};
+use crate::paths::parse_paths;
+use crate::runner::{self, Job};
+use crate::selection::{Request, select};
 
 const LOGO: &str = r"
 .88b  d88. db    db db             d888888b  .d88b.  d8888b.
@@ -50,7 +50,7 @@ pub async fn run(app: App) -> Result<ExitCode> {
 
     let mut eligible = app.eligible_providers();
     if app.config.check_availability {
-        eligible = run::filter_reachable(&factory, eligible, &[], false).await;
+        eligible = runner::filter_reachable(&factory, eligible, &[], false).await;
         println!(
             "{} {} providers available\n",
             style("[i]").cyan(),
@@ -82,7 +82,7 @@ pub async fn run(app: App) -> Result<ExitCode> {
                 .unwrap_or_else(|| PathBuf::from(".")),
         };
         println!();
-        let code = run::execute(&app, factory.clone(), job).await?;
+        let code = runner::execute(&app, factory.clone(), job).await?;
         if code != ExitCode::SUCCESS {
             exit = code;
         }

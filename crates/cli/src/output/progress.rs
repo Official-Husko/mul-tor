@@ -1,5 +1,4 @@
-//! Showing upload progress and results, either for a person (progress bars,
-//! coloured lines) or for a script (one JSON object per finished upload).
+//! Progress bars and coloured result lines for a person at a terminal.
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -8,14 +7,9 @@ use std::time::Duration;
 use console::style;
 use indicatif::{MultiProgress, ProgressBar, ProgressDrawTarget, ProgressStyle};
 use mul_tor_core::{Event, EventSink, JobId, JobOutcome, UploadError};
-use serde_json::json;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub struct Summary {
-    pub ok: usize,
-    pub failed: usize,
-    pub cancelled: usize,
-}
+use super::json::json_line;
+use super::summary::Summary;
 
 pub struct Renderer {
     json: bool,
@@ -162,60 +156,11 @@ fn job_style() -> ProgressStyle {
     .progress_chars("█▓░")
 }
 
-/// One finished upload as a line of JSON.
-pub fn json_line(outcome: &JobOutcome) -> String {
-    let value = match &outcome.result {
-        Ok(uploaded) => json!({
-            "file": outcome.file_name,
-            "provider": outcome.provider,
-            "status": "ok",
-            "url": uploaded.url,
-        }),
-        Err(error) => json!({
-            "file": outcome.file_name,
-            "provider": outcome.provider,
-            "status": "error",
-            "kind": error.kind(),
-            "error": error.to_string(),
-        }),
-    };
-    value.to_string()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::output::testing::outcome;
     use mul_tor_core::UploadedFile;
-
-    fn outcome(result: Result<UploadedFile, UploadError>) -> JobOutcome {
-        JobOutcome {
-            job: 0,
-            file_name: "a \"b\".zip".into(),
-            provider: "Pixeldrain",
-            result,
-        }
-    }
-
-    #[test]
-    fn json_lines_for_success() {
-        let line = json_line(&outcome(Ok(UploadedFile::new("https://x/1"))));
-        let value: serde_json::Value = serde_json::from_str(&line).unwrap();
-        assert_eq!(value["status"], "ok");
-        assert_eq!(value["url"], "https://x/1");
-        assert_eq!(value["file"], "a \"b\".zip");
-        assert!(!line.contains('\n'));
-    }
-
-    #[test]
-    fn json_lines_for_failure_carry_a_stable_kind() {
-        let line = json_line(&outcome(Err(UploadError::TooLarge {
-            limit: "20 GB".into(),
-        })));
-        let value: serde_json::Value = serde_json::from_str(&line).unwrap();
-        assert_eq!(value["status"], "error");
-        assert_eq!(value["kind"], "too_large");
-        assert!(value["error"].as_str().unwrap().contains("20 GB"));
-    }
 
     #[test]
     fn the_summary_counts_each_kind_of_result() {

@@ -1,13 +1,11 @@
-//! The read-only commands: `providers`, `presets`, `check`, `config`.
+//! `mul-tor providers`: what is supported, as a table, markdown or JSON.
 
-use anyhow::{Context as _, Result};
-use console::style;
-use mul_tor_core::availability::{self, Health};
+use anyhow::Result;
 use mul_tor_core::{Auth, ProviderInfo};
 use serde_json::json;
 
 use crate::app::App;
-use crate::cli::{ConfigAction, ProvidersFormat};
+use crate::args::ProvidersFormat;
 
 pub fn providers(app: &App, format: ProvidersFormat) -> Result<()> {
     let infos: Vec<&ProviderInfo> = app.registry.iter().map(|s| s.info()).collect();
@@ -102,94 +100,6 @@ pub fn providers_json(infos: &[&ProviderInfo]) -> serde_json::Value {
         .collect()
 }
 
-pub fn presets(app: &App) -> Result<()> {
-    for (stem, preset) in app.presets.iter() {
-        let resolved = preset.resolve(&app.registry);
-        let title = if preset.name.is_empty() {
-            stem
-        } else {
-            &preset.name
-        };
-        println!(
-            "{}  {}",
-            style(stem).bold(),
-            style(format!("({title}, {} providers)", resolved.providers.len())).dim()
-        );
-        if !preset.description.is_empty() {
-            println!("  {}", preset.description);
-        }
-        if !resolved.unsupported.is_empty() {
-            println!(
-                "  {} not supported yet: {}",
-                style("note:").yellow(),
-                resolved.unsupported.join(", ")
-            );
-        }
-    }
-    println!(
-        "\nYour own presets go in {}",
-        app.dirs.presets_dir().display()
-    );
-    Ok(())
-}
-
-pub async fn check(app: &App) -> Result<()> {
-    let providers = app.eligible_providers();
-    let factory = app.http_factory(None, true).await?;
-    let statuses = availability::check(&factory, &providers).await;
-
-    let name_width = providers
-        .iter()
-        .map(|s| s.info().name.chars().count())
-        .max()
-        .unwrap_or(4);
-    let mut down = 0;
-    for status in &statuses {
-        let name = status.provider.info().name;
-        match &status.health {
-            Health::Up => println!("{} {name}", style("up  ").green()),
-            Health::Down(reason) => {
-                down += 1;
-                println!(
-                    "{} {name:<name_width$}  {}",
-                    style("down").red(),
-                    style(reason).dim()
-                );
-            }
-        }
-    }
-    println!("\n{} reachable, {down} not", statuses.len() - down);
-    Ok(())
-}
-
-pub fn config(app: &App, action: ConfigAction) -> Result<()> {
-    match action {
-        ConfigAction::Path => println!("{}", app.store.path().display()),
-        ConfigAction::Show => {
-            let mut config = app.config.clone();
-            for credentials in config.credentials.values_mut() {
-                let masked: Vec<(String, String)> = credentials
-                    .iter()
-                    .map(|(key, value)| {
-                        let shown = if value.trim().is_empty() {
-                            ""
-                        } else {
-                            "********"
-                        };
-                        (key.to_string(), shown.to_string())
-                    })
-                    .collect();
-                *credentials = masked.into_iter().collect();
-            }
-            print!(
-                "{}",
-                toml::to_string_pretty(&config).context("could not print the config")?
-            );
-        }
-    }
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -238,7 +148,7 @@ mod tests {
     /// a provider is added without regenerating it.
     #[test]
     fn the_readme_lists_every_supported_provider() {
-        let readme = include_str!("../../../README.md");
+        let readme = include_str!("../../../../README.md");
         for provider in Registry::builtin().iter() {
             let info = provider.info();
             assert!(

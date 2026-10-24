@@ -5,7 +5,7 @@ use console::style;
 use mul_tor_core::logging;
 
 use crate::app::App;
-use crate::cli::LogsArgs;
+use crate::args::LogsArgs;
 
 pub fn logs(app: &App, args: LogsArgs) -> Result<()> {
     let dir = app.dirs.log_dir();
