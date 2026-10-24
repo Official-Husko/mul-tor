@@ -13,10 +13,10 @@ pub use info::{ConfigAction, ConfigArgs, LogsArgs, ProvidersArgs, ProvidersForma
 pub use upload::UploadArgs;
 
 const AFTER_HELP: &str = "\
-Run without a command for the interactive mode.
+Run without a command for the full-screen interface.
 
 Examples:
-  mul-tor                                        Interactive mode
+  mul-tor                                        Full-screen interface
   mul-tor upload backup.7z -p pixeldrain -p gofile
   mul-tor upload ./release --preset f95 --parallel 3
   mul-tor upload photos/ -r --all --json         One JSON object per upload

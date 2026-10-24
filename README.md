@@ -26,7 +26,8 @@ and sharing: pick the files, pick the hosts, get all the links.
 
 ## Features
 
-* Interactive guided mode, plus a scriptable `upload` command (`--json`, exit codes)
+* A full-screen terminal interface for choosing files and providers, plus a
+  scriptable `upload` command (`--json`, exit codes)
 * Several uploads at once (`--parallel`), with a progress bar for every upload
 * Provider presets (a list of providers + a link format for a forum or community)
 * Optional random user agent, public proxy pool, or your own proxy (HTTP/SOCKS, so Tor works)
@@ -66,10 +67,31 @@ desktop has. On Linux it also loads a few system libraries at run time
 containerised install may be missing them, and the command-line version needs
 none of this.
 
+## Using the terminal interface
+
+Run `mul-tor` with no arguments for a full-screen interface that works over SSH and
+in any terminal. It has four steps, shown at the top:
+
+1. **Files**: browse folders and press `Space` to add files, or paste or drop paths
+   onto the window (`/` lets you type a path). `Tab` switches to your list.
+2. **Providers**: `Space` ticks, `a` ticks every usable one, `/` filters, `p` applies a
+   preset. Each row shows its limit, whether it answered the reachability check,
+   and its recorded status; the panel on the right has the details.
+3. **Upload**: an overall bar and one line per upload with speed and time left.
+   `Esc` or `Ctrl+C` stops the uploads (press it twice to leave at once); `L` shows
+   the live log.
+4. **Results**: every link; `c` copies them all (and `f` in the preset's format) over
+   the terminal's clipboard support, `n` starts over.
+
+A summary of what is about to be sent, and which uploads the offline checks already
+reject (too large, empty, missing credentials), is shown before anything starts.
+`?` shows the keys of the current step. It uses true colour where the terminal
+supports it, the 16 standard colours otherwise, and none with `NO_COLOR` set.
+
 ## Using the command line
 
 ```sh
-mul-tor                                   # guided mode: pick files, pick providers
+mul-tor                                   # the full-screen interface above
 mul-tor providers                         # what is supported, limits, accounts
 mul-tor upload backup.7z -p pixeldrain -p gofile
 mul-tor upload ./release --preset f95 --parallel 3
@@ -78,6 +100,7 @@ mul-tor check                             # which providers answer right now?
 ```
 
 * A folder contributes the files directly inside it; add `-r` for sub-folders.
+* `-p`/`--provider` picks providers (repeat it or separate with commas), `-P`/`--preset` a preset.
 * `--provider` names are forgiving: `Transfer.sh`, `transfer_sh` and `transfersh` are the same.
 * Exit code `0` = everything uploaded, `1` = at least one upload failed,
   `2` = bad usage or configuration, `130` = cancelled with Ctrl-C.

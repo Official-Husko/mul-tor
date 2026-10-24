@@ -17,6 +17,10 @@ Mul-Tor is rewritten in Rust.
 * A recorded state for every provider (unverified, working, degraded, broken),
   shown in `mul-tor providers` and the window; broken ones are skipped by
   `--all` and presets.
+* A full-screen terminal interface (`mul-tor` with no arguments): a folder
+  browser, a provider checklist with filter, status and presets, a summary of what
+  will be sent before it starts, live progress with speed and time left, a log pane
+  and copy-all-links. Pasting or dropping paths works anywhere on the first step.
 * `mul-tor-gui`, a graphical version (egui on wgpu) built on the same engine.
 * Several uploads at once (`--parallel`), per-upload progress bars (including
   chunked and multi-step uploads), and clean cancellation with Ctrl-C.

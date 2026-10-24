@@ -48,11 +48,12 @@ log_level = "info"
 log_json = false
 
 [preset]
-# Pre-select the providers of a preset instead of asking. `name` is the preset's
+# Pre-select the providers of a preset when the terminal interface starts. `name` is the preset's
 # file name, identifier or title, e.g. "f95".
 auto_load = false
 name = ""
-# Offer a preset choice in interactive mode.
+# Not used by the terminal interface, which always offers presets (press `p`);
+# kept so settings imported from the Python version stay meaningful.
 enable_selection = false
 
 # Accounts for the providers that need one. Fill in only what you use.

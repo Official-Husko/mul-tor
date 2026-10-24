@@ -3,12 +3,12 @@
 mod app;
 mod args;
 mod commands;
-mod interactive;
 mod logging;
 mod output;
 mod paths;
 mod runner;
 mod selection;
+mod tui;
 
 use std::process::ExitCode;
 
