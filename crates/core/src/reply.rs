@@ -73,6 +73,12 @@ impl Reply {
         json_string(&self.json()?, pointer, &self.body)
     }
 
+    /// A non-negative integer at `pointer`; accepts numbers and numeric strings.
+    pub(crate) fn json_u64(&self, pointer: &str) -> Result<u64, UploadError> {
+        as_u64(self.json()?.pointer(pointer))
+            .ok_or_else(|| UploadError::protocol(format!("response has no number at `{pointer}`"), &self.body))
+    }
+
     pub(crate) fn header(&self, name: &str) -> Option<&str> {
         self.headers.get(name).and_then(|v| v.to_str().ok())
     }
@@ -83,6 +89,12 @@ impl Reply {
             .find(|(n, _)| n == name)
             .map(|(_, v)| v.as_str())
     }
+}
+
+/// An unsigned integer from a JSON number or numeric string.
+pub(crate) fn as_u64(value: Option<&Value>) -> Option<u64> {
+    let value = value?;
+    value.as_u64().or_else(|| value.as_str()?.trim().parse().ok())
 }
 
 /// Look up `pointer` in `value`, accepting strings and numbers.
@@ -114,11 +126,15 @@ pub(crate) fn capture(re: &Regex, text: &str) -> Option<String> {
     Some(caps.get(1).unwrap_or_else(|| caps.get(0).unwrap()).as_str().to_string())
 }
 
-/// The first `{ ... }` object in a text that is meant to be JSON but may be
-/// wrapped in other output (some PHP hosts print notices around it).
+/// The first JSON object in a text that is meant to be JSON but may be wrapped
+/// in other output (some PHP hosts print notices around it).
 pub(crate) fn embedded_json(text: &str) -> Option<Value> {
-    static OBJECT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?s)\{.*\}").unwrap());
-    serde_json::from_str(OBJECT.find(text)?.as_str()).ok()
+    text.match_indices('{').find_map(|(start, _)| {
+        serde_json::Deserializer::from_str(&text[start..])
+            .into_iter::<Value>()
+            .next()?
+            .ok()
+    })
 }
 
 /// CSRF token from a `<meta name="csrf-token" content="…">` tag (Laravel sites).
@@ -143,9 +159,21 @@ mod tests {
     }
 
     #[test]
+    fn integers_may_arrive_as_strings() {
+        let v: Value = serde_json::json!({"a": 5, "b": "7", "c": "x"});
+        assert_eq!(as_u64(v.get("a")), Some(5));
+        assert_eq!(as_u64(v.get("b")), Some(7));
+        assert_eq!(as_u64(v.get("c")), None);
+        assert_eq!(as_u64(v.get("missing")), None);
+    }
+
+    #[test]
     fn embedded_json_skips_surrounding_noise() {
-        let v = embedded_json("<br>Notice: x\n{\"status\": true}\n<!-- -->").unwrap();
+        let v = embedded_json("<br>Notice: x\n{\"status\": true}\n<!-- {noise} -->").unwrap();
         assert_eq!(v["status"], true);
+        // Braces in leading noise do not derail the search.
+        let v = embedded_json("{oops} then {\"ok\": 1}").unwrap();
+        assert_eq!(v["ok"], 1);
         assert!(embedded_json("no json here").is_none());
     }
 

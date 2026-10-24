@@ -37,6 +37,8 @@ reqwest = { version = "0.13", default-features = false, features = [
     "charset",
     "multipart",
     "stream",
+    "form",
+    "query",
     "json",
     "cookies",
     "socks",
