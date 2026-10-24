@@ -184,6 +184,7 @@ Provider | API | Account | Max file size
 [ClicknUpload](https://clicknupload.click) | No | No | 2 GB
 [curl.by](https://curl.by/) | [Yes](https://curl.by/) | No | ∞
 [CyberFile](https://cyberfile.me/) | No | No | 10 GB
+[Datanodes](https://datanodes.to/) | No | No | 3 GB
 [Delafil](https://delafil.se/) | No | No | 6 GB
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
 [Dosya.co](https://dosya.co/) | No | No | 2 GB
@@ -195,6 +196,7 @@ Provider | API | Account | Max file size
 [File.io](https://file.io/) | No | No | 2 GB
 [File.si](https://file.si/) | [Yes](https://file.si/docs/api) | No | 7 GB
 [FileBin](https://filebin.net/) | No | No | ∞
+[FileMirage](https://filemirage.com/) | No | No | 50 GB
 [Files.dp.ua](https://files.dp.ua/) | No | No | 100 GB
 [Filesadmin](https://filesadmin.com/) | No | No | 3 GB
 [FilesFm](https://files.fm/) | No | No | 5 GB
@@ -210,6 +212,7 @@ Provider | API | Account | Max file size
 [Pixeldrain](https://pixeldrain.com/) | [Yes](https://pixeldrain.com/api) | [Yes](https://pixeldrain.com/user/api_keys) | 20 GB
 [Qu.ax](https://qu.ax/) | No | No | 256 MB
 [Rapidgator](https://rapidgator.net/) | [Yes](https://rapidgator.net/article/api/) | [Yes](https://rapidgator.net/article/api/) | ∞
+[Send.now](https://send.now/) | No | No | ∞
 [Temp.sh](https://temp.sh/) | [Yes](https://temp.sh/) | No | 4 GB
 [TempFile.org](https://tempfile.org/) | [Yes](https://tempfile.org/api) | No | 100 MB
 [TempSend](https://tempsend.com/) | No | No | 2 GB

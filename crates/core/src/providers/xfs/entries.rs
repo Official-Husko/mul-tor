@@ -8,6 +8,9 @@ use crate::size::SizeLimit;
 const CLASSIC_FORM: &[(&str, &str)] =
     &[("upload_type", "file"), ("sess_id", ""), ("utype", "anon")];
 
+/// What the upload page of an XFileSharing Pro host sends for a visitor without an account.
+const NODE_FORM: &[(&str, &str)] = &[("utype", "anon"), ("sess_id", "")];
+
 const ANON_FORM: &[(&str, &str)] = &[
     ("utype", "anon"),
     ("file_descr", "Uploaded using Mul-Tor on GitHub!"),
@@ -32,6 +35,20 @@ pub(in crate::providers) fn providers() -> Vec<XfsProvider> {
             "file",
             ANON_FORM,
             "https://clicknupload.vip/{code}",
+        ),
+        XfsProvider::new(
+            ProviderInfo::new(
+                "Datanodes",
+                "https://datanodes.to/",
+                "https://datanodes.to/",
+            )
+            .aliases(&["Datanodes.to"])
+            .max_size(SizeLimit::gb(3)),
+            "https://datanodes.to/upload",
+            r"https://[\w-]+\.datanodes\.to/cgi-bin/upload\.cgi\?upload_type=file&(?:amp;)?utype=anon",
+            "file_0",
+            NODE_FORM,
+            "https://datanodes.to/{code}",
         ),
         XfsProvider::new(
             ProviderInfo::new("Dosya.co", "https://dosya.co/", "https://dosya.co/")
@@ -72,6 +89,14 @@ pub(in crate::providers) fn providers() -> Vec<XfsProvider> {
             "file_0",
             ANON_FORM,
             "https://hexupload.net/{code}",
+        ),
+        XfsProvider::new(
+            ProviderInfo::new("Send.now", "https://send.now/", "https://send.now/upload"),
+            "https://send.now/upload",
+            r"https://[\w-]+\.send\.now/cgi-bin/upload\.cgi\?upload_type=file&(?:amp;)?utype=anon",
+            "file_0",
+            NODE_FORM,
+            "https://send.now/{code}",
         ),
         XfsProvider::new(
             ProviderInfo::new(

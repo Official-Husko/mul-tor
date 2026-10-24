@@ -28,6 +28,7 @@ mod easyupload;
 mod fastupload;
 mod filebin;
 mod fileio;
+mod filemirage;
 mod filesdpua;
 mod filesfm;
 mod filesi;
@@ -59,6 +60,7 @@ pub use easyupload::EasyUpload;
 pub use fastupload::Fastupload;
 pub use filebin::FileBin;
 pub use fileio::FileIo;
+pub use filemirage::FileMirage;
 pub use filesdpua::FilesDpUa;
 pub use filesfm::FilesFm;
 pub use filesi::FileSi;
@@ -96,6 +98,7 @@ pub fn all() -> Vec<Arc<dyn Provider>> {
         Arc::new(Fastupload::default()),
         Arc::new(FileBin),
         Arc::new(FileIo),
+        Arc::new(FileMirage::default()),
         Arc::new(FilesDpUa),
         Arc::new(FilesFm),
         Arc::new(FileSi),

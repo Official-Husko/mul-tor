@@ -1,5 +1,5 @@
-//! Hosts running the "XFileSharing" script: ClicknUpload, Dosya.co, Filespace,
-//! HexUpload, UserCloud and UsersDrive.
+//! Hosts running the "XFileSharing" script: ClicknUpload, Datanodes, Dosya.co,
+//! Filespace, HexUpload, Send.now, UserCloud and UsersDrive.
 //!
 //! The upload endpoint is not fixed; it is embedded in the home page (the
 //! script load-balances over several servers), so the flow is: fetch the page,
@@ -78,9 +78,10 @@ impl Provider for XfsProvider {
     async fn upload(&self, cx: &UploadContext<'_>) -> Result<UploadedFile, UploadError> {
         cx.progress.set_message("Finding upload server");
         let page = cx.http.get(self.page_url).send_reply().await?.ok()?;
-        let endpoint = capture(&self.endpoint, &page.body).ok_or_else(|| {
-            UploadError::unexpected("could not find the upload server in the page")
-        })?;
+        // The address sits in an HTML attribute, where `&` is written `&amp;`.
+        let endpoint = capture(&self.endpoint, &page.body)
+            .ok_or_else(|| UploadError::unexpected("could not find the upload server in the page"))?
+            .replace("&amp;", "&");
 
         cx.progress.set_message("Uploading");
         let mut form = new_form();
