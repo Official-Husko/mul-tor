@@ -13,6 +13,7 @@ mod curlby;
 mod fileio;
 mod filesfm;
 mod form_post;
+mod form_post_rules;
 mod forms;
 mod gofile;
 mod jqfu;

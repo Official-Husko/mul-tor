@@ -190,6 +190,7 @@ Provider | API | Account | Max file size
 [Download.gg](https://download.gg/) | No | No | 25 GB
 [EasySend](https://easysend.co/) | [Yes](https://easysend.co/developer-api) | No | 1 GB
 [EasyUpload](https://easyupload.io/) | No | No | 10 GB
+[End2End.tech](https://end2end.tech/) | [Yes](https://api.end2end.tech/) | No | 2 GB
 [Fastupload](https://fastupload.io/) | No | No | 10 GB
 [File.io](https://file.io/) | No | No | 2 GB
 [File.si](https://file.si/) | [Yes](https://file.si/docs/api) | No | 7 GB

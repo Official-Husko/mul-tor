@@ -1,6 +1,6 @@
 //! Hosts that take one multipart `POST` with the file in a single field and
-//! answer with the link: 0x0.st, Ayaya.beauty, EasySend, Qu.ax, Temp.sh,
-//! TempFile.org, tfLink, Uguu and X0.at.
+//! answer with the link: 0x0.st, Ayaya.beauty, End2End.tech, EasySend, Qu.ax,
+//! Temp.sh, TempFile.org, tfLink, Uguu and X0.at.
 //!
 //! They differ only in the address, the name of the file field, a few fixed
 //! form fields and where the link sits in the reply, so each is one entry of
@@ -128,6 +128,22 @@ pub(super) fn providers() -> Vec<FormPostProvider> {
             "file",
             &[],
             LinkIn::Json("/link"),
+        ),
+        FormPostProvider::new(
+            ProviderInfo::new(
+                "End2End.tech",
+                "https://end2end.tech/",
+                "https://end2end.tech/",
+            )
+            .aliases(&["End2End"])
+            .max_size(SizeLimit::gb(2))
+            .api_docs("https://api.end2end.tech/")
+            .verified(CHECKED),
+            "https://api.end2end.tech/upload",
+            "file",
+            &[],
+            // The reply also holds the password that deletes the file; only the link is read.
+            LinkIn::Json("/URL"),
         ),
         FormPostProvider::new(
             ProviderInfo::new("EasySend", "https://easysend.co/", "https://easysend.co/")
