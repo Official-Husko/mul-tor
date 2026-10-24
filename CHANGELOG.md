@@ -32,8 +32,8 @@ Mul-Tor is rewritten in Rust.
 * `docs/ADDING_PROVIDERS.md` and a test harness that checks each provider's exact HTTP
   requests against a local mock server.
 * Providers that take anonymous uploads, no account needed: 0x0.st, Ayaya.beauty, curl.by,
-  Datanodes, Dosya.co, EasySend, End2End.tech, FileMirage, Filespace, Qu.ax, Send.now,
-  Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and X0.at. Fourteen of them were
+  Datanodes, Dosya.co, EasySend, End2End.tech, FileMirage, Filespace, GigaFile, Qu.ax,
+  Send.now, Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and X0.at. Fifteen of them were
   uploaded to for real and are marked `working`. 0x0.st (not reachable from the machine
   they were tried on), Datanodes (its download page answered 404 to a plain client) and
   Send.now (its file pages sit behind a browser check) stay `unverified`.

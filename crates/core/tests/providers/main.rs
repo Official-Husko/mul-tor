@@ -16,6 +16,7 @@ mod filesfm;
 mod form_post;
 mod form_post_rules;
 mod forms;
+mod gigafile;
 mod gofile;
 mod jqfu;
 mod laravel;

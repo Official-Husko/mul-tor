@@ -33,6 +33,7 @@ mod filesdpua;
 mod filesfm;
 mod filesi;
 mod fileupload;
+mod gigafile;
 mod gofile;
 mod keep;
 mod krakenfiles;
@@ -66,6 +67,7 @@ pub use filesfm::FilesFm;
 pub use filesi::FileSi;
 pub use fileupload::FileUpload;
 pub use form_post::FormPostProvider;
+pub use gigafile::GigaFile;
 pub use gofile::Gofile;
 pub use jqfu::JqfuProvider;
 pub use keep::Keep;
@@ -103,6 +105,7 @@ pub fn all() -> Vec<Arc<dyn Provider>> {
         Arc::new(FilesFm),
         Arc::new(FileSi),
         Arc::new(FileUpload),
+        Arc::new(GigaFile::default()),
         Arc::new(Gofile::default()),
         Arc::new(Keep),
         Arc::new(Krakenfiles),

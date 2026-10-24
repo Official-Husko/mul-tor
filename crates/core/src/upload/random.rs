@@ -11,6 +11,7 @@ pub fn random_string(len: usize, alphabet: &str) -> String {
         .collect()
 }
 
+pub const HEX: &str = "0123456789abcdef";
 pub const LOWER_ALNUM: &str = "abcdefghijklmnopqrstuvwxyz0123456789";
 pub const MIXED_ALNUM: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 

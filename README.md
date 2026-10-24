@@ -202,6 +202,7 @@ Provider | API | Account | Max file size
 [FilesFm](https://files.fm/) | No | No | 5 GB
 [Filespace](https://filespace.com/) | No | No | 150 MB
 [FileUpload](https://file-upload.net/) | No | No | 5 GB
+[GigaFile](https://gigafile.nu/) | No | No | 300 GB
 [Gofile](https://gofile.io/) | [Yes](https://gofile.io/api) | No | ∞
 [HexUpload](https://hexupload.net/) | No | No | 2 GB
 [Keep](https://keep.sh/) | No | No | 500 MB
