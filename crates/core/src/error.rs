@@ -77,15 +77,20 @@ impl UploadError {
     }
 }
 
+/// Some APIs (Rapidgator) take credentials in the query string, and reqwest
+/// prints the request URL in its error message. Every `reqwest::Error` that
+/// enters one of our error types goes through here first.
+fn without_secrets(mut err: reqwest::Error) -> reqwest::Error {
+    if let Some(url) = err.url_mut() {
+        url.set_query(None);
+        url.set_fragment(None);
+    }
+    err
+}
+
 impl From<reqwest::Error> for UploadError {
-    fn from(mut err: reqwest::Error) -> Self {
-        // Some APIs (Rapidgator) take credentials in the query string, and
-        // reqwest prints the request URL in its error message.
-        if let Some(url) = err.url_mut() {
-            url.set_query(None);
-            url.set_fragment(None);
-        }
-        UploadError::Network(err)
+    fn from(err: reqwest::Error) -> Self {
+        UploadError::Network(without_secrets(err))
     }
 }
 
@@ -118,10 +123,16 @@ pub enum Error {
     Preset { name: String, message: String },
 
     #[error(transparent)]
-    Http(#[from] reqwest::Error),
+    Http(reqwest::Error),
 
     #[error("{0}")]
     Other(String),
+}
+
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
+        Error::Http(without_secrets(err))
+    }
 }
 
 impl Error {
@@ -179,6 +190,26 @@ mod tests {
                 .unwrap_err()
         });
         let shown = UploadError::from(err).to_string();
+        assert!(!shown.contains("hunter2"), "{shown}");
+    }
+
+    #[test]
+    fn setup_errors_do_not_leak_query_string_credentials_either() {
+        let rt = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+        let http = crate::HttpFactory::new()
+            .with_proxy(crate::ProxyMode::Direct)
+            .client()
+            .unwrap();
+        let err = rt.block_on(async {
+            http.get("http://127.0.0.1:1/list?token=hunter2")
+                .send()
+                .await
+                .unwrap_err()
+        });
+        let shown = Error::from(err).to_string();
         assert!(!shown.contains("hunter2"), "{shown}");
     }
 }
