@@ -3,7 +3,7 @@
 
 use egui::{Align, Color32, Layout, RichText, ScrollArea, Ui};
 use mul_tor_core::availability::Health;
-use mul_tor_core::{Auth, format_bytes};
+use mul_tor_core::{Auth, Reliability, format_bytes};
 
 use crate::app::{Action, MulTorApp, SettingsTab};
 use crate::model::{JobState, RunState, matches_filter};
@@ -259,11 +259,23 @@ impl MulTorApp {
                                 None => ui.label(""),
                             };
 
-                            match info.known_issue {
-                                Some(issue) => ui
-                                    .label(RichText::new("note").color(theme::WARN))
-                                    .on_hover_text(issue),
-                                None => ui.label(""),
+                            match info.reliability {
+                                Reliability::Unverified => {
+                                    ui.label(RichText::new("unverified").weak()).on_hover_text(
+                                        "Nobody has tried this against the live service yet",
+                                    )
+                                }
+                                Reliability::Working { checked } => ui
+                                    .label(RichText::new("working").color(theme::OK))
+                                    .on_hover_text(format!("Seen working on {checked}")),
+                                Reliability::Degraded(reason) => ui
+                                    .label(RichText::new("degraded").color(theme::WARN))
+                                    .on_hover_text(reason),
+                                Reliability::Broken(reason) => ui
+                                    .label(RichText::new("broken").color(theme::ERROR))
+                                    .on_hover_text(format!(
+                                        "{reason} (it is left out of Select all and presets)"
+                                    )),
                             };
                             ui.end_row();
                         }

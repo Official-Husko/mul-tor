@@ -82,7 +82,12 @@ before any request is made, so `upload` never has to:
 * `.requires(&[CredentialField::new("apiKey", "API key", true)])` — the provider is
   hidden until the user configures it; read values with `cx.credential("apiKey")?`
   (use a `const` for the field list, as in `pixeldrain.rs`)
-* `.known_issue("…")`, `.aliases(&[…])`, `.credentials_url(..)`
+* `.aliases(&[…])`, `.credentials_url(..)`
+* its recorded state, `Unverified` unless you say otherwise: `.degraded("why")` for a
+  known problem, `.broken("why")` for one that does not work (left out of `--all`,
+  presets and "Select all", but still selectable by name), and
+  `.verified("YYYY-MM-DD")` **only** once you have seen it work against the real
+  service. Never guess; the tests only talk to the mock server
 
 ### Helpers, and the rules behind them
 

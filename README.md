@@ -17,6 +17,11 @@ and sharing: pick the files, pick the hosts, get all the links.
   been re-verified against the live services**; the protocols come from the 2024
   Python code, and file hosts change often. If a provider fails, `mul-tor logs` shows
   the details; please [open an issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
+* Every provider records what is known about it: `unverified` (nobody has tried
+  it against the live service; the default), `working` (seen working, with a
+  date), `degraded` (works, with a known problem) or `broken` (known not to
+  work). `mul-tor providers` shows it. Broken providers are left out of `--all`
+  and presets, and you can still pick one by name in case it was fixed.
 * New providers are being added; see [docs/ADDING_PROVIDERS.md](docs/ADDING_PROVIDERS.md).
 
 ## Features

@@ -6,6 +6,7 @@ mod info;
 mod name;
 mod precheck;
 mod registry;
+mod reliability;
 
 use async_trait::async_trait;
 
@@ -13,6 +14,7 @@ pub use credentials::{CredentialField, Credentials};
 pub use info::{Auth, ProviderInfo};
 pub use name::normalize_name;
 pub use registry::Registry;
+pub use reliability::Reliability;
 
 use crate::error::UploadError;
 use crate::upload::{UploadContext, UploadedFile};

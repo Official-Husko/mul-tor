@@ -31,7 +31,8 @@ pub use paths::AppDirs;
 pub use preset::{Preset, PresetLibrary};
 pub use progress::{Progress, ProgressSnapshot};
 pub use provider::{
-    Auth, CredentialField, Credentials, Provider, ProviderInfo, Registry, normalize_name,
+    Auth, CredentialField, Credentials, Provider, ProviderInfo, Registry, Reliability,
+    normalize_name,
 };
 pub use size::{SizeLimit, format_bytes};
 pub use upload::{LocalFile, UploadContext, UploadedFile};

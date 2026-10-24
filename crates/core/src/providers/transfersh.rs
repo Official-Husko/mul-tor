@@ -16,7 +16,7 @@ const INFO: ProviderInfo = ProviderInfo::new(
     "https://transfer.sh/",
 )
 .max_size(SizeLimit::gb(10))
-.known_issue("The public service has been unreliable, and Mul-Tor 1.x never actually offered it because of a naming bug.");
+.degraded("The public service has been unreliable, and Mul-Tor 1.x never actually offered it because of a naming bug.");
 
 #[async_trait]
 impl Provider for TransferSh {

@@ -28,8 +28,9 @@ pub struct Selection {
 ///
 /// - Named providers (`--provider`) are taken as given, even if their credentials are
 ///   missing, so the failure is explicit.
-/// - Presets and `--all` skip blacklisted providers and providers whose credentials
-///   are not configured, since those would only fail.
+/// - Presets and `--all` skip blacklisted providers, providers whose credentials
+///   are not configured, and providers recorded as broken, since those would
+///   only fail. Naming a broken provider still works, with a warning.
 /// - With nothing requested, a preset the config marks `auto_load` applies.
 pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
     let explicit = !request.names.is_empty();
@@ -51,6 +52,7 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
         notes: Vec::new(),
     };
     let mut skipped_no_credentials: Vec<&str> = Vec::new();
+    let mut skipped_broken: Vec<String> = Vec::new();
 
     let mut add = |selection: &mut Selection, provider: &Arc<dyn Provider>, skip_unusable: bool| {
         let info = provider.info();
@@ -68,6 +70,16 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
         if skip_unusable && app.lacks_credentials(info) {
             skipped_no_credentials.push(info.name);
             return;
+        }
+        if info.reliability.is_broken() {
+            if skip_unusable {
+                skipped_broken.push(format!("{} ({})", info.name, info.reliability));
+                return;
+            }
+            selection.notes.push(format!(
+                "{} is recorded as {}; trying it anyway",
+                info.name, info.reliability
+            ));
         }
         selection.providers.push(provider.clone());
     };
@@ -118,6 +130,12 @@ pub fn select(app: &App, request: &Request) -> Result<Option<Selection>> {
         selection.notes.push(format!(
             "skipped, no credentials configured: {}",
             skipped_no_credentials.join(", ")
+        ));
+    }
+    if !skipped_broken.is_empty() {
+        selection.notes.push(format!(
+            "skipped, known not to work: {} (name one with --provider to try it anyway)",
+            skipped_broken.join(", ")
         ));
     }
     if selection.providers.is_empty() {
@@ -343,5 +361,96 @@ mod tests {
         .unwrap()
         .unwrap();
         assert!(names(&selection).contains(&"Keep") && names(&selection).contains(&"Gofile"));
+    }
+
+    mod broken_providers {
+        use std::sync::Arc;
+
+        use async_trait::async_trait;
+        use mul_tor_core::{
+            Provider, ProviderInfo, Registry, UploadContext, UploadError, UploadedFile,
+        };
+
+        use super::*;
+        use crate::app::test_app_with;
+
+        struct Stub(ProviderInfo);
+
+        #[async_trait]
+        impl Provider for Stub {
+            fn info(&self) -> &ProviderInfo {
+                &self.0
+            }
+
+            async fn upload(&self, _: &UploadContext<'_>) -> Result<UploadedFile, UploadError> {
+                unreachable!("selection never uploads")
+            }
+        }
+
+        fn app() -> App {
+            let stub = |info| -> Arc<dyn Provider> { Arc::new(Stub(info)) };
+            test_app_with(
+                Config::default(),
+                Registry::new(vec![
+                    stub(ProviderInfo::new("Fine", "https://f", "https://f")),
+                    stub(ProviderInfo::new("Shaky", "https://s", "https://s").degraded("slow")),
+                    stub(ProviderInfo::new("Dead", "https://d", "https://d").broken("shut down")),
+                ]),
+            )
+        }
+
+        #[test]
+        fn all_skips_broken_providers_and_says_so() {
+            let selection = select(
+                &app(),
+                &Request {
+                    all: true,
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .unwrap();
+            assert_eq!(names(&selection), ["Fine", "Shaky"]);
+            assert!(
+                selection
+                    .notes
+                    .iter()
+                    .any(|n| n.contains("Dead") && n.contains("shut down")),
+                "{:?}",
+                selection.notes
+            );
+        }
+
+        #[test]
+        fn naming_a_broken_provider_still_tries_it_with_a_warning() {
+            let wanted = strings(&["dead"]);
+            let selection = select(
+                &app(),
+                &Request {
+                    names: &wanted,
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .unwrap();
+            assert_eq!(names(&selection), ["Dead"]);
+            assert!(selection.notes[0].contains("trying it anyway"));
+        }
+
+        #[test]
+        fn a_degraded_provider_is_not_held_back() {
+            let wanted = strings(&["shaky"]);
+            let selection = select(
+                &app(),
+                &Request {
+                    names: &wanted,
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .unwrap();
+            assert_eq!(names(&selection), ["Shaky"]);
+            assert!(selection.notes.is_empty());
+        }
     }
 }

@@ -15,8 +15,9 @@ const INFO: ProviderInfo = ProviderInfo::new(
     "https://download.gg/",
     "https://download.gg/",
 )
-.max_size(SizeLimit::gb(25))
-.known_issue("Less tested than the others: Mul-Tor 1.x never actually offered this provider because of a naming bug.");
+.max_size(SizeLimit::gb(25));
+// Mul-Tor 1.x never offered this provider because of a naming bug, so its
+// protocol has not been exercised against the live service. Unverified.
 
 #[async_trait]
 impl Provider for DownloadGg {

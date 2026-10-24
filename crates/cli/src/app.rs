@@ -125,12 +125,17 @@ fn with_test_hooks(factory: HttpFactory) -> HttpFactory {
 
 #[cfg(test)]
 pub fn test_app(config: Config) -> App {
+    test_app_with(config, Registry::builtin())
+}
+
+#[cfg(test)]
+pub fn test_app_with(config: Config, registry: Registry) -> App {
     let dir = AppDirs::in_dir(std::env::temp_dir().join("mul-tor-test-unused"));
     App {
         store: ConfigStore::new(&dir),
         dirs: dir,
         config,
-        registry: Registry::builtin(),
+        registry,
         presets: PresetLibrary::builtin(),
     }
 }

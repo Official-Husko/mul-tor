@@ -41,19 +41,20 @@ pub fn providers_table(infos: &[&ProviderInfo]) -> String {
         .max()
         .unwrap_or(4)
         .max(4);
-    let row = |name: &str, size: &str, account: &str, notes: &str| {
-        format!("{name:<name_width$}  {size:>8}  {account:<8}  {notes}")
+    let row = |name: &str, size: &str, account: &str, status: &str, notes: &str| {
+        format!("{name:<name_width$}  {size:>8}  {account:<8}  {status:<10}  {notes}")
             .trim_end()
             .to_string()
             + "\n"
     };
-    let mut out = row("Provider", "Max size", "Account", "Notes");
+    let mut out = row("Provider", "Max size", "Account", "Status", "Notes");
     for info in infos {
         out.push_str(&row(
             info.name,
             &size_label(info),
             account_label(info),
-            info.known_issue.unwrap_or(""),
+            info.reliability.label(),
+            info.reliability.note().unwrap_or(""),
         ));
     }
     out
@@ -94,7 +95,8 @@ pub fn providers_json(infos: &[&ProviderInfo]) -> serde_json::Value {
                 "max_size_bytes": info.max_size.map(|l| l.bytes()),
                 "account": account_label(info),
                 "credentials": info.credentials.iter().map(|f| f.key).collect::<Vec<_>>(),
-                "known_issue": info.known_issue,
+                "status": info.reliability.label(),
+                "status_note": info.reliability.note(),
             })
         })
         .collect()

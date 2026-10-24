@@ -251,6 +251,7 @@ impl MulTorApp {
         };
         let resolved = preset.resolve(&self.registry);
         let mut skipped = Vec::new();
+        let mut broken = Vec::new();
         let mut ids = Vec::new();
         for provider in &resolved.providers {
             let Some(row) = self
@@ -262,6 +263,8 @@ impl MulTorApp {
             };
             if self.config.lacks_credentials(provider.info()) {
                 skipped.push(provider.info().name);
+            } else if !provider.info().reliability.included_in_bulk_choices() {
+                broken.push(provider.info().name);
             } else {
                 ids.push(row.id.clone());
             }
@@ -272,6 +275,9 @@ impl MulTorApp {
         let mut remarks = Vec::new();
         if !skipped.is_empty() {
             remarks.push(format!("needs credentials: {}", skipped.join(", ")));
+        }
+        if !broken.is_empty() {
+            remarks.push(format!("known not to work: {}", broken.join(", ")));
         }
         if !resolved.unsupported.is_empty() {
             remarks.push(format!(
@@ -392,6 +398,7 @@ impl MulTorApp {
                     .rows
                     .iter()
                     .filter(|r| !self.lacks_credentials(&r.provider))
+                    .filter(|r| r.provider.info().reliability.included_in_bulk_choices())
                     .filter(|r| {
                         crate::model::matches_filter(&*r.provider, &self.model.provider_filter)
                     })

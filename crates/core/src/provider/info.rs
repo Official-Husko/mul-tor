@@ -2,6 +2,7 @@
 
 use super::credentials::CredentialField;
 use super::name::normalize_name;
+use super::reliability::Reliability;
 use crate::size::SizeLimit;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -31,8 +32,8 @@ pub struct ProviderInfo {
     pub api_docs: Option<&'static str>,
     /// Where the user gets the credentials from.
     pub credentials_url: Option<&'static str>,
-    /// Shown next to the provider; for things we know are shaky.
-    pub known_issue: Option<&'static str>,
+    /// What is known about whether it works; see [`Reliability`].
+    pub reliability: Reliability,
     /// Lower-case extensions with the leading dot (`".exe"`) the provider refuses.
     pub blocked_extensions: &'static [&'static str],
 }
@@ -49,7 +50,7 @@ impl ProviderInfo {
             credentials: &[],
             api_docs: None,
             credentials_url: None,
-            known_issue: None,
+            reliability: Reliability::Unverified,
             blocked_extensions: &[],
         }
     }
@@ -80,8 +81,21 @@ impl ProviderInfo {
         self
     }
 
-    pub const fn known_issue(mut self, note: &'static str) -> Self {
-        self.known_issue = Some(note);
+    /// Seen working on `checked` (`YYYY-MM-DD`). Only with real evidence.
+    pub const fn verified(mut self, checked: &'static str) -> Self {
+        self.reliability = Reliability::Working { checked };
+        self
+    }
+
+    /// Works, but with a problem users should know about.
+    pub const fn degraded(mut self, reason: &'static str) -> Self {
+        self.reliability = Reliability::Degraded(reason);
+        self
+    }
+
+    /// Known not to work; skipped by `--all` and presets.
+    pub const fn broken(mut self, reason: &'static str) -> Self {
+        self.reliability = Reliability::Broken(reason);
         self
     }
 
@@ -120,6 +134,20 @@ mod tests {
         assert!(!info.matches("transfer"));
         assert!(!info.matches(""));
         assert!(!info.matches("..."));
+    }
+
+    #[test]
+    fn reliability_is_recorded_with_its_reason() {
+        let info = ProviderInfo::new("X", "", "");
+        assert_eq!(info.reliability, Reliability::Unverified);
+        assert_eq!(info.broken("gone").reliability, Reliability::Broken("gone"));
+        assert_eq!(
+            info.verified("2026-10-24").reliability,
+            Reliability::Working {
+                checked: "2026-10-24"
+            }
+        );
+        assert_eq!(info.degraded("slow").reliability.note(), Some("slow"));
     }
 
     #[test]

@@ -12,7 +12,7 @@ pub struct Oshi;
 
 const INFO: ProviderInfo = ProviderInfo::new("Oshi", "https://oshi.at/", "https://oshi.at/cmd")
     .max_size(SizeLimit::gb(5))
-    .known_issue("Very slow server; best left for last.");
+    .degraded("Very slow server; best left for last.");
 
 #[async_trait]
 impl Provider for Oshi {
