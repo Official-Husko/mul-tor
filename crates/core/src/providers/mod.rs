@@ -42,6 +42,7 @@ mod onefichier;
 mod oshi;
 mod pixeldrain;
 mod rapidgator;
+mod storage_to;
 mod tempsend;
 mod tmpfiles;
 mod transfersh;
@@ -77,6 +78,7 @@ pub use onefichier::OneFichier;
 pub use oshi::Oshi;
 pub use pixeldrain::Pixeldrain;
 pub use rapidgator::Rapidgator;
+pub use storage_to::StorageTo;
 pub use tempsend::TempSend;
 pub use tmpfiles::TmpFiles;
 pub use transfersh::TransferSh;
@@ -115,6 +117,7 @@ pub fn all() -> Vec<Arc<dyn Provider>> {
         Arc::new(Oshi),
         Arc::new(Pixeldrain),
         Arc::new(Rapidgator::default()),
+        Arc::new(StorageTo),
         Arc::new(TempSend),
         Arc::new(TmpFiles),
         Arc::new(TransferSh),

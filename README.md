@@ -214,6 +214,7 @@ Provider | API | Account | Max file size
 [Qu.ax](https://qu.ax/) | No | No | 256 MB
 [Rapidgator](https://rapidgator.net/) | [Yes](https://rapidgator.net/article/api/) | [Yes](https://rapidgator.net/article/api/) | ∞
 [Send.now](https://send.now/) | No | No | ∞
+[Storage.to](https://storage.to/) | [Yes](https://storage.to/docs/api) | No | 25 GB
 [Temp.sh](https://temp.sh/) | [Yes](https://temp.sh/) | No | 4 GB
 [TempFile.org](https://tempfile.org/) | [Yes](https://tempfile.org/api) | No | 100 MB
 [TempSend](https://tempsend.com/) | No | No | 2 GB

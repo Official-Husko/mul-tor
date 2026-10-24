@@ -33,10 +33,11 @@ Mul-Tor is rewritten in Rust.
   requests against a local mock server.
 * Providers that take anonymous uploads, no account needed: 0x0.st, Ayaya.beauty, curl.by,
   Datanodes, Dosya.co, EasySend, End2End.tech, FileMirage, Filespace, GigaFile, Qu.ax,
-  Send.now, Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and X0.at. Fifteen of them were
-  uploaded to for real and are marked `working`. 0x0.st (not reachable from the machine
-  they were tried on), Datanodes (its download page answered 404 to a plain client) and
-  Send.now (its file pages sit behind a browser check) stay `unverified`.
+  Send.now, Storage.to, Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and X0.at.
+  Sixteen of them were uploaded to for real and are marked `working`. 0x0.st (not
+  reachable from the machine they were tried on), Datanodes (its download page answered
+  404 to a plain client) and Send.now (its file pages sit behind a browser check) stay
+  `unverified`. Where a host offers a choice of retention, the longest is always asked for.
 * The XFileSharing family reads two more ways of finishing an upload (older versions
   redirect to a result page) and takes the upload node from the page's own attribute.
 * A provider can list the only file types it takes (Qu.ax), next to the list it refuses.

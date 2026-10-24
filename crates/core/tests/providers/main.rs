@@ -23,6 +23,7 @@ mod laravel;
 mod onefichier;
 mod rapidgator;
 mod single_request;
+mod storage_to;
 mod support;
 mod two_step;
 mod vikingfile;
