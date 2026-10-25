@@ -27,6 +27,7 @@ mod curlby;
 mod delafil;
 mod doodrive;
 mod downloadgg;
+mod dropmefiles;
 mod easyupload;
 mod fastupload;
 mod filebin;
@@ -62,6 +63,7 @@ pub use curlby::CurlBy;
 pub use delafil::Delafil;
 pub use doodrive::DooDrive;
 pub use downloadgg::DownloadGg;
+pub use dropmefiles::DropMeFiles;
 pub use easyupload::EasyUpload;
 pub use fastupload::Fastupload;
 pub use filebin::FileBin;
@@ -105,6 +107,7 @@ pub fn all() -> Vec<Arc<dyn Provider>> {
         Arc::new(Delafil),
         Arc::new(DooDrive),
         Arc::new(DownloadGg),
+        Arc::new(DropMeFiles),
         Arc::new(EasyUpload::default()),
         Arc::new(Fastupload::default()),
         Arc::new(FileBin),

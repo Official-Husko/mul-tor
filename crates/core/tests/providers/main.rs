@@ -10,6 +10,7 @@ mod common;
 
 mod chunked;
 mod curlby;
+mod dropmefiles;
 mod fileio;
 mod filemirage;
 mod filesfm;
