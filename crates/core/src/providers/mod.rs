@@ -14,6 +14,7 @@ mod dropzone;
 mod form_post;
 mod jqfu;
 mod lufi;
+mod websocket;
 mod xfs;
 
 mod anontransfer;

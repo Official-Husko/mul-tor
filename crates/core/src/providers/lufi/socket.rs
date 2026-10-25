@@ -3,13 +3,14 @@
 
 use std::time::Duration;
 
-use futures::{SinkExt, TryStreamExt};
-use reqwest_websocket::{Message, Upgrade, WebSocket};
+use futures::SinkExt;
+use reqwest_websocket::Message;
 use serde_json::{Value, json};
 use tokio::io::AsyncReadExt;
 
 use super::sjcl;
 use crate::error::UploadError;
+use crate::providers::websocket::{next_text, open, socket_error};
 use crate::upload::UploadContext;
 
 /// Bytes of the file in each slice; what the web client uses.
@@ -58,23 +59,11 @@ pub(super) async fn send_file(
             .await
             .map_err(socket_error)?;
 
-        let reply = next_text(&mut socket).await?;
+        let reply = next_text(&mut socket, REPLY_TIMEOUT).await?;
         cx.progress.add(len as u64);
         short = Some(acknowledged(&reply)?);
     }
     short.ok_or(UploadError::EmptyFile)
-}
-
-async fn open(cx: &UploadContext<'_>, endpoint: &str) -> Result<WebSocket, UploadError> {
-    cx.http
-        .get_for_upgrade(endpoint)
-        .upgrade()
-        .send()
-        .await
-        .map_err(socket_error)?
-        .into_websocket()
-        .await
-        .map_err(socket_error)
 }
 
 /// Metadata, a separator and the encrypted slice, as the web client builds them.
@@ -89,23 +78,6 @@ async fn seal(meta: Value, key: String, slice: Vec<u8>) -> Result<String, Upload
     })
     .await
     .map_err(|_| UploadError::unexpected("encrypting a slice failed"))
-}
-
-/// The next text message; pings and the like are skipped.
-async fn next_text(socket: &mut WebSocket) -> Result<String, UploadError> {
-    loop {
-        let next = tokio::time::timeout(REPLY_TIMEOUT, socket.try_next())
-            .await
-            .map_err(|_| UploadError::unexpected("the server stopped answering"))?
-            .map_err(socket_error)?;
-        match next {
-            Some(Message::Text(text)) => return Ok(text),
-            Some(Message::Close { .. }) | None => {
-                return Err(UploadError::unexpected("the server closed the connection"));
-            }
-            Some(_) => {}
-        }
-    }
 }
 
 /// The id from a successful acknowledgement. It goes into the link and into the
@@ -133,9 +105,4 @@ fn acknowledged(reply: &str) -> Result<String, UploadError> {
         })
         .map(str::to_string)
         .ok_or_else(|| UploadError::protocol("reply has no usable id", reply))
-}
-
-/// A socket failure, without the address (which may carry a query).
-fn socket_error(error: reqwest_websocket::Error) -> UploadError {
-    UploadError::unexpected(format!("websocket: {error}"))
 }
