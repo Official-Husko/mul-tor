@@ -191,6 +191,7 @@ Provider | API | Account | Max file size
 [DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
 [Dosya.co](https://dosya.co/) | No | No | 2 GB
 [Download.gg](https://download.gg/) | No | No | 25 GB
+[DropMeFiles](https://dropmefiles.com/) | No | No | 50 GB
 [EasySend](https://easysend.co/) | [Yes](https://easysend.co/developer-api) | No | 1 GB
 [EasyUpload](https://easyupload.io/) | No | No | 10 GB
 [End2End.tech](https://end2end.tech/) | [Yes](https://api.end2end.tech/) | No | 2 GB
@@ -215,7 +216,13 @@ Provider | API | Account | Max file size
 [Pixeldrain](https://pixeldrain.com/) | [Yes](https://pixeldrain.com/api) | [Yes](https://pixeldrain.com/user/api_keys) | 20 GB
 [Qu.ax](https://qu.ax/) | No | No | 256 MB
 [Rapidgator](https://rapidgator.net/) | [Yes](https://rapidgator.net/article/api/) | [Yes](https://rapidgator.net/article/api/) | ∞
+[Send.adminforge.de](https://send.adminforge.de/) | No | No | 8 GB
+[Send.cyberjake.xyz](https://send.cyberjake.xyz/) | No | No | 10 GB
+[Send.mni.li](https://send.mni.li/) | No | No | 8 GB
+[Send.monks.tools](https://send.monks.tools/) | No | No | 5 GB
 [Send.now](https://send.now/) | No | No | ∞
+[Sendspace](https://www.sendspace.com/) | No | No | 300 MB
+[SendVis](https://send.vis.ee/) | No | No | 2560 MB
 [Storage.to](https://storage.to/) | [Yes](https://storage.to/docs/api) | No | 25 GB
 [Temp.sh](https://temp.sh/) | [Yes](https://temp.sh/) | No | 4 GB
 [TempFile.org](https://tempfile.org/) | [Yes](https://tempfile.org/api) | No | 100 MB
@@ -234,39 +241,43 @@ Provider | API | Account | Max file size
 ### Rejected providers
 <details>
 
+  Checked again on 2026-10-25. Where a site only lets a real browser through (a challenge, a captcha), it stays
+  out on purpose: Mul-Tor does not solve or get around those.
+
   Provider | API | Account | Max File Size | Reason
   --- | --- | --- | --- | ---
-  [DropMeFiles](https://dropmefiles.com/) | No | No | 50 GB | Terrible Uploading System
-  [Up2Share](https://up2sha.re/) | No | No | 1 GB | Terrible Uploading System
-  [WeTransfer](https://wetransfer.com/) | No | No | 2 GB | When do the terrible uploading systems end?
-  [Filemail](https://filemail.com/) | [Yes](https://filemail.com/apidoc) | [No/Yes*²](https://filemail.com/apidoc/ApiKey.aspx) | 5 GB | Garbage Limit of 2 Uploads a Day (Sucks regarding coding and testing)
-  [MEGA](https://mega.nz/) | [Yes](https://mega.io/developers) | No | 20 GB | Uses complicated Encrypting & Decrypting
-  [Google Drive](https://google.com/drive/) | [Yes](https://developers.google.com/drive/api/guides/about-sdk) | No | 15 GB | I see no reason to add this
-  [Mediafire](https://mediafire.com/) | [Yes](https://mediafire.com/developers/core_api/1.5/getting_started/) | No | 10 GB | I see no reason to add this
-  [UploadHaven](https://uploadhaven.com/) | No | No | 50 GB | Paid/Invite Only
-  [Terminal](https://terminal.lc/) | No | No | ? | Invite Only
-  [UpToBox](https://uptobox.com/) | [Yes](https://docs.uptobox.com/) | [Yes](https://uptobox.com/my_account) | 200 GB | Raided by the Feds/ACE & Down
-  [SendGB](https://sendgb.com/) | No | No | 5 GB | [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
-  [WorkUpload](https://workupload.com/) | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
-  [Qiwi.gg](https://qiwi.gg/) | No | No | ? | Really Complicated system
-  [CyberFiles](https://cyberfile.me/) | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [SendSpace](https://sendspace.com/) | No | No | 300 MB | SSL issues and terrible upload system
-  [BeeFiles](https://beefiles.io/) | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
-  [SwissTransfer](https://swisstransfer.com/) | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
+  [Up2Share](https://up2sha.re/) | No | No | 1 GB | Every page sits behind a Cloudflare browser check
+  [WeTransfer](https://wetransfer.com/) | No | No | 2 GB | Creating a transfer needs a solved hCaptcha
+  [Filemail](https://filemail.com/) | [Yes](https://filemail.com/apidoc) | [No/Yes*²](https://filemail.com/apidoc/ApiKey.aspx) | 5 GB | The API needs a key from a registered account; anonymous use is limited to 2 uploads a day
+  [MEGA](https://mega.nz/) | [Yes](https://mega.io/developers) | No | 20 GB | Needs an account and MEGA's own client-side encryption scheme
+  [Google Drive](https://google.com/drive/) | [Yes](https://developers.google.com/drive/api/guides/about-sdk) | No | 15 GB | Needs an account and an OAuth app
+  [Mediafire](https://mediafire.com/) | [Yes](https://mediafire.com/developers/core_api/1.5/getting_started/) | No | 10 GB | Browser check in front of the site; the API needs an account
+  [UploadHaven](https://uploadhaven.com/) | No | No | 50 GB | The page has no upload form for anonymous visitors
+  [Terminal](https://terminal.lc/) | No | No | ? | Did not answer when checked (2026-10-25)
+  [UpToBox](https://uptobox.com/) | [Yes](https://docs.uptobox.com/) | [Yes](https://uptobox.com/my_account) | 200 GB | Raided by the Feds/ACE & down
+  [SendGB](https://sendgb.com/) | No | No | 5 GB | Uploading needs a solved Cloudflare Turnstile · [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
+  [WorkUpload](https://workupload.com/) | No | No | 2 GB | Uploading needs a solved captcha
+  [Qiwi.gg](https://qiwi.gg/) | No | No | ? | Browser check in front of the site
+  [CyberFiles](https://cyberfile.me/) | No | No | 10 GB | Anonymous uploads (a temp account, removed after 5 days) are offered, but when checked (2026-10-25) the uploader said "no active storage servers found"
+  [BeeFiles](https://beefiles.io/) | No | No | 20 GB | Did not answer when checked (2026-10-25)
+  [SwissTransfer](https://swisstransfer.com/) | No | No | 20 GB | Uploading needs a solved Altcha challenge
   [UploadBuzz](https://uploadbuzz.cc/) | No | No | ? | Website is down
-  [pCloud](https://pcloud.com/) | [Yes](https://docs.pcloud.com/) | No | 10 GB | Paid
-  [Wormhole](https://wormhole.app/) | No | No | 10 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendVis](https://send.vis.ee/) | No | No | 2.5 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [Instant.io](https://instant.io/) | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendTresorit](https://send.tresorit.com/) | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [Sharrr](https://sharrr.com/) | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendZcyph](https://send.zcyph.cc/) | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [TransferXL](https://transferxl.com/) | No | No | 5 GB | Captchas Required
-  [WeSendIt](https://wesendit.com/) | No | No | 2 GB | Can't figure out the upload system
-  [Yandex Disk](https://Yandex.Disk/) | No | No | 5 GB | I see no reason to add this
-  [Archive.org](https://archive.org/) | No | No | ∞ | I see no reason to add this
-  [TransferNow](https://transfernow.net/) | No | No | 5 GB | Not worth the hassle
-  [Bunkrr](https://app.bunkrr.su/) | [Yes](https://app.bunkrr.su/dashboard) | [Yes](https://app.bunkrr.su/dashboard) | 2GB | [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
+  [pCloud](https://pcloud.com/) | [Yes](https://docs.pcloud.com/) | No | 10 GB | Needs an account
+  [Wormhole](https://wormhole.app/) | No | No | 10 GB | Peer-to-peer (WebTorrent) transfer with its own encryption; files are kept 24 hours · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Instant.io](https://instant.io/) | No | No | ? | Not a host: a WebTorrent page, the file is only there while the uploader keeps it open · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendTresorit](https://send.tresorit.com/) | No | No | ? | Client-side encryption of its own design, not implemented · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Sharrr](https://sharrr.com/) | No | No | ? | Client-side encryption of its own design, not implemented · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendZcyph](https://send.zcyph.cc/) | No | No | ? | Did not answer when checked (2026-10-25) · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [TransferXL](https://transferxl.com/) | No | No | 5 GB | Uploading needs a solved reCAPTCHA
+  [WeSendIt](https://wesendit.com/) | No | No | 2 GB | Needs an account
+  [Yandex Disk](https://disk.yandex.com/) | No | No | 5 GB | Needs an account
+  [Archive.org](https://archive.org/) | No | No | ∞ | Needs an account (S3 keys)
+  [TransferNow](https://transfernow.net/) | No | No | 5 GB | Bot detection in front of the upload
+  [Bunkrr](https://app.bunkrr.su/) | [Yes](https://app.bunkrr.su/dashboard) | [Yes](https://app.bunkrr.su/dashboard) | 2GB | Needs an account token · [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
+  [allfiles.org](https://allfiles.org/en) | No | No | ? | Every upload call answers an empty page unless it comes from a browser
+  [FilePort](https://fileport.io/) | No | No | ? | Browser check on every page, and its robots.txt asks automated clients to stay away
+  [Bashupload](https://bashupload.com/) | [Yes](https://bashupload.com/) | No | ? | A file is deleted after its first download, which is no use for sharing a backup
+  [Fileditch](https://fileditch.com/) | No | No | ? | Refuses plain clients with a 403
 
 </details>
 

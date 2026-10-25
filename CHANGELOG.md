@@ -32,15 +32,24 @@ Mul-Tor is rewritten in Rust.
 * `docs/ADDING_PROVIDERS.md` and a test harness that checks each provider's exact HTTP
   requests against a local mock server.
 * Providers that take anonymous uploads, no account needed: 0x0.st, AdminForge, Ayaya.beauty,
-  curl.by, Datanodes, Disroot, Dosya.co, EasySend, End2End.tech, FileMirage, Filespace,
-  GigaFile, Qu.ax, Send.now, Storage.to, Temp.sh, TempFile.org, tfLink, Uguu, VikingFile and
-  X0.at. Eighteen of them were uploaded to for real and are marked `working`. 0x0.st (not
-  reachable from the machine they were tried on), Datanodes (its download page answered 404
-  to a plain client) and Send.now (its file pages sit behind a browser check) stay
-  `unverified`. Where a host offers a choice of retention, the longest is always asked for.
+  curl.by, Datanodes, Disroot, Dosya.co, DropMeFiles, EasySend, End2End.tech, FileMirage,
+  Filespace, GigaFile, Qu.ax, Send.adminforge.de, Send.cyberjake.xyz, Send.mni.li,
+  Send.monks.tools, Send.now, Sendspace, SendVis, Storage.to, Temp.sh, TempFile.org, tfLink,
+  Uguu, VikingFile and X0.at. All but four were uploaded to for real and are marked
+  `working`. 0x0.st (not reachable from the machine they were tried on), Datanodes (its
+  download page answered 404 to a plain client), Send.now (its file pages sit behind a
+  browser check) and DropMeFiles (a small file went up and came back intact, but its
+  throttle stopped the test of a file in several chunks) stay `unverified`. Where a host offers a choice of retention, the longest is always asked for.
 * Lufi instances (AdminForge, Disroot): the file is encrypted here with a random key, slice
   by slice, and sent over a WebSocket, as the instance's web page does, so its own download
   page opens it; the key is only in the part of the link after `#`.
+* Send instances (SendVis and four others): the Firefox Send fork's protocol, as its web page
+  speaks it. The file is encrypted here (RFC 8188 `aes128gcm`, a random 128-bit secret),
+  sent over a WebSocket, and the secret stays in the part of the link after `#`. The
+  longest expiry and most downloads each instance's own `/config` allows are always asked for.
+* Sendspace (a signed upload form read off its home page) and DropMeFiles (a transfer made
+  over its page's own API, the file sent in raw chunks with the 14 days it offers at most;
+  it answers "Spam" to a second transfer from the same address within a few minutes).
 * The XFileSharing family reads two more ways of finishing an upload (older versions
   redirect to a result page) and takes the upload node from the page's own attribute.
 * A provider can list the only file types it takes (Qu.ax), next to the list it refuses.
