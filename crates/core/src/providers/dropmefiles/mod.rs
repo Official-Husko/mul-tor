@@ -3,6 +3,9 @@
 //! Plupload does it), a password flag is set and the transfer is saved.
 //!
 //! The longest time the page offers, 14 days, is always asked for.
+//!
+//! Files of the kinds in [`SCANNED`] are handed out by the site inside a zip with
+//! the password `123` (`name_pass_123.zip`); the file inside is the one sent.
 
 mod session;
 
@@ -21,7 +24,8 @@ const INFO: ProviderInfo = ProviderInfo::new(
     "https://dropmefiles.com/",
     "https://dropmefiles.com/",
 )
-.max_size(SizeLimit::gb(50));
+.max_size(SizeLimit::gb(50))
+.verified("2026-10-25");
 
 /// The "14 days" choice of the page; 2 is 7 days.
 const PERIOD: &str = "3";
