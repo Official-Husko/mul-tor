@@ -1,0 +1,33 @@
+[package]
+name = "mul-tor-gui"
+description = "Upload files to many hosting providers at once (graphical interface)"
+version.workspace = true
+edition.workspace = true
+# egui 0.37 requires 1.95. Verified: `cargo +1.95.0 check -p mul-tor-gui`.
+rust-version = "1.95"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "mul-tor-gui"
+path = "src/main.rs"
+
+[dependencies]
+mul-tor-core.workspace = true
+anyhow.workspace = true
+eframe = { version = "0.37", default-features = false, features = ["wgpu", "wayland", "x11", "default_fonts", "clipboard"] }
+egui = "0.37"
+rfd = "0.17"
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+egui_kittest = { version = "0.37", features = ["eframe"] }
+axum.workspace = true
+tempfile.workspace = true
+tracing-subscriber.workspace = true

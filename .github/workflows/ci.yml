@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [master, development]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Incremental artefacts are useless on a fresh runner and bloat the cache.
+  CARGO_INCREMENTAL: "0"
+  CARGO_NET_RETRY: "10"
+  RUST_BACKTRACE: short
+
+jobs:
+  lint:
+    name: Format and lints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      # Small files that each do one thing: split a file rather than raise the limit.
+      - run: scripts/check-file-sizes.sh
+      - run: cargo clippy --workspace --all-targets --locked --features mul-tor/test-hooks -- -D warnings
+
+  test:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # `test-hooks` lets the end-to-end tests redirect every provider to a local
+      # mock server. Nothing in the suite talks to the real providers.
+      # Without --no-fail-fast the run stops at the first failing test binary,
+      # which hides what else is broken on a platform.
+      - run: cargo test --workspace --locked --features mul-tor/test-hooks --no-fail-fast
+
+  msrv:
+    name: Minimum supported Rust version (1.89)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.89.0
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check -p mul-tor-core -p mul-tor --locked
+
+  cli-release-build:
+    name: CLI builds on its own (no GUI dependencies)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked -p mul-tor
+      - name: The CLI binary must not link the GUI stack
+        run: |
+          if ldd target/release/mul-tor | grep -Ei 'wayland|xkb|vulkan|libX11'; then
+            echo "the command-line binary should have no graphics dependencies" >&2
+            exit 1
+          fi

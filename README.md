@@ -1,118 +1,283 @@
-> [!IMPORTANT]  
-> Mul-Tor is being rewritten. Until 2.0 Release there will only be critical updates if needed.
-> This tool still works without any major issues so you can keep using it without worrying about anything.
-
-> [!NOTE]  
-> Progress for the rewrite can be tracked [here](https://github.com/users/Official-Husko/projects/2/views/2) and [here](https://github.com/Official-Husko/mul-tor/tree/oop-rewrite).
-
-
 # Mul-Tor
-## Your tool for easy file uploading and sharing.
 
-#### As mentioned above the goal of this tool is to help people upload files fast to multiple hosters while also helping in the process of sharing these links.
+**Upload a file to many file-hosting providers at once.** Built for backups, archiving
+and sharing: pick the files, pick the hosts, get all the links.
 
-<br />
+> [!NOTE]
+> **Mul-Tor 2.0 is a rewrite in Rust** (not released yet). It ships as a single
+> native program for Linux, macOS and Windows: a command-line tool (`mul-tor`)
+> and a graphical one (`mul-tor-gui`, built on egui/wgpu). The Python 1.x
+> version lives on in the git history (tag `1.5.2`).
 
-### Preview
+## Status
 
-![preview](https://github.com/Official-Husko/mul-tor/blob/master/media/preview.gif)  
+* All 37 providers of the Python version are ported, and providers that take
+  anonymous uploads are being added on top of them.
+* Every uploader is tested against a local mock server that checks the exact
+  HTTP requests it sends (field names, headers, chunk boundaries). **The ported
+  ones have not been re-verified against the live services**; the protocols come
+  from the 2024 Python code, and file hosts change often. The newer ones marked
+  `working` in `mul-tor providers` were uploaded to for real on the date shown. If a provider fails, `mul-tor logs` shows
+  the details; please [open an issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
+* Every provider records what is known about it: `unverified` (nobody has tried
+  it against the live service; the default), `working` (seen working, with a
+  date), `degraded` (works, with a known problem) or `broken` (known not to
+  work). `mul-tor providers` shows it. Broken providers are left out of `--all`
+  and presets, and you can still pick one by name in case it was fixed.
+* New providers are being added; see [docs/ADDING_PROVIDERS.md](docs/ADDING_PROVIDERS.md).
 
-<br />
+## Features
 
-[**Download it here**](https://github.com/Official-Husko/mul-tor/releases/latest)
+* A full-screen terminal interface for choosing files and providers, plus a
+  scriptable `upload` command (`--json`, exit codes)
+* Several uploads at once (`--parallel`), with a progress bar for every upload
+* Provider presets (a list of providers + a link format for a forum or community)
+* Optional random user agent, public proxy pool, or your own proxy (HTTP/SOCKS, so Tor works)
+* Checks which providers are reachable before offering them
+* Writes every link to `file_links.txt` (and a BBCode-style version for presets)
+* Notifies you about new releases (it never installs anything by itself)
 
-<br />
+## Install
 
-### Features:
+Pre-built binaries will be attached to the
+[releases](https://github.com/Official-Husko/mul-tor/releases). Until then, build
+from source with a [Rust toolchain](https://rustup.rs) (1.89 or newer; the graphical
+version needs 1.95):
 
-* Proxies
-* Random User Agent
-* Check Website Availability
-* Progress Bar
-* Auto Updater
-* Site Presets
-* Over 35+ Sites Supported
+```sh
+cargo install --path crates/cli      # the command-line tool: `mul-tor`
+cargo install --path crates/gui      # the graphical tool:    `mul-tor-gui`
+```
 
-<br />
+The command-line tool has no system dependencies. Static, self-contained builds
+are possible (for example with the `*-unknown-linux-musl` targets).
 
-### Currently supported sites:
-Site | API | API Key Required | Max File Size
+## Using the graphical version
+
+`mul-tor-gui` is the same engine in a window (egui, rendered with wgpu): drop files
+on it, tick providers or pick a preset, press Upload. Every upload gets its own
+progress bar and, once finished, a link you can copy or open. Each provider row
+shows its limit, whether it answered the reachability check and its recorded
+status. The **Log** button opens a window with what the program has been doing
+(choose how much detail; copy it for a bug report). Settings (including your
+accounts) are edited in the window and saved to the same `config.toml`.
+
+![The Mul-Tor window while uploading](media/gui.png)
+
+*The window part-way through a run (rendered with sample data).*
+
+It needs a GPU driver that supports Vulkan, Metal or Direct3D 12, which any recent
+desktop has. On Linux it also loads a few system libraries at run time
+(`libxkbcommon-x11`, `libwayland-client` or X11, and `libvulkan`); a minimal or
+containerised install may be missing them, and the command-line version needs
+none of this.
+
+## Using the terminal interface
+
+Run `mul-tor` with no arguments for a full-screen interface that works over SSH and
+in any terminal. It has four steps, shown at the top:
+
+1. **Files**: browse folders and press `Space` to add files, or paste or drop paths
+   onto the window (`/` lets you type a path). `Tab` switches to your list.
+2. **Providers**: `Space` ticks, `a` ticks every usable one, `/` filters, `p` applies a
+   preset. Each row shows its limit, whether it answered the reachability check,
+   and its recorded status; the panel on the right has the details.
+3. **Upload**: an overall bar and one line per upload with speed and time left.
+   `Esc` or `Ctrl+C` stops the uploads (press it twice to leave at once); `L` shows
+   the live log.
+4. **Results**: every link; `c` copies them all (and `f` in the preset's format) over
+   the terminal's clipboard support, `n` starts over.
+
+A summary of what is about to be sent, and which uploads the offline checks already
+reject (too large, empty, missing credentials), is shown before anything starts.
+`?` shows the keys of the current step. It uses true colour where the terminal
+supports it, the 16 standard colours otherwise, and none with `NO_COLOR` set.
+
+## Using the command line
+
+```sh
+mul-tor                                   # the full-screen interface above
+mul-tor providers                         # what is supported, limits, accounts
+mul-tor upload backup.7z -p pixeldrain -p gofile
+mul-tor upload ./release --preset f95 --parallel 3
+mul-tor upload photos/ -r --all --json    # one JSON object per upload, for scripts
+mul-tor check                             # which providers answer right now?
+```
+
+* A folder contributes the files directly inside it; add `-r` for sub-folders.
+* `-p`/`--provider` picks providers (repeat it or separate with commas), `-P`/`--preset` a preset.
+* `--provider` names are forgiving: `Transfer.sh`, `transfer_sh` and `transfersh` are the same.
+* Exit code `0` = everything uploaded, `1` = at least one upload failed,
+  `2` = bad usage or configuration, `130` = cancelled with Ctrl-C.
+* Failures are explained on screen and logged (see [Logs](#logs)), including a
+  trimmed copy of what the provider replied.
+
+## Configuration
+
+Settings live in `config.toml`; `mul-tor config path` prints where. The first run
+creates a fully commented one. To keep everything in one folder (a portable
+install), use `--home DIR` or set `MUL_TOR_HOME`.
+
+Providers that need an account are hidden until you fill in their credentials:
+
+```toml
+[credentials.Pixeldrain]
+apiKey = "..."
+```
+
+`mul-tor providers` shows which providers need one, and the table below links to where
+you get the keys. **The file contains secrets and is created readable only by you
+on Linux/macOS.**
+
+## Logs
+
+Every run is recorded in a daily file, `mul-tor.YYYY-MM-DD.log`, in the `logs`
+folder next to your data (`mul-tor logs --path` prints it; the last 14 days are
+kept). Each line has a local timestamp with milliseconds and UTC offset, the
+level, the upload it belongs to, the module and source line that wrote it, and
+structured fields:
+
+```text
+2026-10-24 13:05:41.123 +02:00  INFO run{files=1 providers=2 parallel=1}:job{id=0 provider=Gofile file=backup.7z}: mul_tor_core::engine::job: crates/core/src/engine/job.rs:41: upload started size=1048576
+```
+
+* `mul-tor logs` shows the latest lines (`-n 200` for more).
+* `-v` / `-vv` / `-vvv` also print to the terminal (info / debug / trace).
+* `log_level` and `log_json` in `config.toml` choose the detail and a
+  machine-readable format. The `MUL_TOR_LOG` environment variable overrides the
+  level, and takes filters such as `MUL_TOR_LOG=warn,mul_tor_core::engine=debug`.
+* Passwords, API keys, tokens and the query part of URLs are never written.
+
+### Coming from the Python version?
+
+* Your old `config.json` in the folder you start Mul-Tor from is imported
+  automatically the first time (the original is left alone).
+* `file_links.txt` still goes to the current folder by default (`links_dir` changes that).
+* Presets are the same JSON files; put your own in the `presets` folder next to `config.toml`.
+* `Transfer.sh` and `Download.gg` could not be selected in 1.x because of a
+  naming bug; they work (or fail on their own merits) now.
+
+## Presets
+
+A preset lists the providers a forum or community accepts and how to format the links
+for a post. `mul-tor presets` lists them; `mul-tor upload ... --preset f95` uses one.
+The bundled ones are in [presets/](presets/); the format is documented in
+[presets/template.json5](presets/template.json5). Providers a preset names that
+Mul-Tor does not support yet are reported rather than silently dropped.
+
+## Supported providers
+
+Regenerate with `mul-tor providers --format markdown`. Limits are the ones the Python
+version enforced, or the ones the host publishes for the providers added since.
+
+Provider | API | Account | Max file size
 --- | --- | --- | ---
-[Gofile][7] | [Yes][8] | No | ∞
-[Pixeldrain][1] | [Yes][2] | [Yes][5] | 20 GB
-[BowFile][17] | [Yes][18] | [Yes][19] | 5 GB
-[Doodrive][36] | [Yes][37] | [Yes][38] | 5 GB
-[Download.gg][102] | No | No | 25 GB
-[Filebin][92] | No | No | ∞
-[Delafil][107] | No | No | 6 GB
-[Files.dp.ua][108] | No | No | 100 GB
-[Files.fm][45] | No | No | 5 GB
-[Krakenfiles][124] | No | No | 1 GB
-[Transfer.sh][98] | No | No | ∞
-[/tmp/files][117] | [Yes][118] | No | 100 MB
-[Mixdrop][29] | [Yes][30] | [Yes][30] | ∞
-[1Fichier][31] | [Yes][32] | No | 300 GB
-[Oshi][9] | No | No | 5 GB
-[File.io][70] | No | No | 2 GB
-[EasyUpload][72] | No | No | 10 GB
-[AnonTransfer][127] | No | No | 5 GB
-[Anonymfile][134] | [Yes][135] | No | 7 GB
-[File.si][145] | [Yes][146] | No | 7 GB
-[1CloudFile][133] | No | No | 5 GB
-[ClicknUpload][160] | No | No | 2 GB
-[FileUpload][161] | No | No | 5 GB
-[HexUpload][21] | No | No | 2 GB
-[UserCloud][161] | No | No | 5 GB
-[UFile][68] | [Yes][69] | No | 5 GB
-[Catbox][168] | [Yes][169] | No | 200 MB
-[LitterBox][170] | [Yes][171] | No | 1 GB
-[Keep.sh][172] | No | No | 500 MB
-[TempSend][173] | No | No | 2 GB
-[UsersDrive][100] | No | No | 2 GB
-[Rapidgator][174] | [Yes][174] | [Yes][175] | ?
-[WDHO][180] | No | No | 5 GB
-[Filesadmin][181] | No | No | 3 GB
-[CyberFile][182] | No | No | 10 GB
-[Buzzheavier][183] | [Yes][184] | No | ∞
+[0x0.st](https://0x0.st/) | [Yes](https://0x0.st/) | No | 512 MB
+[1CloudFile](https://1cloudfile.com/) | No | No | 5 GB
+[1Fichier](https://1fichier.com/) | [Yes](https://1fichier.com/api.html) | No | 300 GB
+[AdminForge](https://upload.adminforge.de/) | No | No | 2 GB
+[AnonTransfer](https://anontransfer.com/) | No | No | 5 GB
+[Anonymfile](https://anonymfile.com/) | [Yes](https://anonymfile.com/docs/api) | No | 7 GB
+[Ayaya.beauty](https://ayaya.beauty/) | No | No | 4 GB
+[BowFile](https://bowfile.com/) | [Yes](https://bowfile.com/api) | [Yes](https://bowfile.com/account/edit#api) | 5 GB
+[Buzzheavier](https://buzzheavier.com/) | [Yes](https://buzzheavier.com/api.html) | No | ∞
+[Catbox](https://catbox.moe/) | [Yes](https://catbox.moe/tools.php) | No | 200 MB
+[ClicknUpload](https://clicknupload.click) | No | No | 2 GB
+[curl.by](https://curl.by/) | [Yes](https://curl.by/) | No | ∞
+[CyberFile](https://cyberfile.me/) | No | No | 10 GB
+[Datanodes](https://datanodes.to/) | No | No | 3 GB
+[Delafil](https://delafil.se/) | No | No | 6 GB
+[Disroot](https://upload.disroot.org/) | No | No | 2 GB
+[DooDrive](https://doodrive.com/) | [Yes](https://doodrive.com/dashboard/api) | [Yes](https://doodrive.com/dashboard/settings#settings_api) | 2 GB
+[Dosya.co](https://dosya.co/) | No | No | 2 GB
+[Download.gg](https://download.gg/) | No | No | 25 GB
+[DropMeFiles](https://dropmefiles.com/) | No | No | 50 GB
+[EasySend](https://easysend.co/) | [Yes](https://easysend.co/developer-api) | No | 1 GB
+[EasyUpload](https://easyupload.io/) | No | No | 10 GB
+[End2End.tech](https://end2end.tech/) | [Yes](https://api.end2end.tech/) | No | 2 GB
+[Fastupload](https://fastupload.io/) | No | No | 10 GB
+[File.io](https://file.io/) | No | No | 2 GB
+[File.si](https://file.si/) | [Yes](https://file.si/docs/api) | No | 7 GB
+[FileBin](https://filebin.net/) | No | No | ∞
+[FileMirage](https://filemirage.com/) | No | No | 50 GB
+[Files.dp.ua](https://files.dp.ua/) | No | No | 100 GB
+[Filesadmin](https://filesadmin.com/) | No | No | 3 GB
+[FilesFm](https://files.fm/) | No | No | 5 GB
+[Filespace](https://filespace.com/) | No | No | 150 MB
+[FileUpload](https://file-upload.net/) | No | No | 5 GB
+[GigaFile](https://gigafile.nu/) | No | No | 300 GB
+[Gofile](https://gofile.io/) | [Yes](https://gofile.io/api) | No | ∞
+[HexUpload](https://hexupload.net/) | No | No | 2 GB
+[Keep](https://keep.sh/) | No | No | 500 MB
+[Krakenfiles](https://krakenfiles.com/) | No | No | 1 GB
+[LitterBox](https://litterbox.catbox.moe/) | [Yes](https://litterbox.catbox.moe/tools.php) | No | 1 GB
+[Mixdrop](https://mixdrop.ag/) | [Yes](https://mixdrop.ag/api/) | [Yes](https://mixdrop.ag/api/) | 10 GB
+[Oshi](https://oshi.at/) | No | No | 5 GB
+[Pixeldrain](https://pixeldrain.com/) | [Yes](https://pixeldrain.com/api) | [Yes](https://pixeldrain.com/user/api_keys) | 20 GB
+[Qu.ax](https://qu.ax/) | No | No | 256 MB
+[Rapidgator](https://rapidgator.net/) | [Yes](https://rapidgator.net/article/api/) | [Yes](https://rapidgator.net/article/api/) | ∞
+[Send.adminforge.de](https://send.adminforge.de/) | No | No | 8 GB
+[Send.cyberjake.xyz](https://send.cyberjake.xyz/) | No | No | 10 GB
+[Send.mni.li](https://send.mni.li/) | No | No | 8 GB
+[Send.monks.tools](https://send.monks.tools/) | No | No | 5 GB
+[Send.now](https://send.now/) | No | No | ∞
+[Sendspace](https://www.sendspace.com/) | No | No | 300 MB
+[SendVis](https://send.vis.ee/) | No | No | 2560 MB
+[Storage.to](https://storage.to/) | [Yes](https://storage.to/docs/api) | No | 25 GB
+[Temp.sh](https://temp.sh/) | [Yes](https://temp.sh/) | No | 4 GB
+[TempFile.org](https://tempfile.org/) | [Yes](https://tempfile.org/api) | No | 100 MB
+[TempSend](https://tempsend.com/) | No | No | 2 GB
+[tfLink](https://tmpfile.link/) | [Yes](https://tmpfile.link/) | No | 100 MB
+[TmpFiles](https://tmpfiles.org/) | [Yes](https://tmpfiles.org/api) | No | 100 MB
+[Transfer.sh](https://transfer.sh/) | No | No | 10 GB
+[uFile](https://ufile.io/) | [Yes](https://ufile.io/blog/?filter=api) | No | 5 GB
+[Uguu](https://uguu.se/) | [Yes](https://uguu.se/api) | No | 128 MB
+[UserCloud](https://userscloud.com/) | No | No | 5 GB
+[UsersDrive](https://usersdrive.com/) | No | No | 2 GB
+[VikingFile](https://vikingfile.com/) | [Yes](https://vikingfile.com/api) | No | ∞
+[WDHO](https://wdho.ru/) | No | No | 5 GB
+[X0.at](https://x0.at/) | [Yes](https://x0.at/) | No | 1 GB
 
-<br />
-
-### Rejected Sites:
+### Rejected providers
 <details>
 
-  Site | API | API Key Required | Max File Size | Reason
+  Checked again on 2026-10-25. Where a site only lets a real browser through (a challenge, a captcha), it stays
+  out on purpose: Mul-Tor does not solve or get around those.
+
+  Provider | API | Account | Max File Size | Reason
   --- | --- | --- | --- | ---
-  [DropMeFiles][106] | No | No | 50 GB | Terrible Uploading System
-  [Up2Share][120] | No | No | 1 GB | Terrible Uploading System
-  [WeTransfer][121] | No | No | 2 GB | When do the terrible uploading systems end?
-  [Filemail][42] | [Yes][43] | [No/Yes*²][44] | 5 GB | Garbage Limit of 2 Uploads a Day (Sucks regarding coding and testing)
-  [MEGA][109] | [Yes][110] | No | 20 GB | Uses complicated Encrypting & Decrypting
-  [Google Drive][111] | [Yes][112] | No | 15 GB | I see no reason to add this
-  [Mediafire][113] | [Yes][114] | No | 10 GB | I see no reason to add this
-  [UploadHaven][115] | No | No | 50 GB | Paid/Invite Only
-  [Terminal][116] | No | No | ? | Invite Only
-  [UpToBox][33] | [Yes][34] | [Yes][35] | 200 GB | Raided by the Feds/ACE & Down
-  [SendGB][119] | No | No | 5 GB | [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
-  [WorkUpload][122] | No | No | 2 GB | Gives a 200 response with a link but the file is not available.
-  [Qiwi.gg][126] | No | No | ? | Really Complicated system
-  [CyberFiles][128] | No | No | 19 GB | sometimes throws account missing errors and sometimes it uploads fine
-  [SendSpace][130] | No | No | 300 MB | SSL issues and terrible upload system
-  [BeeFiles][144] | No | No | 20 GB | Requires a Phone Number and shows "no plans available" after registering. Possibly a scam
-  [SwissTransfer][147] | No | No | 20 GB | Captchas Required & could possibly leak the IP of the uploader
-  [UploadBuzz][148] | No | No | ? | Website is down
-  [pCloud][149] | [Yes][150] | No | 10 GB | Paid
-  [Wormhole][151] | No | No | 10 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendVis][152] | No | No | 2.5 GB | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [Instant.io][153] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendTresorit][154] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [Sharrr][155] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [SendZcyph][129] | No | No | ? | [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
-  [TransferXL][156] | No | No | 5 GB | Captchas Required
-  [WeSendIt][157] | No | No | 2 GB | Can't figure out the upload system
-  [Yandex Disk][158] | No | No | 5 GB | I see no reason to add this
-  [Archive.org][159] | No | No | ∞ | I see no reason to add this
-  [TransferNow][163] | No | No | 5 GB | Not worth the hassle
-  [Bunkrr][178] | [Yes][179] | [Yes][179] | 2GB | [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
+  [Up2Share](https://up2sha.re/) | No | No | 1 GB | Every page sits behind a Cloudflare browser check
+  [WeTransfer](https://wetransfer.com/) | No | No | 2 GB | Creating a transfer needs a solved hCaptcha
+  [Filemail](https://filemail.com/) | [Yes](https://filemail.com/apidoc) | [No/Yes*²](https://filemail.com/apidoc/ApiKey.aspx) | 5 GB | The API needs a key from a registered account; anonymous use is limited to 2 uploads a day
+  [MEGA](https://mega.nz/) | [Yes](https://mega.io/developers) | No | 20 GB | Needs an account and MEGA's own client-side encryption scheme
+  [Google Drive](https://google.com/drive/) | [Yes](https://developers.google.com/drive/api/guides/about-sdk) | No | 15 GB | Needs an account and an OAuth app
+  [Mediafire](https://mediafire.com/) | [Yes](https://mediafire.com/developers/core_api/1.5/getting_started/) | No | 10 GB | Browser check in front of the site; the API needs an account
+  [UploadHaven](https://uploadhaven.com/) | No | No | 50 GB | The page has no upload form for anonymous visitors
+  [Terminal](https://terminal.lc/) | No | No | ? | Did not answer when checked (2026-10-25)
+  [UpToBox](https://uptobox.com/) | [Yes](https://docs.uptobox.com/) | [Yes](https://uptobox.com/my_account) | 200 GB | Raided by the Feds/ACE & down
+  [SendGB](https://sendgb.com/) | No | No | 5 GB | Uploading needs a solved Cloudflare Turnstile · [Discussion 10](https://github.com/Official-Husko/mul-tor/discussions/10)
+  [WorkUpload](https://workupload.com/) | No | No | 2 GB | Uploading needs a solved captcha
+  [Qiwi.gg](https://qiwi.gg/) | No | No | ? | Browser check in front of the site
+  [CyberFiles](https://cyberfile.me/) | No | No | 10 GB | Anonymous uploads (a temp account, removed after 5 days) are offered, but when checked (2026-10-25) the uploader said "no active storage servers found"
+  [BeeFiles](https://beefiles.io/) | No | No | 20 GB | Did not answer when checked (2026-10-25)
+  [SwissTransfer](https://swisstransfer.com/) | No | No | 20 GB | Uploading needs a solved Altcha challenge
+  [UploadBuzz](https://uploadbuzz.cc/) | No | No | ? | Website is down
+  [pCloud](https://pcloud.com/) | [Yes](https://docs.pcloud.com/) | No | 10 GB | Needs an account
+  [Wormhole](https://wormhole.app/) | No | No | 10 GB | Peer-to-peer (WebTorrent) transfer with its own encryption; files are kept 24 hours · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Instant.io](https://instant.io/) | No | No | ? | Not a host: a WebTorrent page, the file is only there while the uploader keeps it open · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendTresorit](https://send.tresorit.com/) | No | No | ? | Client-side encryption of its own design, not implemented · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [Sharrr](https://sharrr.com/) | No | No | ? | Client-side encryption of its own design, not implemented · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [SendZcyph](https://send.zcyph.cc/) | No | No | ? | Did not answer when checked (2026-10-25) · [Discussion 12](https://github.com/Official-Husko/mul-tor/discussions/12)
+  [TransferXL](https://transferxl.com/) | No | No | 5 GB | Uploading needs a solved reCAPTCHA
+  [WeSendIt](https://wesendit.com/) | No | No | 2 GB | Needs an account
+  [Yandex Disk](https://disk.yandex.com/) | No | No | 5 GB | Needs an account
+  [Archive.org](https://archive.org/) | No | No | ∞ | Needs an account (S3 keys)
+  [TransferNow](https://transfernow.net/) | No | No | 5 GB | Bot detection in front of the upload
+  [Bunkrr](https://app.bunkrr.su/) | [Yes](https://app.bunkrr.su/dashboard) | [Yes](https://app.bunkrr.su/dashboard) | 2GB | Needs an account token · [Discussion 13](https://github.com/Official-Husko/mul-tor/discussions/13)
+  [allfiles.org](https://allfiles.org/en) | No | No | ? | Every upload call answers an empty page unless it comes from a browser
+  [FilePort](https://fileport.io/) | No | No | ? | Browser check on every page, and its robots.txt asks automated clients to stay away
+  [Bashupload](https://bashupload.com/) | [Yes](https://bashupload.com/) | No | ? | A file is deleted after its first download, which is no use for sharing a backup
+  [Fileditch](https://fileditch.com/) | No | No | ? | Refuses plain clients with a 403
 
 </details>
 
@@ -121,36 +286,35 @@ Site | API | API Key Required | Max File Size
 ### FAQ
 <details>
   <summary>Open FAQ</summary>
-  Q: Where did the site X go?
-
-  A: Check the [Deprecated Sites][164] list.
+  Q: Where did the provider X go?\
+  A: Check the [rejected providers](#rejected-providers) list. Providers that were dropped from the Python version are in its git history (tag `1.5.2`).
 
   Q: Are there any presets?\
-  A: Yes, simply check [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets) here and download the ones you wish to use.
+  A: Yes: `f95` and `cs-rin-ru` are built in (`mul-tor presets`). More can be dropped into the `presets` folder next to your `config.toml`; community ones may be collected in [this folder](https://github.com/Official-Husko/mul-tor/tree/master/presets).
 
   Q: Can I make my own presets?\
   A: Yes you can, for that read [this wiki page](https://github.com/Official-Husko/mul-tor/wiki/Preset-Configuration).
 
   Q: How can I get help?\
-  A: Check the [Wiki][166] for any information that might help you. If you can't find the answer there check out the [issues page][4] and if there is none [open one up][167].
+  A: Run `mul-tor --help`, check the [Wiki](https://github.com/Official-Husko/mul-tor/wiki) (parts of it still describe 1.x) and `mul-tor logs`. If that does not help, check out the [issues page](https://github.com/Official-Husko/mul-tor/issues) and if there is none [open one up](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
   Q: How do I get the API key?\
-  A: Click on the blue yes in the Api Key Required row for the site you wish to get a key for.
+  A: In the Account column of the table above, the "Yes" of the provider you want links to the page where you create the key. Then put it in `config.toml` (see Configuration).
 
-  Q: I want to request a site.\
-  A: Please first check the [rejected sites][3] and [issues page][4] to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue][167].
+  Q: I want to request a provider.\
+  A: Please first check the [rejected providers](https://github.com/Official-Husko/mul-tor#rejected-providers) and [issues page](https://github.com/Official-Husko/mul-tor/issues) to ensure it hasn't been previously mentioned. If not, feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
-  Q: What about rejected sites?\
-  A: I will check the sites every once in a while to see if the issues I mentioned have been resolved. If you know the issue has been resolved or why I encountered an issue feel free to [open a new issue][167].
+  Q: What about rejected providers?\
+  A: I will check the providers every once in a while to see if the issues I mentioned have been resolved. If you know the issue has been resolved or why I encountered an issue feel free to [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose).
 
   Q: Why is it called Mul-Tor?\
   A: I have no idea.
 
-  Q: What if I need one of the rejected sites?\
-  A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue][167] if there isn't one already so that I can check it again.
+  Q: What if I need one of the rejected providers?\
+  A: This project is open to contributions. Maybe somebody else can add it. You may [open a new issue](https://github.com/Official-Husko/mul-tor/issues/new/choose) if there isn't one already so that I can check it again.
 
-  Q: Certain sites offer an API but you didn't use it. Why?\
-  A: Because this makes it easier for users and it doesn't need any accounts and sign-ups. I plan to add API functions to these for users who want to use it.
+  Q: Certain providers offer an API but you didn't use it. Why?\
+  A: Because anonymous uploads need no accounts or sign-ups. Account support is added where it unlocks something (bigger files, longer storage).
 
   Q: Somebody else already has the issue I'm having. What do I do?\
   A: Simply upvote the issue. If you have additional data you think could help me solve said issue feel free to comment it.
@@ -162,168 +326,20 @@ Site | API | API Key Required | Max File Size
 [**kianmeng**](https://github.com/kianmeng),
 [**SillyBilly0069**](https://github.com/SillyBilly0069)
 
-<br />
+## Building and testing
 
-[comment]: # (Below are all links to the sites)
-[0]: #
-[1]: https://pixeldrain.com/
-[2]: https://pixeldrain.com/api
-[3]: https://github.com/Official-Husko/mul-tor#rejected-sites
-[4]: https://github.com/Official-Husko/mul-tor/issues
-[5]: https://pixeldrain.com/user/api_keys
-[7]: https://gofile.io/
-[8]: https://gofile.io/api
-[9]: https://oshi.at/
-[17]: https://bowfile.com/
-[18]: https://bowfile.com/api
-[19]: https://bowfile.com/account/edit#api
-[20]: https://1cloudfile.com/
-[21]: https://1cloudfile.com/api
-[22]: https://1cloudfile.com/account/edit#api
-[23]: https://hexupload.net/
-[24]: https://hexupload.docs.apiary.io/#
-[25]: https://hexupload.net/?op=my_account
-[26]: https://sendspace.com/
-[27]: https://sendspace.com/dev_method.html
-[28]: https://sendspace.com/dev_apikeys.html
-[29]: https://Mixdrop.ag/
-[30]: https://Mixdrop.ag/api/
-[31]: https://1fichier.com/
-[32]: https://1fichier.com/api.html
-[33]: https://uptobox.com/
-[34]: https://docs.uptobox.com/
-[35]: https://uptobox.com/my_account
-[36]: https://doodrive.com/
-[37]: https://doodrive.com/dashboard/api
-[38]: https://doodrive.com/dashboard/settings#settings_api
-[39]: https://transfernow.net/
-[40]: https://developers.transfernow.net/
-[41]: https://transfernow.net/dashboard/admin/api
-[42]: https://filemail.com/
-[43]: https://filemail.com/apidoc
-[44]: https://filemail.com/apidoc/ApiKey.aspx
-[45]: https://files.fm/
-[46]: https://files.fm/api.php
-[67]: https://fastupload.io/
-[68]: https://ufile.io/
-[69]: https://ufile.io/blog/?filter=api
-[70]: https://file.io/
-[72]: https://easyupload.io/
-[73]: https://filepost.io/
-[74]: https://file-upload.net/
-[75]: https://transferxl.com/
-[76]: https://filetransfer.io/
-[77]: https://transfernow.net/
-[78]: https://quicklyupload.com/
-[79]: https://tmpfiles.org/
-[80]: https://send.vis.ee/
-[81]: https://wormhole.app/
-[82]: https://swisstransfer.com/en-us
-[83]: https://4shared.com/
-[84]: https://instant.io/
-[85]: https://send.tresorit.com/
-[86]: https://sharrr.com/
-[87]: https://blackhole.run/
-[88]: https://filedropper.com/
-[89]: https://myairbridge.com/en/#!/settings
-[90]: https://sendgb.com/
-[91]: https://ulozto.net/
-[92]: https://filebin.net/
-[93]: https://send.cm/
-[94]: https://filewhopper.com/
-[95]: https://transferfile.io/#/
-[96]: https://hotdropp.com/#/
-[97]: https://cyberdrop.me/
-[98]: https://transfer.sh/
-[99]: https://k2s.cc/
-[100]: https://usersdrive.com/
-[101]: https://1fichier.com/
-[102]: https://download.gg/
-[103]: https://torrentfreak.com/file-hosting-icon-anonfiles-throws-in-the-towel-domain-for-sale-230817/
-[104]: https://anonfiles.me/
-[105]: https://anonfiles.me/docs/api
-[106]: https://dropmefiles.com/
-[107]: https://delafil.se/
-[108]: https://files.dp.ua/
-[109]: https://mega.nz/
-[110]: https://mega.io/developers
-[111]: https://google.com/drive/
-[112]: https://developers.google.com/drive/api/guides/about-sdk
-[113]: https://mediafire.com/
-[114]: https://mediafire.com/developers/core_api/1.5/getting_started/
-[115]: https://uploadhaven.com/
-[116]: https://terminal.lc/
-[117]: https://tmpfiles.org/
-[118]: https://tmpfiles.org/api
-[119]: https://sendgb.com/
-[120]: https://up2sha.re/
-[121]: https://wetransfer.com/
-[122]: https://workupload.com/
-[123]: http://yourfilestore.com/
-[124]: https://krakenfiles.com/
-[126]: https://qiwi.gg/
-[127]: https://anontransfer.com/
-[128]: https://cyberfile.me/
-[129]: https://send.zcyph.cc/
-[130]: https://sendspace.com/
-[131]: https://anonfiles.me/
-[132]: https://anonfiles.me/docs/api
-[133]: https://1cloudfile.com/
-[134]: https://anonymfile.com/
-[135]: https://anonymfile.com/docs/api
-[136]: https://nitrofile.cc/
-[137]: https://nitrofile.cc/docs/api
-[138]: https://gofile.cc/
-[139]: https://gofile.cc/docs/api
-[140]: https://anyfile.co/
-[141]: https://anyfile.co/docs/api
-[142]: https://bayfiles.io/
-[143]: https://bayfiles.io/docs/api
-[144]: https://beefiles.io/
-[145]: https://file.si/
-[146]: https://file.si/docs/api
-[147]: https://swisstransfer.com/
-[148]: https://uploadbuzz.cc/
-[149]: https://pcloud.com/
-[150]: https://docs.pcloud.com/
-[151]: https://wormhole.app/
-[152]: https://send.vis.ee/
-[153]: https://instant.io/
-[154]: https://send.tresorit.com/
-[155]: https://sharrr.com/
-[156]: https://transferxl.com/
-[157]: https://wesendit.com/
-[158]: https://Yandex.Disk/
-[159]: https://archive.org/
-[160]: https://clicknupload.click
-[161]: https://file-upload.net/
-[162]: https://usercloud.com/
-[163]: https://transfernow.net/
-[164]: https://github.com/Official-Husko/mul-tor/blob/master/modules/deprecated/README.md
-[165]: https://udrop.com/
-[166]: https://github.com/Official-Husko/mul-tor/wiki
-[167]: https://github.com/Official-Husko/mul-tor/issues/new/choose
-[168]: https://catbox.moe/
-[169]: https://catbox.moe/tools.php
-[170]: https://litterbox.catbox.moe/
-[171]: https://litterbox.catbox.moe/tools.php
-[172]: https://keep.sh/
-[173]: https://tempsend.com/
-[174]: https://rapidgator.net/
-[175]: https://rapidgator.net/article/api/
-[176]: https://filestore.me/
-[177]: https://filestore.me/account/
-[178]: https://app.bunkrr.su/
-[179]: https://app.bunkrr.su/dashboard
-[180]: https://wdho.ru/
-[181]: https://filesadmin.com/
-[182]: https://cyberfile.me/
-[183]: https://buzzheavier.com/
-[184]: https://buzzheavier.com/api.html
+```sh
+cargo build --workspace
+cargo test --workspace --features mul-tor/test-hooks
+```
 
-<br />
+How the code is organised, and the rules it follows, are in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-#### Disclaimer
+`test-hooks` lets the end-to-end tests redirect every provider to a local mock server;
+it is never part of a release build.
 
-> [!CAUTION]  
-> *I am not in any way affiliated and or working with these sites. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*
+## Disclaimer
+
+> [!CAUTION]
+> *I am not in any way affiliated and or working with these providers. ***This is an unofficial project***. I am not responsible and or liable for the content that is uploaded with this tool.*

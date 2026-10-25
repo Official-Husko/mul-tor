@@ -1,28 +1,30 @@
-/.env
-/config.json
+# Rust
+/target
+
+# Runtime files created when running from the repo root
+/config.toml
 /runtime.log
+/file_links.txt
+/file_links_formatted.txt
 /user_agents.json
-/__pycache__
-modules/__pycache__
-git_message_rules
-file_links.txt
-/dist
+
+# Local test material
+/test_files/
+*.zip
+*.7z
+
+# Editors / OS
+/.vscode/*
+.idea/
+.DS_Store
+
+# Maintainer-local files carried over from the Python era (credentials, art sources, scratch)
+/.env
 developer_accounts.json
-outdated
 art/Icon.ai
 art/site_banners.ai
-file_links_formatted.txt
-config_old.json
-run.bat
-build
-Mul-Tor.spec
-Build Releases.bat
-presets/readme.txt
-big_game.zip
 possible_sites.txt
 preset_sorter.py
 preset_sorter.json
-very_big_game.7z
+git_message_rules
 .DEBUG
-test_files/test.png
-/.vscode/*
