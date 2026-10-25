@@ -20,3 +20,4 @@ pub use recorded::Recorded;
 pub use reply::Reply;
 pub use run::{Run, RunConfig, builtin, creds, run, run_default};
 pub use server::Mock;
+pub use socket::Frame;

@@ -23,6 +23,7 @@ mod laravel;
 mod lufi;
 mod onefichier;
 mod rapidgator;
+mod send;
 mod sendspace;
 mod single_request;
 mod storage_to;

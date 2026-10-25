@@ -4,21 +4,36 @@ use std::sync::{Arc, Mutex};
 
 use axum::extract::ws::{Message, WebSocket};
 
-/// Gets each text message and returns the messages to send back.
-pub type SocketHandler = dyn Fn(&str) -> Vec<String> + Send + Sync;
+/// What arrived over the socket.
+pub enum Frame<'a> {
+    Text(&'a str),
+    Binary(&'a [u8]),
+}
 
-pub async fn serve_socket(
-    mut socket: WebSocket,
-    on_text: Arc<SocketHandler>,
-    received: Arc<Mutex<Vec<String>>>,
-) {
+/// Gets each frame and returns the text messages to send back.
+pub type SocketHandler = dyn Fn(Frame<'_>) -> Vec<String> + Send + Sync;
+
+/// Everything the socket received, in order within each kind.
+#[derive(Default)]
+pub struct SocketLog {
+    pub text: Mutex<Vec<String>>,
+    pub binary: Mutex<Vec<Vec<u8>>>,
+}
+
+pub async fn serve_socket(mut socket: WebSocket, handler: Arc<SocketHandler>, log: Arc<SocketLog>) {
     while let Some(Ok(message)) = socket.recv().await {
-        let Message::Text(text) = message else {
-            continue;
+        let replies = match &message {
+            Message::Text(text) => {
+                log.text.lock().unwrap().push(text.to_string());
+                handler(Frame::Text(text.as_str()))
+            }
+            Message::Binary(bytes) => {
+                log.binary.lock().unwrap().push(bytes.to_vec());
+                handler(Frame::Binary(bytes))
+            }
+            _ => continue,
         };
-        let text = text.to_string();
-        received.lock().unwrap().push(text.clone());
-        for reply in on_text(&text) {
+        for reply in replies {
             if socket.send(Message::Text(reply.into())).await.is_err() {
                 return;
             }

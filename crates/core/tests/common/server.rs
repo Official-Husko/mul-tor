@@ -12,14 +12,14 @@ use mul_tor_core::http::UrlRewrite;
 
 use super::recorded::Recorded;
 use super::reply::Reply;
-use super::socket::{SocketHandler, serve_socket};
+use super::socket::{Frame, SocketHandler, SocketLog, serve_socket};
 
 type Handler = dyn Fn(&Recorded) -> Reply + Send + Sync;
 
 pub struct Mock {
     port: u16,
     requests: Arc<Mutex<Vec<Recorded>>>,
-    messages: Arc<Mutex<Vec<String>>>,
+    socket_log: Arc<SocketLog>,
     task: tokio::task::JoinHandle<()>,
 }
 
@@ -40,7 +40,19 @@ impl Mock {
         handler: impl Fn(&Recorded) -> Reply + Send + Sync + 'static,
         on_text: impl Fn(&str) -> Vec<String> + Send + Sync + 'static,
     ) -> Mock {
-        Self::serve(handler, Some(Arc::new(on_text))).await
+        Self::start_with_frames(handler, move |frame| match frame {
+            Frame::Text(text) => on_text(text),
+            Frame::Binary(_) => Vec::new(),
+        })
+        .await
+    }
+
+    /// Like [`Mock::start_with_socket`], for sockets that also receive binary frames.
+    pub async fn start_with_frames(
+        handler: impl Fn(&Recorded) -> Reply + Send + Sync + 'static,
+        on_frame: impl Fn(Frame<'_>) -> Vec<String> + Send + Sync + 'static,
+    ) -> Mock {
+        Self::serve(handler, Some(Arc::new(on_frame))).await
     }
 
     async fn serve(
@@ -48,10 +60,10 @@ impl Mock {
         socket: Option<Arc<SocketHandler>>,
     ) -> Mock {
         let requests: Arc<Mutex<Vec<Recorded>>> = Arc::default();
-        let messages: Arc<Mutex<Vec<String>>> = Arc::default();
+        let socket_log: Arc<SocketLog> = Arc::default();
         let handler: Arc<Handler> = Arc::new(handler);
         let log = requests.clone();
-        let received = messages.clone();
+        let received = socket_log.clone();
 
         let app = Router::new().fallback(
             move |ws: Result<WebSocketUpgrade, WebSocketUpgradeRejection>,
@@ -112,14 +124,19 @@ impl Mock {
         Mock {
             port,
             requests,
-            messages,
+            socket_log,
             task,
         }
     }
 
     /// Text messages that arrived over a WebSocket, in order.
     pub fn messages(&self) -> Vec<String> {
-        self.messages.lock().unwrap().clone()
+        self.socket_log.text.lock().unwrap().clone()
+    }
+
+    /// Binary frames that arrived over a WebSocket, in order.
+    pub fn binary_frames(&self) -> Vec<Vec<u8>> {
+        self.socket_log.binary.lock().unwrap().clone()
     }
 
     pub fn requests(&self) -> Vec<Recorded> {

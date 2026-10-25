@@ -31,8 +31,10 @@ indicatif = "0.18"
 md-5 = "0.11"
 # AES-CCM with a PBKDF2 key: what the Lufi web client's sjcl produces
 aes = "0.9"
+aes-gcm = "0.11"
 base64 = "0.23"
 ccm = "0.6"
+hkdf = "0.13"
 pbkdf2 = { version = "0.13", default-features = false, features = ["hmac"] }
 sha2 = "0.11"
 rand = "0.10"
